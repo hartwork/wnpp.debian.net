@@ -411,7 +411,7 @@ echo "                        <tr>\n";
 echo "                            <td valign=\"bottom\">\n";
 echo "                                <table width=\"100%\">\n";
 echo "                                <tr>\n";
-echo "                                    <td align=\"left\"><a href=\"cron_sync_list.php5\" target=\"_blank\">Force BTS sync</a></td>\n";
+echo "                                    <td align=\"left\"><a href=\"cron_sync_list.php5\" target=\"_blank\">Sync bugs</a> <a href=\"cron_sync_popcon.php5\" target=\"_blank\">Sync popcon</a></td>\n";
 echo "                                    <td align=\"right\"><input type=\"submit\" value=\"Query\"></td>\n";
 echo "                                </tr>\n";
 echo "                                </table>\n";
