@@ -1,0 +1,13 @@
+<?php
+
+$SERVER    = 'localhost';
+$DATABASE  = 'database';
+$USERNAME  = 'user';
+$PASSWORD  = 'password';
+
+$WNPP_TABLE = 'debian_wnpp';
+$POPCON_TABLE = 'debian_popcon';
+$LOG_INDEX_TABLE = 'debian_log_index';
+$LOG_MODS_TABLE = 'debian_log_mods';
+
+?>
