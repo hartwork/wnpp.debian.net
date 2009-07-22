@@ -684,7 +684,15 @@ for ($i = 0; $i < $count; $i++) {
 echo "</table><br>\n";
 echo "    </td>\n";
 echo "</tr>\n";
+echo "<tr>\n";
+echo "    <td align=\"center\" style=\"padding-bottom:10px\">\n";
+
+echo "Written by <a href=\"mailto:sebastian@pipping.org\">Sebastian Pipping</a>.&nbsp;&nbsp;<a href=\"http://git.goodpoint.de/?p=wnpp-debian-net.git\">Sources</a> licensed under <a href=\"http://www.fsf.org/licensing/licenses/agpl.html\">AGPL 3.0 or later.</a>\n";
+
+echo "    </td>\n";
+echo "</tr>\n";
 echo "</table>\n";
+
 echo "</body>\n";
 echo "</html>\n";
 
