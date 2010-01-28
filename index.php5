@@ -651,7 +651,7 @@ for ($i = 0; $i < $count; $i++) {
         } else {
             $project_cell = "<nobr>$project ";
             for ($j = 0; $j < $count_ident_list; $j++) {
-                $project_cell .= ('<a href="' . $url_base . $ident_list[$j] . '">[' . ($j + 1) . ']');
+                $project_cell .= ('<a href="' . $url_base . $ident_list[$j] . '">[' . ($j + 1) . ']</a>');
             }
             $project_cell .= '</nobr>';
         }
