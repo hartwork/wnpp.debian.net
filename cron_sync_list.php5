@@ -39,6 +39,10 @@ $done_soap_queries = 0;
 ob_implicit_flush(TRUE);
 ob_end_flush();
 
+// Workaround SoapFault exceptions going to no-idea-where
+function error_handler($code, $text) { }
+set_error_handler('error_handler');
+
 function cleanup() {
     global $link;
 
