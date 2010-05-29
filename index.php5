@@ -321,6 +321,17 @@ echo "                    <option value=\"1\">Alternative Title Format (1)</opti
 echo "                </select> <input type=\"submit\" value=\"Feed\">\n";
 echo "                </form>\n";
 echo "            </td>\n";
+echo "            <td valign=\"center\" style=\"margin: 0pt; padding: 0pt; padding-left:10px\">";
+echo "                <script type=\"text/javascript\">";
+echo "                    var flattr_url = 'http://wnpp.debian.net/';";
+echo "                    var flattr_btn='compact';";
+echo "                </script>";
+echo "                <script src=\"http://api.flattr.com/button/load.js\" type=\"text/javascript\"></script>";
+echo "                <noscript>";
+echo "                    <a href=\"http://flattr.com/thing/8832/Debian-Packages-that-Need-Lovin\" target=\"_blank\">";
+echo "                    <img src=\"http://api.flattr.com/button/button-compact-static-100x17.png\" title=\"Flattr this\" border=\"0\" /></a>";
+echo "                </noscript>";
+echo "            </td>\n";
 echo "        </tr>\n";
 echo "        </table>\n";
 echo "    </td>\n";
