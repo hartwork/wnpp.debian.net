@@ -70,7 +70,7 @@ if (!preg_match("/^(dust|age|type|project|users|installs|owner|reporter)(?:;((?:
     $order_dir = 'ASC';
 } else {
     $order_col = to_order_col($matches[1]);
-    $order_dir = ($matches[2] == "") ? "ASC" : strtoupper($matches[2]);
+    $order_dir = (count($matches) >= 3) ? strtoupper($matches[2]) : "ASC";
 
     // Age must be inverted, proper column name
     switch ($order_col) {
