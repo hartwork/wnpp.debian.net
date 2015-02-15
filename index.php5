@@ -278,6 +278,21 @@ echo "<head>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
 echo "<title>$TITLE</title>\n";
 
+// favicon, thanks to http://realfavicongenerator.net/
+echo "<link rel=\"apple-touch-icon\" sizes=\"57x57\" href=\"/apple-touch-icon-57x57.png\">\n";
+echo "<link rel=\"apple-touch-icon\" sizes=\"60x60\" href=\"/apple-touch-icon-60x60.png\">\n";
+echo "<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"/apple-touch-icon-72x72.png\">\n";
+echo "<link rel=\"apple-touch-icon\" sizes=\"76x76\" href=\"/apple-touch-icon-76x76.png\">\n";
+echo "<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"/apple-touch-icon-114x114.png\">\n";
+echo "<link rel=\"apple-touch-icon\" sizes=\"120x120\" href=\"/apple-touch-icon-120x120.png\">\n";
+echo "<link rel=\"icon\" type=\"image/png\" href=\"/favicon-32x32.png\" sizes=\"32x32\">\n";
+echo "<link rel=\"icon\" type=\"image/png\" href=\"/favicon-96x96.png\" sizes=\"96x96\">\n";
+echo "<link rel=\"icon\" type=\"image/png\" href=\"/favicon-16x16.png\" sizes=\"16x16\">\n";
+echo "<link rel=\"manifest\" href=\"/manifest.json\">\n";
+echo "<meta name=\"msapplication-TileColor\" content=\"#da532c\">\n";
+echo "<meta name=\"theme-color\" content=\"#ffffff\">\n";
+
+
 // Colors selected with help from the Color schemes generator 2
 // http://wellstyled.com/tools/colorscheme2/index-en.html
 
