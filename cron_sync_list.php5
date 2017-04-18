@@ -76,9 +76,9 @@ $PACKAGE = 'wnpp';
 try {
     $done_soap_queries++;
         $client = new SoapClient(NULL,
-                array('location'     => "http://bugs.debian.org/cgi-bin/soap.cgi",
+                array('location'     => "https://bugs.debian.org/cgi-bin/soap.cgi",
                 'uri'     => "Debbugs/SOAP",
-                'proxy_host'  => "http://bugs.debian.org"));
+                'proxy_host'  => "https://bugs.debian.org"));
 
         $remote_idents = $client->__soapCall("get_bugs", array('package', $PACKAGE, 'status', 'open'));
 } catch (Exception $e) {
