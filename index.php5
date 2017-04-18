@@ -355,7 +355,7 @@ echo "        <table cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "        <tr>\n";
 echo "            <td valign=\"center\" style=\"padding:1 2 1 2;\"><img src=\"images/valid-rss-20.png\" width=\"57\" height=\"20\"></td>\n";
 echo "            <td valign=\"center\" style=\"margin:0;padding:0;\">\n";
-echo "                <form action=\"https://feedvalidator.org/check.cgi\" method=\"GET\" style=\"margin:0;padding:2;\">\n";
+echo "                <form action=\"http://feedvalidator.org/check.cgi\" method=\"GET\" style=\"margin:0;padding:2;\">\n";
 echo "                <input type=\"hidden\" name=\"url\" value=\"https://wnpp.debian.net/news.php5?data=all&amp;amp;title_format=0\">\n";
 echo "                <input type=\"submit\" value=\"Validate\">\n";
 echo "                </form>\n";
