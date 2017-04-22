@@ -338,13 +338,13 @@ echo "                </form>\n";
 echo "            </td>\n";
 echo "            <td valign=\"center\" style=\"margin: 0pt; padding: 0pt; padding-left:10px\">";
 echo "                <script type=\"text/javascript\">";
-echo "                    var flattr_url = 'http://wnpp.debian.net/';";
+echo "                    var flattr_url = 'https://wnpp.debian.net/';";
 echo "                    var flattr_btn='compact';";
 echo "                </script>";
-echo "                <script src=\"http://api.flattr.com/button/load.js\" type=\"text/javascript\"></script>";
+echo "                <script src=\"https://api.flattr.com/button/load.js\" type=\"text/javascript\"></script>";
 echo "                <noscript>";
-echo "                    <a href=\"http://flattr.com/thing/8832/Debian-Packages-that-Need-Lovin\" target=\"_blank\">";
-echo "                    <img src=\"http://api.flattr.com/button/button-compact-static-100x17.png\" title=\"Flattr this\" border=\"0\" /></a>";
+echo "                    <a href=\"https://flattr.com/thing/8832/Debian-Packages-that-Need-Lovin\" target=\"_blank\">";
+echo "                    <img src=\"https://api.flattr.com/button/button-compact-static-100x17.png\" title=\"Flattr this\" border=\"0\" /></a>";
 echo "                </noscript>";
 echo "            </td>\n";
 echo "        </tr>\n";
@@ -356,7 +356,7 @@ echo "        <tr>\n";
 echo "            <td valign=\"center\" style=\"padding:1 2 1 2;\"><img src=\"images/valid-rss-20.png\" width=\"57\" height=\"20\"></td>\n";
 echo "            <td valign=\"center\" style=\"margin:0;padding:0;\">\n";
 echo "                <form action=\"http://feedvalidator.org/check.cgi\" method=\"GET\" style=\"margin:0;padding:2;\">\n";
-echo "                <input type=\"hidden\" name=\"url\" value=\"http://wnpp.debian.net/news.php5?data=all&amp;amp;title_format=0\">\n";
+echo "                <input type=\"hidden\" name=\"url\" value=\"https://wnpp.debian.net/news.php5?data=all&amp;amp;title_format=0\">\n";
 echo "                <input type=\"submit\" value=\"Validate\">\n";
 echo "                </form>\n";
 echo "            </td>\n";
@@ -668,7 +668,7 @@ for ($i = 0; $i < $count; $i++) {
         $project = shrink($entry['project'], $MAX_PROJECT_LEN);
         $ident_list = explode(',', $entry['ident_list']);
         $count_ident_list = count($ident_list);
-        $url_base = 'http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=';
+        $url_base = 'https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=';
         $project_cell = '';
         if ($count_ident_list == 0) {
             $project_cell = '<nobr><i>ERROR</i></nobr>';
@@ -713,7 +713,7 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "    <td align=\"center\" style=\"padding-bottom:10px\">\n";
 
-echo "Written by <a href=\"https://blog.hartwork.org/\">Sebastian Pipping</a>.&nbsp;&nbsp;<a href=\"https://github.com/hartwork/wnpp.debian.net\">Sources</a> licensed under <a href=\"http://www.fsf.org/licensing/licenses/agpl.html\">AGPL 3.0 or later.</a>\n";
+echo "Written by <a href=\"https://blog.hartwork.org/\">Sebastian Pipping</a>.&nbsp;&nbsp;<a href=\"https://github.com/hartwork/wnpp.debian.net\">Sources</a> licensed under <a href=\"https://www.fsf.org/licensing/licenses/agpl.html\">AGPL 3.0 or later.</a>\n";
 
 echo "    </td>\n";
 echo "</tr>\n";
