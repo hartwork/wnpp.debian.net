@@ -515,21 +515,23 @@ $condition = "($type_match AND $project_match AND $description_match AND $owner_
 
 // What columns do we need
 $query_cols = array();
+$group_cols = array();
 array_push($query_cols, 'GROUP_CONCAT(ident ORDER BY ident ASC SEPARATOR \',\') AS ident_list');
-if ($show_dust) { array_push($query_cols, 'UNIX_TIMESTAMP(' . to_order_col('dust') . ') AS unix_mod_stamp'); }
-if ($show_age) { array_push($query_cols, 'UNIX_TIMESTAMP(' . to_order_col('age') . ') AS unix_open_stamp'); }
-array_push($query_cols, 'type');
-array_push($query_cols, 'project');
-if ($show_description) { array_push($query_cols, to_order_col('description')); }
-if ($show_users) { array_push($query_cols, to_order_col('users')); }
-if ($show_installs) { array_push($query_cols, to_order_col('installs')); }
-if ($show_owner) { array_push($query_cols, to_order_col('owner')); }
-if ($show_reporter) { array_push($query_cols, to_order_col('reporter')); }
+if ($show_dust) { array_push($query_cols, 'UNIX_TIMESTAMP(' . to_order_col('dust') . ') AS unix_mod_stamp'); array_push($group_cols, to_order_col('dust')); }
+if ($show_age) { array_push($query_cols, 'UNIX_TIMESTAMP(' . to_order_col('age') . ') AS unix_open_stamp'); array_push($group_cols, to_order_col('age')); }
+array_push($query_cols, 'type'); array_push($group_cols, 'type');
+array_push($query_cols, 'project'); array_push($group_cols, 'project');
+if ($show_description) { array_push($query_cols, to_order_col('description')); array_push($group_cols, to_order_col('description')); }
+if ($show_users) { array_push($query_cols, to_order_col('users')); array_push($group_cols, to_order_col('users')); }
+if ($show_installs) { array_push($query_cols, to_order_col('installs')); array_push($group_cols, to_order_col('installs')); }
+if ($show_owner) { array_push($query_cols, to_order_col('owner')); array_push($group_cols, to_order_col('owner')); }
+if ($show_reporter) { array_push($query_cols, to_order_col('reporter')); array_push($group_cols, to_order_col('reporter')); }
 
 $col_part = implode(',', $query_cols);
+$group_col_part = implode(',', $group_cols);
 $query = "SELECT $col_part "
         . "FROM $WNPP_TABLE " . (($show_users || $show_installs) ? "LEFT JOIN $POPCON_TABLE ON project = package " : ' ')
-        . "WHERE $condition GROUP BY project ORDER BY ${order_col} ${order_dir}";
+        . "WHERE $condition GROUP BY ${group_col_part} ORDER BY ${order_col} ${order_dir}";
 $result = mysql_query($query);
 // echo "[$query]<br>\n"; // XXX
 $count = $result ? mysql_num_rows($result) : 0;
