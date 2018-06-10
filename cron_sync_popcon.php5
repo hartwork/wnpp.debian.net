@@ -30,7 +30,7 @@ $MINIMUM_RUN_GAP = 60 * 60 * 12; // 12 hours
 $ENABLE_GAP_CHECK = TRUE;
 
 $KEEP_FILES = 4;
-$POPCON_DIR = "popcon";
+$POPCON_DIR = sys_get_temp_dir() . "/popcon";
 
 
 ob_implicit_flush(TRUE);
