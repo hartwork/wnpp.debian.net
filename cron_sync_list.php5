@@ -24,7 +24,7 @@
 include("config_inc.php5");
 include("cron_shared.php5");
 
-$LAST_RUN_FILENAME = "__last_sync_list_run";
+$LAST_RUN_FILENAME = sys_get_temp_dir() . "/__last_sync_list_run";
 $MINIMUM_RUN_GAP = 55;
 $ENABLE_GAP_CHECK = TRUE;
 

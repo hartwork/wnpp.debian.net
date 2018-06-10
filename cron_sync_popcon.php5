@@ -25,7 +25,7 @@ include("config_inc.php5");
 include("cron_shared.php5");
 
 
-$LAST_RUN_FILENAME = "__last_sync_popcon_run";
+$LAST_RUN_FILENAME = sys_get_temp_dir() . "/__last_sync_popcon_run";
 $MINIMUM_RUN_GAP = 60 * 60 * 12; // 12 hours
 $ENABLE_GAP_CHECK = TRUE;
 
