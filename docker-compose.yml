@@ -1,0 +1,36 @@
+# Copyright (C) 2018 Sebastian Pipping <sebastian@pipping.org>
+# Licensed under GNU Affero GPL v3 or later
+
+version: "3"
+
+services:
+  wnpp-debian-net:
+    depends_on:
+      - mysql
+    build: ./
+    ports:
+      - 127.0.0.1:51080:80
+    volumes:
+      - .:/var/www/localhost/htdocs/
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: database
+    volumes:
+      - ./tables/table_structures.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  cron_sync_list:
+    depends_on:
+      - wnpp-debian-net
+    image: inutano/wget
+    command: ["sh", "-c", "sleep 3 ; while :; do wget -O- http://wnpp-debian-net/cron_sync_list.php5 ; sleep 55 ; done"]
+
+  cron_sync_popcon:
+    depends_on:
+      - wnpp-debian-net
+    image: inutano/wget
+    command: ["sh", "-c", "sleep 2m ; while :; do wget -O- http://wnpp-debian-net/cron_sync_popcon.php5 ; sleep 12h ; done"]
