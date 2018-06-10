@@ -1,6 +1,6 @@
 <?php
 
-$SERVER    = 'localhost';
+$SERVER    = 'mysql';
 $DATABASE  = 'database';
 $USERNAME  = 'user';
 $PASSWORD  = 'password';

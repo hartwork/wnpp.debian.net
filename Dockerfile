@@ -27,6 +27,7 @@ COPY \
     images/ \
     \
     browserconfig.xml \
+    config_inc.php5 \
     favicon.ico \
     manifest.json \
     php.ini \
@@ -36,8 +37,6 @@ COPY \
     \
     /var/www/localhost/htdocs/
 RUN rm /var/www/localhost/htdocs/index.html
-COPY config_inc.php5.dist  /var/www/localhost/htdocs/config_inc.php5
-RUN sed 's,localhost,mysql,' -i /var/www/localhost/htdocs/config_inc.php5
 
 # Serve
 EXPOSE 80
