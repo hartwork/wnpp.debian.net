@@ -138,6 +138,11 @@ if (!check_run_allowed()) {
 // Connect to database
 echo "LOCAL CONNECT\n";
 $link = mysql_connect($SERVER, $USERNAME, $PASSWORD);
+if ($link === FALSE) {
+    echo "  ERROR\n";
+    exit(1);
+}
+echo "  SUCCESS\n";
 mysql_select_db($DATABASE);
 
 process('http://popcon.debian.org/source/by_inst.gz', 'source_by_inst_');
