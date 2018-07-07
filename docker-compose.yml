@@ -3,6 +3,10 @@
 
 version: "3"
 
+networks:
+  ssl-reverse-proxy:
+    external: yes
+
 services:
   wnpp-debian-net:
     depends_on:
@@ -10,6 +14,9 @@ services:
     build: ./
     ports:
       - 127.0.0.1:51080:80
+    networks:
+      - default
+      - ssl-reverse-proxy
     volumes:
       - .:/var/www/localhost/htdocs/
 
