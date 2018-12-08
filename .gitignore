@@ -3,3 +3,4 @@
 /popcon/*.gz
 /__last_sync_list_run
 /__last_sync_popcon_run
+/var-lib-mysql/

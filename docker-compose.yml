@@ -29,6 +29,7 @@ services:
       MYSQL_DATABASE: database
     volumes:
       - ./tables/table_structures.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./var-lib-mysql:/var/lib/mysql
 
   cron_sync_list:
     depends_on:
