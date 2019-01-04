@@ -23,7 +23,7 @@
 include("config_inc.php5");
 
 $TITLE = "Debian Packages that Need Lovin'";
-$MAX_PROJECT_LEN = 20;
+$MAX_PROJECT_LEN = 38;
 $MAX_DESCR_LEN = 60;
 
 
