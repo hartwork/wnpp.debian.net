@@ -704,11 +704,14 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "    <td align=\"center\" style=\"padding-bottom:10px\">\n";
 
-echo "Written by <a href=\"https://blog.hartwork.org/\">Sebastian Pipping</a>.";
-echo "&nbsp;&nbsp;";
-echo "<a href=\"https://github.com/hartwork/wnpp.debian.net\">Sources</a>";
+echo "Written by <a href=\"https://blog.hartwork.org/\">Sebastian Pipping</a>,";
 echo " licensed under";
-echo " <a href=\"https://www.fsf.org/licensing/licenses/agpl.html\">AGPL 3.0 or later.</a>";
+echo " <a href=\"https://www.fsf.org/licensing/licenses/agpl.html\">AGPL 3.0 or later</a>.";
+echo "&nbsp;&nbsp;";
+echo "Please star <a href=\"https://github.com/hartwork/wnpp.debian.net/\">the repository</a> on GitHub if you like this tool.";
+echo " Thanks!";
+echo "&nbsp;&nbsp;";
+echo "<iframe id=\"github-star-button\" src=\"https://ghbtns.com/github-btn.html?user=hartwork&amp;repo=wnpp.debian.net&amp;type=star&amp;count=true\" frameborder=\"0\" scrolling=\"0\" width=\"170px\" height=\"20px\" style=\"margin-bottom: -5px;\"/>";
 echo "\n";
 
 echo "    </td>\n";
