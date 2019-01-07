@@ -704,7 +704,12 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "    <td align=\"center\" style=\"padding-bottom:10px\">\n";
 
-echo "Written by <a href=\"https://blog.hartwork.org/\">Sebastian Pipping</a>.&nbsp;&nbsp;<a href=\"https://github.com/hartwork/wnpp.debian.net\">Sources</a> licensed under <a href=\"https://www.fsf.org/licensing/licenses/agpl.html\">AGPL 3.0 or later.</a>\n";
+echo "Written by <a href=\"https://blog.hartwork.org/\">Sebastian Pipping</a>.";
+echo "&nbsp;&nbsp;";
+echo "<a href=\"https://github.com/hartwork/wnpp.debian.net\">Sources</a>";
+echo " licensed under";
+echo " <a href=\"https://www.fsf.org/licensing/licenses/agpl.html\">AGPL 3.0 or later.</a>";
+echo "\n";
 
 echo "    </td>\n";
 echo "</tr>\n";
