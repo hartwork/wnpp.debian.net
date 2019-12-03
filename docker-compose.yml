@@ -19,6 +19,7 @@ services:
       - ssl-reverse-proxy
     volumes:
       - .:/var/www/localhost/htdocs/
+    restart: unless-stopped
 
   mysql:
     image: mysql:5.7
@@ -30,15 +31,18 @@ services:
     volumes:
       - ./tables/table_structures.sql:/docker-entrypoint-initdb.d/schema.sql
       - ./var-lib-mysql:/var/lib/mysql
+    restart: unless-stopped
 
   cron_sync_list:
     depends_on:
       - wnpp-debian-net
     image: inutano/wget
     command: ["sh", "-c", "sleep 3 ; while :; do wget -O- http://wnpp-debian-net/cron_sync_list.php5 ; sleep 55 ; done"]
+    restart: unless-stopped
 
   cron_sync_popcon:
     depends_on:
       - wnpp-debian-net
     image: inutano/wget
     command: ["sh", "-c", "sleep 2m ; while :; do wget -O- http://wnpp-debian-net/cron_sync_popcon.php5 ; sleep 12h ; done"]
+    restart: unless-stopped
