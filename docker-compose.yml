@@ -30,7 +30,7 @@ services:
       MYSQL_DATABASE: database
     volumes:
       - ./tables/table_structures.sql:/docker-entrypoint-initdb.d/schema.sql
-      - ./var-lib-mysql:/var/lib/mysql
+      - ~/wnpp-debian-net/var-lib-mysql:/var/lib/mysql
     restart: unless-stopped
 
   cron_sync_list:
