@@ -21,6 +21,23 @@ services:
       - .:/var/www/localhost/htdocs/
     restart: unless-stopped
 
+  django:
+    depends_on:
+      - mysql
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - 127.0.0.1:52080:52080
+    networks:
+      - default
+      - ssl-reverse-proxy
+    user: 1001:1001
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    tty: true
+
   mysql:
     image: mysql:5.7
     environment:
