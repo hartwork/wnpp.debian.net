@@ -1,7 +1,10 @@
 # Direct dependencies
 Django==3.1.6
+gunicorn==20.0.4
+gunicorn-color==0.1.0
 
 # Indirect dependencies
 asgiref==3.3.1
 pytz==2021.1
 sqlparse==0.4.1
+termcolor==1.1.0
