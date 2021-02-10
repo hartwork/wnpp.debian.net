@@ -27,6 +27,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+    environment:
+      WDN_ALLOWED_HOSTS: ${WDN_ALLOWED_HOSTS}
     ports:
       - 127.0.0.1:52080:52080
     networks:
