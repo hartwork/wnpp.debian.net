@@ -87,24 +87,8 @@ class Command(ReportingMixin, BaseCommand):
 
             remote_properties_of_issue = self._fetch_issues(issue_ids)
 
-            future_local_properties_of_issue: dict[int, dict[str, Any]] = {}
-            for issue_id, properties in remote_properties_of_issue.items():
-                self._notice(f'Processing upcoming issue {issue_id}...')
-                try:
-                    future_local_properties_of_issue[issue_id] = self._to_database_keys(
-                        issue_id, properties)
-                except _MalformedSubject as e:
-                    self._error(str(e))
-                    continue
-
-            # NOTE: PostgreSQL is not forgiving about absent foreign keys,
-            #       so we'll need to create any missing DebianPopcon instances
-            #       before created the the related DebianWnpp instances.
-            involved_package = {
-                properties['popcon_id']
-                for properties in future_local_properties_of_issue.values()
-            }
-            popcons_to_create = self._create_missing_pocons_for(involved_package)
+            future_local_properties_of_issue, popcons_to_create = self._analyze_remote_properties(
+                remote_properties_of_issue)
 
             for issue_id, properties in future_local_properties_of_issue.items():
                 issue = DebianWnpp(**properties)
@@ -126,6 +110,28 @@ class Command(ReportingMixin, BaseCommand):
                     self._success(f'Created {len(issues_to_create)} new issues')
             else:
                 self._notice('No new issues created.')
+
+    def _analyze_remote_properties(self, remote_properties_of_issue):
+        future_local_properties_of_issue: dict[int, dict[str, Any]] = {}
+        for issue_id, properties in remote_properties_of_issue.items():
+            self._notice(f'Processing upcoming issue {issue_id}...')
+            try:
+                future_local_properties_of_issue[issue_id] = self._to_database_keys(
+                    issue_id, properties)
+            except _MalformedSubject as e:
+                self._error(str(e))
+                continue
+
+        # NOTE: PostgreSQL is not forgiving about absent foreign keys,
+        #       so we'll need to create any missing DebianPopcon instances
+        #       before creating the related DebianWnpp instances.
+        involved_package = {
+            properties['popcon_id']
+            for properties in future_local_properties_of_issue.values()
+        }
+        popcons_to_create = self._create_missing_pocons_for(involved_package)
+
+        return future_local_properties_of_issue, popcons_to_create
 
     def _update_stale_existing_issues(self, ids_of_remote_open_issues):
         stale_issues_qs = DebianWnpp.objects.filter(ident__in=ids_of_remote_open_issues,
