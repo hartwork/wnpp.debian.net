@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'wnpp_debian_net.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': os.environ.get('WDN_MYSQL_HOST'),
+        'PORT': os.environ.get('WDN_MYSQL_PORT'),
+        'NAME': os.environ.get('WDN_MYSQL_NAME'),
+        'USER': os.environ.get('WDN_MYSQL_USER'),
+        'PASSWORD': os.environ.get('WDN_MYSQL_PASSWORD'),
     }
 }
 

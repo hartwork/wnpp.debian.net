@@ -29,6 +29,11 @@ services:
       dockerfile: docker/Dockerfile
     environment:
       WDN_ALLOWED_HOSTS: ${WDN_ALLOWED_HOSTS}
+      WDN_MYSQL_HOST: mysql
+      WDN_MYSQL_NAME: ${WDN_MYSQL_NAME:?}
+      WDN_MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
+      WDN_MYSQL_PORT: ${WDN_MYSQL_PORT:?}
+      WDN_MYSQL_USER: ${WDN_MYSQL_USER:?}
     ports:
       - 127.0.0.1:52080:52080
     networks:
