@@ -76,3 +76,13 @@ class DebianWnpp(models.Model):
     class Meta:
         managed = False
         db_table = 'debian_wnpp'
+
+    def age_days(self, until=None) -> int:
+        if until is None:
+            until = now()
+        return (until - self.open_stamp).days
+
+    def dust_days(self, until=None) -> int:
+        if until is None:
+            until = now()
+        return (until - self.mod_stamp).days
