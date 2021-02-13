@@ -5,8 +5,10 @@ from django.contrib import admin
 from django.urls import path
 
 from .views.front_page import FrontPageView
+from .views.rss_feed import WnppNewsFeedView
 
 urlpatterns = [
     path('', FrontPageView.as_view(), name='front_page'),
     path('admin/', admin.site.urls),
+    path('news.php5', WnppNewsFeedView(), name='news'),
 ]
