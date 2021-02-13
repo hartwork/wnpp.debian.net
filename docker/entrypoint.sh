@@ -4,7 +4,10 @@
 
 PS4='# '
 set -e
+set -u
 set -x
+
+wait-for-it --service "${WDN_MYSQL_HOST}:${WDN_MYSQL_PORT}"
 
 if [[ $# -gt 0 ]]; then
     if [[ $1 = test ]]; then

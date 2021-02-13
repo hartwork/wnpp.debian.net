@@ -5,11 +5,13 @@ gunicorn-color==0.1.0
 mysqlclient==2.0.3
 PySimpleSOAP==1.16.2
 requests==2.25.1
+wait-for-it==2.2.0
 
 # Indirect dependencies
 asgiref==3.3.1
 certifi==2020.12.5
 chardet==4.0.0
+click==7.1.2
 idna==2.10
 pytz==2021.1
 sqlparse==0.4.1
