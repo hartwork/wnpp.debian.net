@@ -70,6 +70,5 @@ services:
       MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
       MYSQL_DATABASE: ${WDN_MYSQL_NAME:?}
     volumes:
-      - ./tables/table_structures.sql:/docker-entrypoint-initdb.d/schema.sql
       - ~/wnpp-debian-net/var-lib-mysql:/var/lib/mysql
     restart: unless-stopped

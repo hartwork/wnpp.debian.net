@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
-from ..models import DebianLogIndex, EventType, IssueType
+from ..models import DebianLogIndex, EventKind, IssueKind
 from ..templatetags.debian_urls import wnpp_issue_url
 
 _MAX_ENTRIES = 30
@@ -19,7 +19,7 @@ class WnppNewsFeedView(Feed):
 
     def __call__(self, request, *args, **kwargs):
         self.__request: HttpRequest = request
-        self.__title_format_type = self.__request.GET.get('title_format', '0')
+        self.__title_format_kind = self.__request.GET.get('title_format', '0')
         self.__data_set = self.__request.GET.get('data', 'all')
 
         self.feed_url = self.__request.build_absolute_uri(self.__request.get_full_path())
@@ -39,24 +39,24 @@ class WnppNewsFeedView(Feed):
 
     def _get_querset_filter(self):
         _FILTER_DATASET_ALL = Q()
-        _FILTER_GOOD_NEWS = (Q(event=EventType.CLOSED)
-                             | Q(event__in=(EventType.MODIFIED.value, EventType.OPENED.value),
-                                 type__in=(IssueType.ITA.value, IssueType.ITP.value)))
+        _FILTER_GOOD_NEWS = (Q(event=EventKind.CLOSED)
+                             | Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
+                                 kind__in=(IssueKind.ITA.value, IssueKind.ITP.value)))
         _QA_FILTER_FOR_DATASET = {
             'all': _FILTER_DATASET_ALL,
             'bad_news': ~_FILTER_GOOD_NEWS,
             'good_news': _FILTER_GOOD_NEWS,
-            'help_existing': Q(event__in=(EventType.MODIFIED.value, EventType.OPENED.value),
-                               type__in=(
-                               IssueType.O.value, IssueType.RFA.value, IssueType.RFH.value)),
-            'new_packages': Q(event=EventType.CLOSED, type=IssueType.ITP),
+            'help_existing': Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
+                               kind__in=(
+                                   IssueKind.O.value, IssueKind.RFA.value, IssueKind.RFH.value)),
+            'new_packages': Q(event=EventKind.CLOSED, kind=IssueKind.ITP),
         }
         return _QA_FILTER_FOR_DATASET.get(self.__data_set, _FILTER_DATASET_ALL)
 
     def items(self):
         return (DebianLogIndex.objects
                     .filter(self._get_querset_filter())
-                    .select_related('type_change')
+                    .select_related('kind_change')
                     .order_by('-event_stamp')[:_MAX_ENTRIES])
 
     def item_author_email(self, item: DebianLogIndex):
@@ -80,20 +80,20 @@ class WnppNewsFeedView(Feed):
 
     def item_title(self, item: DebianLogIndex):
         event_display = {
-            EventType.MODIFIED.value: _('Modified'),
-            EventType.OPENED.value: _('Opened'),
-            EventType.CLOSED.value: _('Closed'),
+            EventKind.MODIFIED.value: _('Modified'),
+            EventKind.OPENED.value: _('Opened'),
+            EventKind.CLOSED.value: _('Closed'),
         }[item.event]
 
-        if item.event == EventType.MODIFIED.value and hasattr(item, 'type_change'):
-            type_display = f'{item.type_change.before_type} -> {item.type_change.after_type}'
+        if item.event == EventKind.MODIFIED.value and hasattr(item, 'kind_change'):
+            kind_display = f'{item.kind_change.old_kind} -> {item.kind_change.new_kind}'
         else:
-            type_display = item.type
+            kind_display = item.kind
 
-        if self.__title_format_type != '1':
-            return f'{event_display} [{type_display}] {item.project} -- {item.description}'
+        if self.__title_format_kind != '1':
+            return f'{event_display} [{kind_display}] {item.project} -- {item.description}'
         else:  # i.e. explicit format '0' or anything invalid
-            if item.event == EventType.CLOSED.value:
+            if item.event == EventKind.CLOSED.value:
                 return f'CLOSED : {item.project} -- {item.description}'
             else:
-                return f'#{item.ident} {type_display}: {item.project} -- {item.description}'
+                return f'#{item.ident} {kind_display}: {item.project} -- {item.description}'

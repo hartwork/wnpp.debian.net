@@ -242,32 +242,32 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
 </tr>
 {% for issue in page_obj.object_list %}
 <tr>
-    <td class="{{ issue.type }}" align="right">&nbsp;{{ page_obj.start_index|add:forloop.counter0 }}&nbsp;</td>
+    <td class="{{ issue.kind }}" align="right">&nbsp;{{ page_obj.start_index|add:forloop.counter0 }}&nbsp;</td>
     {% if show_dust %}
-    <td class="{{ issue.type }}" align="right">&nbsp;{{ issue.dust_days }}&nbsp;</td>
+    <td class="{{ issue.kind }}" align="right">&nbsp;{{ issue.dust_days }}&nbsp;</td>
     {% endif %}
     {% if show_age %}
-    <td class="{{ issue.type }}" align="right">&nbsp;{{ issue.age_days }}&nbsp;</td>
+    <td class="{{ issue.kind }}" align="right">&nbsp;{{ issue.age_days }}&nbsp;</td>
     {% endif %}
     {% if show_type %}
-    <td class="{{ issue.type }}"><nobr>{{ issue.type }}</nobr></td>
+    <td class="{{ issue.kind }}"><nobr>{{ issue.kind }}</nobr></td>
     {% endif %}
-    <td class="{{ issue.type }}"><nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.popcon_id|truncatechars:38 }}</a></nobr></td>
-    <td class="{{ issue.type }}" align="right">&nbsp;<nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.ident }}</a></nobr>&nbsp;</td>
+    <td class="{{ issue.kind }}"><nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.popcon_id|truncatechars:38 }}</a></nobr></td>
+    <td class="{{ issue.kind }}" align="right">&nbsp;<nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.ident }}</a></nobr>&nbsp;</td>
     {% if show_description %}
-    <td class="{{ issue.type }}"><nobr>{{ issue.description|truncatechars:60 }}</nobr></td>
+    <td class="{{ issue.kind }}"><nobr>{{ issue.description|truncatechars:60 }}</nobr></td>
     {% endif %}
     {% if show_users %}
-    <td class="{{ issue.type }}" align="right"><nobr>&nbsp;{{ issue.popcon.vote|default:"0" }}&nbsp;</nobr></td>
+    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.vote|default:"0" }}&nbsp;</nobr></td>
     {% endif %}
     {% if show_installs %}
-    <td class="{{ issue.type }}" align="right"><nobr>&nbsp;{{ issue.popcon.inst|default:"0" }}&nbsp;</nobr></td>
+    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.inst|default:"0" }}&nbsp;</nobr></td>
     {% endif %}
     {% if show_owner %}
-    <td class="{{ issue.type }}"><nobr>{% contact_link_for issue.charge_person truncatechars=30 %}</nobr></td>
+    <td class="{{ issue.kind }}"><nobr>{% contact_link_for issue.charge_person truncatechars=30 %}</nobr></td>
     {% endif %}
     {% if show_reporter %}
-    <td class="{{ issue.type }}"><nobr>{% contact_link_for issue.open_person truncatechars=30 %}</nobr></td>
+    <td class="{{ issue.kind }}"><nobr>{% contact_link_for issue.open_person truncatechars=30 %}</nobr></td>
     {% endif %}
 </tr>
 {% endfor %}

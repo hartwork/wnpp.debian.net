@@ -14,7 +14,7 @@ from django.utils.timezone import now
 from ._common import ReportingMixin
 from ...debbugs import DebbugsWnppClient, IssueProperty
 
-from ...models import DebianWnpp, DebianLogIndex, DebianLogMods, EventType
+from ...models import DebianWnpp, DebianLogIndex, DebianLogMods, EventKind
 
 _BATCH_SIZE = 100
 _MAXIMUM_STALE_DELTA = datetime.timedelta(hours=2)
@@ -33,7 +33,7 @@ class Command(ReportingMixin, BaseCommand):
 
         for issue in DebianWnpp.objects.exclude(ident__in=ids_of_open_wnpp_issues).iterator():
             self._notice(f'Detected that issue #{issue.ident} has been as closed, remotely')
-            log_entries_to_create.append(self._create_log_entry_from(issue, EventType.CLOSED, now()))
+            log_entries_to_create.append(self._create_log_entry_from(issue, EventKind.CLOSED, now()))
 
         if log_entries_to_create:
             with transaction.atomic():
@@ -121,7 +121,7 @@ class Command(ReportingMixin, BaseCommand):
                     self._error(str(e))
                     continue
                 issues_to_create.append(issue)
-                log_entries_to_create.append(self._create_log_entry_from(issue, EventType.OPENED, issue.open_stamp))
+                log_entries_to_create.append(self._create_log_entry_from(issue, EventKind.OPENED, issue.open_stamp))
 
             if issues_to_create:
                 with transaction.atomic():
@@ -154,7 +154,7 @@ class Command(ReportingMixin, BaseCommand):
 
             issue_ids = [issue.ident for issue in issues_to_update]
             issue_fields_to_bulk_update: Set[str] = set()  # will be grown as needed
-            type_change_log_details: List[Tuple[int, str, str]] = []
+            kind_change_log_details: List[Tuple[int, str, str]] = []
 
             # Fetch remote data
             remote_properties_of_issue = self._fetch_issues(issue_ids)
@@ -170,8 +170,8 @@ class Command(ReportingMixin, BaseCommand):
                     self.stderr.write(self.style.ERROR(str(e)))
                     continue
 
-                if database_field_map['type'] != issue.type:
-                    type_change_log_details.append((i, issue.type, database_field_map['type']))
+                if database_field_map['kind'] != issue.kind:
+                    kind_change_log_details.append((i, issue.kind, database_field_map['kind']))
 
                 fields_that_changed = self._detect_and_report_diff(issue, database_field_map)
 
@@ -179,26 +179,26 @@ class Command(ReportingMixin, BaseCommand):
                     issue_fields_to_bulk_update |= fields_that_changed
                     for field_name in fields_that_changed:
                         setattr(issue, field_name, database_field_map[field_name])
-                        log_entries_to_create.append(self._create_log_entry_from(issue, EventType.MODIFIED, issue.mod_stamp))
+                        log_entries_to_create.append(self._create_log_entry_from(issue, EventKind.MODIFIED, issue.mod_stamp))
 
             with transaction.atomic():
                 # Persist log entries
                 DebianLogIndex.objects.bulk_create(log_entries_to_create)
                 self._success(f'Logged upcoming updates to {len(log_entries_to_create)} issue(s)')
 
-                # Persist type change extra log entries
-                if type_change_log_details:
-                    type_change_log_entries_to_create: List[DebianLogMods] = []
-                    for issue_index, before_type, after_type in type_change_log_details:
-                        type_change_log_entries_to_create.append(DebianLogMods(
+                # Persist kind change extra log entries
+                if kind_change_log_details:
+                    kind_change_log_entries_to_create: List[DebianLogMods] = []
+                    for issue_index, old_kind, new_kind in kind_change_log_details:
+                        kind_change_log_entries_to_create.append(DebianLogMods(
                             log=issues_to_update[issue_index],
-                            before_type=before_type,
-                            after_type=after_type,
+                            old_kind=old_kind,
+                            new_kind=new_kind,
                         ))
-                    DebianLogMods.objects.bulk_create(type_change_log_entries_to_create)
-                    self._success(f'Logged upcoming changes in type of {len(type_change_log_details)} issue(s)')
+                    DebianLogMods.objects.bulk_create(kind_change_log_entries_to_create)
+                    self._success(f'Logged upcoming changes in kind of {len(kind_change_log_details)} issue(s)')
                 else:
-                    self._notice('No changes in type recognized.')
+                    self._notice('No changes in kind recognized.')
 
                 # Persist actual issues
                 DebianWnpp.objects.bulk_update(issues_to_update, fields=issue_fields_to_bulk_update)
@@ -206,11 +206,11 @@ class Command(ReportingMixin, BaseCommand):
 
     @staticmethod
     def _parse_wnpp_issue_subject(subject) -> Tuple[str, str, str]:
-        match = re.match('^(?:[Ss]ubject: )?(?P<type>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$', subject)
+        match = re.match('^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$', subject)
         if match is None:
             raise _MalformedSubject(f'Malformed subject {subject!r}')
 
-        return tuple(match.group(g) for g in ('type', 'package', 'description'))
+        return tuple(match.group(g) for g in ('kind', 'package', 'description'))
 
     @staticmethod
     def _from_epoch_seconds(epoch_seconds) -> datetime.datetime:
@@ -223,14 +223,14 @@ class Command(ReportingMixin, BaseCommand):
         _MAX_DESCRIPTION_LENGTH = DebianWnpp._meta.get_field('description').max_length
 
         issue_subject = issue_properties.get(IssueProperty.SUBJECT.value, '')
-        issue_type_, package_name, package_description = cls._parse_wnpp_issue_subject(issue_subject)
+        issue_kind, package_name, package_description = cls._parse_wnpp_issue_subject(issue_subject)
 
         return {
             'ident': issue_id,
             'open_person': issue_properties.get(IssueProperty.ORIGINATOR.value),
             'open_stamp': cls._from_epoch_seconds(int(issue_properties[IssueProperty.DATE.value])),
             'mod_stamp': cls._from_epoch_seconds(int(issue_properties[IssueProperty.LAST_MODIFIED.value])),
-            'type': issue_type_,
+            'kind': issue_kind,
             'popcon_id': package_name,
             'description': Truncator(package_description).chars(_MAX_DESCRIPTION_LENGTH),
             'charge_person': issue_properties.get(IssueProperty.OWNER.value),
@@ -258,10 +258,10 @@ class Command(ReportingMixin, BaseCommand):
         return fields_that_changed
 
     @classmethod
-    def _create_log_entry_from(cls, issue: DebianWnpp, event: EventType, when: datetime.datetime) -> DebianLogIndex:
+    def _create_log_entry_from(cls, issue: DebianWnpp, event: EventKind, when: datetime.datetime) -> DebianLogIndex:
         return DebianLogIndex(
             ident=issue.ident,
-            type=issue.type,
+            kind=issue.kind,
             project=issue.popcon_id,
             description=issue.description,
             log_stamp=now(),
