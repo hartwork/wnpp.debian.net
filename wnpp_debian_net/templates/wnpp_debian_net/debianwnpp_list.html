@@ -2,6 +2,7 @@
 Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 Licensed under GNU Affero GPL v3 or later
 {% endcomment %}
+{% load static %}
 {% load debian_urls %}
 {% load sorting_urls %}
 {% load contact_links %}
@@ -85,7 +86,7 @@ Licensed under GNU Affero GPL v3 or later
     <td align="left">
         <table cellspacing="0" cellpadding="0">
         <tr>
-            <td valign="center" style="padding:1 2 1 4;"><img src="images/feed-icon.png" width="20" height="20"></td>
+            <td valign="center" style="padding:1 2 1 4;"><img src="{% static 'images/feed-icon.png' %}" width="20" height="20"></td>
             <td valign="center" style="margin:0;padding:0;">
                 <form action="news.php5" method="GET" style="margin:0;padding:2;">
                 <select name="data" size="1" style="background-color:#C0C0C0;">
@@ -106,7 +107,7 @@ Licensed under GNU Affero GPL v3 or later
     <td align="right">
         <table cellspacing="0" cellpadding="0">
         <tr>
-            <td valign="center" style="padding:1 2 1 2;"><img src="images/valid-rss-20.png" width="57" height="20"></td>
+            <td valign="center" style="padding:1 2 1 2;"><img src="{% static 'images/valid-rss-20.png' %}" width="57" height="20"></td>
             <td valign="center" style="margin:0;padding:0;">
                 <form action="https://validator.w3.org/feed/check.cgi" method="GET" style="margin:0;padding:2;">
                 <input type="hidden" name="url" value="https://wnpp.debian.net/news.php5?data=all&amp;amp;title_format=0">
