@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -90,6 +91,14 @@ DATABASES = {
         'PASSWORD': os.environ.get('WDN_MYSQL_PASSWORD'),
     }
 }
+
+if 'test' in sys.argv:
+    # NOTE: The assert makes sure we get rid of this workaround once we migrate to PostgreSQL
+    assert DATABASES['default']['ENGINE'] == 'django.db.backends.mysql'
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 
 
 # Password validation
