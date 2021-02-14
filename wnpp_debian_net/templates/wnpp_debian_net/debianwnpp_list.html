@@ -41,6 +41,42 @@ Licensed under GNU Affero GPL v3 or later
     td.RFA { background-color: #FFFFCC; /* orange */ }
     td.RFH { background-color: #FFCCFF; /* blue */ }
     td.RFP { background-color: #CCFFFF; /* green */ }
+
+    /* Pagination */
+    nav p {
+        display: inline-block;
+    }
+    .pagination {
+        padding: 4px 16px 4px 16px;
+        display: inline-block;
+        border:1px solid #C0C0C0;
+        margin: 10px;
+    }
+    .pagination .page-item {
+        display: inline-block;
+    }
+    .pagination a {
+        color: #000000;
+        text-decoration: none;
+        padding: 10px;
+    }
+    .pagination .disabled a {
+        color: #C0C0C0;
+        cursor: not-allowed;
+    }
+    .pagination li.active {
+        font-weight: bold;
+    }
+    .pagination .active a {
+        cursor: not-allowed;
+    }
+    tr:nth-child(1) nav {
+        margin-bottom: -5px;
+    }
+    tr:nth-child(3) nav {
+        margin-top: -22px;
+        margin-bottom: 10px;
+    }
 </style>
 </head>
 <body style="margin:0;">
@@ -168,6 +204,11 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
 <table width="100%">
 <tr>
     <td align="center">
+        {% include "pagination.html" with page_obj=page_obj page_items=page_items %}
+    </td>
+</tr>
+<tr>
+    <td align="center">
 <table cellpadding="4" cellspacing="1" class="data_table">
 <tr>
     <th align="right">&nbsp;#&nbsp;</th>
@@ -198,9 +239,9 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
     <th><a href="{% self_url_with_sorting_for 'reporter' %}">Reporter</a></th>
     {% endif %}
 </tr>
-{% for issue in object_list %}
+{% for issue in page_obj.object_list %}
 <tr>
-    <td class="{{ issue.type }}" align="right">&nbsp;{{ forloop.counter }}&nbsp;</td>
+    <td class="{{ issue.type }}" align="right">&nbsp;{{ page_obj.start_index|add:forloop.counter0 }}&nbsp;</td>
     {% if show_dust %}
     <td class="{{ issue.type }}" align="right">&nbsp;{{ issue.dust_days }}&nbsp;</td>
     {% endif %}
@@ -230,6 +271,11 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
 </tr>
 {% endfor %}
 </table><br>
+    </td>
+</tr>
+<tr>
+    <td align="center">
+        {% include "pagination.html" with page_obj=page_obj page_items=page_items %}
     </td>
 </tr>
 <tr>

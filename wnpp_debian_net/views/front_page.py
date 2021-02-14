@@ -3,10 +3,12 @@
 
 from typing import Union, Tuple, Dict, Any
 
+from django.core.paginator import Paginator, Page
 from django.db.models import Q, QuerySet, F
 from django.views.generic import ListView
 
 from ..models import DebianWnpp
+from ..pagination import iterate_page_items
 from ..templatetags.sorting_urls import parse_sort_param
 
 _QUERY_FIELD_FOR_COLUMN_NAME = {
@@ -54,6 +56,7 @@ assert all((type_ in _ISSUE_TYPES) for type_ in _DEFAULT_ISSUE_TYPES)
 
 class FrontPageView(ListView):
     model = DebianWnpp
+    paginate_by = 50
 
     #override
     def setup(self, request, *args, **kwargs):
@@ -123,5 +126,10 @@ class FrontPageView(ListView):
 
         for column_name in _COLUMN_NAMES:
             context[f'show_{column_name}'] = column_name in self._col
+
+        paginator: Paginator = context['paginator']
+        page_obj: Page = context['page_obj']
+        context['page_items'] = list(iterate_page_items(total_page_count=paginator.num_pages,
+                                                        current_page_number=page_obj.number))
 
         return context
