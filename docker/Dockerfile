@@ -31,5 +31,14 @@ COPY docker/entrypoint.sh ./
 ENTRYPOINT ["./entrypoint.sh"]
 CMD []
 
-COPY --chown=wnpp-debian-net:wnpp-debian-net manage.py         ./manage.py
-COPY --chown=wnpp-debian-net:wnpp-debian-net wnpp_debian_net/  ./wnpp_debian_net/
+COPY --chown=wnpp-debian-net:wnpp-debian-net crontab manage.py  ./
+COPY --chown=wnpp-debian-net:wnpp-debian-net wnpp_debian_net/   ./wnpp_debian_net/
+
+USER root
+RUN apk upgrade --update
+# Enable testing repository for nothing but package "supercronic".
+# It's done down here so that we get as little as possible from testing.
+RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories \
+        && \
+    apk add --update supercronic
+USER wnpp-debian-net
