@@ -33,7 +33,6 @@ class DebianLogIndex(models.Model):
     event_stamp = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'debian_log_index'
 
 
@@ -44,7 +43,6 @@ class DebianLogMods(models.Model):
     new_kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='after_type')
 
     class Meta:
-        managed = False
         db_table = 'debian_log_mods'
 
 
@@ -57,7 +55,6 @@ class DebianPopcon(models.Model):
     nofiles = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'debian_popcon'
 
 
@@ -74,7 +71,6 @@ class DebianWnpp(models.Model):
     cron_stamp = models.DateTimeField()
 
     class Meta:
-        managed = False
         db_table = 'debian_wnpp'
 
     def age_days(self, until=None) -> int:
