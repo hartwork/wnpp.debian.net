@@ -1,0 +1,48 @@
+# Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
+# Licensed under GNU Affero GPL v3 or later
+
+name: Build and test using Docker
+
+on:
+- pull_request
+- push
+
+jobs:
+  build_and_test:
+    name: Build and test using Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |-
+          pip install \
+            --disable-pip-version-check \
+            --user \
+            --no-warn-script-location \
+            docker-compose
+          echo "PATH=${HOME}/.local/bin:${PATH}" >> "${GITHUB_ENV}"
+
+      - name: Configure Docker environment
+        run: |-
+          docker network create --internal ssl-reverse-proxy
+          tee .env <<-EOF
+            WDN_MYSQL_PORT=3306
+            WDN_MYSQL_NAME=wdn111
+            WDN_MYSQL_USER=wdn222
+            WDN_MYSQL_PASSWORD=wdn333
+            WDN_SECRET_KEY=wdn444
+          EOF
+
+      - name: Build Docker image
+        run: |-
+          docker-compose build
+
+      - name: Run tests using Docker
+        run: |-
+          docker-compose run wnpp-debian-net test -v2
