@@ -35,6 +35,7 @@ services:
       WDN_MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
       WDN_MYSQL_PORT: ${WDN_MYSQL_PORT:?}
       WDN_MYSQL_USER: ${WDN_MYSQL_USER:?}
+      WDN_SECRET_KEY: ${WDN_SECRET_KEY:?}
     ports:
       - 127.0.0.1:52080:52080
     networks:
