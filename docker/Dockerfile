@@ -7,6 +7,7 @@ RUN apk add --update \
         bash \
         diffutils \
         gcc \
+        mariadb-client \
         mariadb-connector-c-dev \
         musl-dev \
         shadow
