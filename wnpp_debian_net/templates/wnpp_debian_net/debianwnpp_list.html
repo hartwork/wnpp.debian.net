@@ -1,0 +1,297 @@
+{% comment %}
+Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
+Licensed under GNU Affero GPL v3 or later
+{% endcomment %}
+{% load static %}
+{% load debian_urls %}
+{% load sorting_urls %}
+{% load contact_links %}
+<html>
+<!--
+Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
+Licensed under GNU Affero GPL v3 or later
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>Debian Packages that Need Lovin'</title>
+<link rel="apple-touch-icon" sizes="57x57" href="{% url 'favicon' path='apple-touch-icon-57x57.png' %}/">
+<link rel="apple-touch-icon" sizes="60x60" href="{% url 'favicon' path='apple-touch-icon-60x60.png' %}">
+<link rel="apple-touch-icon" sizes="72x72" href="{% url 'favicon' path='apple-touch-icon-72x72.png' %}">
+<link rel="apple-touch-icon" sizes="76x76" href="{% url 'favicon' path='apple-touch-icon-76x76.png' %}">
+<link rel="apple-touch-icon" sizes="114x114" href="{% url 'favicon' path='apple-touch-icon-114x114.png' %}">
+<link rel="apple-touch-icon" sizes="120x120" href="{% url 'favicon' path='apple-touch-icon-120x120.png' %}">
+<link rel="icon" type="image/png" href="{% url 'favicon' path='favicon-32x32.png' %}" sizes="32x32">
+<link rel="icon" type="image/png" href="{% url 'favicon' path='favicon-96x96.png' %}" sizes="96x96">
+<link rel="icon" type="image/png" href="{% url 'favicon' path='favicon-16x16.png' %}" sizes="16x16">
+<link rel="manifest" href="{% url 'favicon' path='manifest.json' %}">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+<style>
+    * { font-family: 'Bitstream Vera Sans', 'Verdana', Sans-Serif; }
+    table.data_table { border:1px solid #C0C0C0; background-color:#C0C0C0; }
+    table.form_table { border:2px solid #C0C0C0; background-color:#F8F8F8; }
+    th { background-color:#F8F8F8; }
+    td, input, select, body { font-size: 10.5pt; }
+    td.ITA { background-color: #FFFFFF; }
+    td.ITP { background-color: #FFFFFF; }
+    {% comment %}
+    Colors selected with help from the Color schemes generator 2
+    http://wellstyled.com/tools/colorscheme2/index-en.html
+    {% endcomment %}
+    td.O { background-color: #FFCCCC; /* red */ }
+    td.RFA { background-color: #FFFFCC; /* orange */ }
+    td.RFH { background-color: #FFCCFF; /* blue */ }
+    td.RFP { background-color: #CCFFFF; /* green */ }
+
+    /* Pagination */
+    nav p {
+        display: inline-block;
+    }
+    .pagination {
+        padding: 4px 16px 4px 16px;
+        display: inline-block;
+        border:1px solid #C0C0C0;
+        margin: 10px;
+    }
+    .pagination .page-item {
+        display: inline-block;
+    }
+    .pagination a {
+        color: #000000;
+        text-decoration: none;
+        padding: 10px;
+    }
+    .pagination .disabled a {
+        color: #C0C0C0;
+        cursor: not-allowed;
+    }
+    .pagination li.active {
+        font-weight: bold;
+    }
+    .pagination .active a {
+        cursor: not-allowed;
+    }
+    tr:nth-child(1) nav {
+        margin-bottom: -5px;
+    }
+    tr:nth-child(3) nav {
+        margin-top: -22px;
+        margin-bottom: 10px;
+    }
+</style>
+</head>
+<body style="margin:0;">
+<table width="100%" bgcolor="#C0C0C0" cellspacing="0" cellpadding="0">
+<tr>
+    <td align="left">
+        <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="center" style="padding:1 2 1 4;"><img src="{% static 'images/feed-icon.png' %}" width="20" height="20"></td>
+            <td valign="center" style="margin:0;padding:0;">
+                <form action="news.php5" method="GET" style="margin:0;padding:2;">
+                <select name="data" size="1" style="background-color:#C0C0C0;">
+                    <option value="all">All Changes</option>
+                    <option value="good_news">Good News</option>
+                    <option value="bad_news">Bad News</option>
+                    <option value="help_existing" selected>Help Existing Packages</option>
+                    <option value="new_packages">New Packages</option>
+                </select> <select name="title_format" size="1" style="background-color:#C0C0C0;">
+                    <option value="0" selected>Default Title Format (0)</option>
+                    <option value="1">Alternative Title Format (1)</option>
+                </select> <input type="submit" value="Feed">
+                </form>
+            </td>
+        </tr>
+        </table>
+    </td>
+    <td align="right">
+        <table cellspacing="0" cellpadding="0">
+        <tr>
+            <td valign="center" style="padding:1 2 1 2;"><img src="{% static 'images/valid-rss-20.png' %}" width="57" height="20"></td>
+            <td valign="center" style="margin:0;padding:0;">
+                <form action="https://validator.w3.org/feed/check.cgi" method="GET" style="margin:0;padding:2;">
+                <input type="hidden" name="url" value="https://wnpp.debian.net/news.php5?data=all&amp;amp;title_format=0">
+                <input type="submit" value="Validate">
+                </form>
+            </td>
+        </tr>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td bgcolor="#000000" colspan="2" style="font-size:1px">&nbsp;</td>
+</tr>
+</table>
+<br>
+<table width="100%">
+<tr>
+    <td align="center">
+        <h1>Debian Packages that Need Lovin'</h1>
+        <form action="" method="get">
+        <table cellspacing="1" class="form_table">
+        <tr>
+            <td>
+                <table>
+                <tr>
+                    <td valign="top">
+                        <select multiple size="8" name="type[]">
+                        <option {% if show_ita %}selected{% endif %} value="ITA">ITA&nbsp;</option>
+                        <option {% if show_itp %}selected{% endif %} value="ITP">ITP&nbsp;</option>
+                        <option {% if show_o %}selected{% endif %} value="O">O&nbsp;</option>
+                        <option {% if show_rfa %}selected{% endif %} value="RFA">RFA&nbsp;</option>
+                        <option {% if show_rfh %}selected{% endif %} value="RFH">RFH&nbsp;</option>
+                        <option {% if show_rfp %}selected{% endif %} value="RFP">RFP&nbsp;</option>
+                        </select>
+                    </td>
+                    <td valign="top">
+                        <table height="100%">
+                        <tr>
+                            <td>
+                                <table>
+                                <tr>
+                                    <td>Project:</td>
+                                    <td><input type="text" size="24" name="project" value="{{ project_filter }}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Description:</td>
+                                    <td><input type="text" size="24" name="description" value="{{ description_filter }}"></td>
+                                </tr>
+                                <tr>
+                                    <td>Owner:</td>
+                                    <td><input type="checkbox" name="owner[]" value="yes" {% if with_owner %}checked{% endif %}>With&nbsp;&nbsp;<input type="checkbox" name="owner[]" value="no" {% if without_owner %}checked{% endif %}>Without</td>
+                                </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="bottom">
+                                <table width="100%">
+                                <tr>
+                                    {% comment %}
+                                    <td align="left"><a href="cron_sync_list.php5" target="_blank">Sync bugs</a> <a href="cron_sync_popcon.php5" target="_blank">Sync popcon</a></td>
+                                    {% endcomment %}
+                                    <td align="right"><input type="submit" value="Query"></td>
+                                </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        </table>
+                    </td>
+                    <td valign="top">
+                        <select multiple size="8" name="col[]">
+                        <option {% if show_dust %}selected{% endif %} value="dust">Dust</option>
+                        <option {% if show_age %}selected{% endif %} value="age">Age</option>
+                        <option {% if show_type %}selected{% endif %} value="type">Type</option>
+                        <option {% if show_description %}selected{% endif %} value="description">Description</option>
+                        <option {% if show_users %}selected{% endif %} value="users">Users</option>
+                        <option {% if show_installs %}selected{% endif %} value="installs">Installs</option>
+                        <option {% if show_owner %}selected{% endif %} value="owner">Owner</option>
+                        <option {% if show_reporter %}selected{% endif %} value="reporter">Reporter</option>
+                        </select>
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
+        </table>
+        <input type="hidden" name="sort" value="{{ sort }}">
+        </form>
+
+ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rphaned</i> ..... RFA/RFH/RFP = <i>Request for <u>a</u>doption/<u>h</u>elp/<u>p</u>ackaging</i><br>
+<br>
+    </td>
+</tr>
+</table>
+<table width="100%">
+<tr>
+    <td align="center">
+        {% include "pagination.html" with page_obj=page_obj page_items=page_items %}
+    </td>
+</tr>
+<tr>
+    <td align="center">
+<table cellpadding="4" cellspacing="1" class="data_table">
+<tr>
+    <th align="right">&nbsp;#&nbsp;</th>
+    {% if show_dust %}
+    <th>&nbsp;<a href="{% self_url_with_sorting_for 'dust' %}" title="Number of days without changes">Dust</a>&nbsp;</th>
+    {% endif %}
+    {% if show_age %}
+    <th>&nbsp;<a href="{% self_url_with_sorting_for 'age' %}" title="Number of days since this bug's creation">Age</a>&nbsp;</th>
+    {% endif %}
+    {% if show_type %}
+    <th><a href="{% self_url_with_sorting_for 'type' %}">Type</a></th>
+    {% endif %}
+    <th><a href="{% self_url_with_sorting_for 'project' %}">Project</a></th>
+    <th align="right">&nbsp;##&nbsp;</th>
+    {% if show_description %}
+    <th>Description</th>
+    {% endif %}
+    {% if show_users %}
+    <th>&nbsp;<a href="{% self_url_with_sorting_for 'users' %}" title="Minimum number of people using this package on a regular basis">Users</a>&nbsp;</th>
+    {% endif %}
+    {% if show_installs %}
+    <th>&nbsp;<a href="{% self_url_with_sorting_for 'installs' %}" title="Minimum number of people having this package installed">Installs</a>&nbsp;</th>
+    {% endif %}
+    {% if show_owner %}
+    <th><a href="{% self_url_with_sorting_for 'owner' %}">Owner</a></th>
+    {% endif %}
+    {% if show_reporter %}
+    <th><a href="{% self_url_with_sorting_for 'reporter' %}">Reporter</a></th>
+    {% endif %}
+</tr>
+{% for issue in page_obj.object_list %}
+<tr>
+    <td class="{{ issue.type }}" align="right">&nbsp;{{ page_obj.start_index|add:forloop.counter0 }}&nbsp;</td>
+    {% if show_dust %}
+    <td class="{{ issue.type }}" align="right">&nbsp;{{ issue.dust_days }}&nbsp;</td>
+    {% endif %}
+    {% if show_age %}
+    <td class="{{ issue.type }}" align="right">&nbsp;{{ issue.age_days }}&nbsp;</td>
+    {% endif %}
+    {% if show_type %}
+    <td class="{{ issue.type }}"><nobr>{{ issue.type }}</nobr></td>
+    {% endif %}
+    <td class="{{ issue.type }}"><nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.popcon_id|truncatechars:38 }}</a></nobr></td>
+    <td class="{{ issue.type }}" align="right">&nbsp;<nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.ident }}</a></nobr>&nbsp;</td>
+    {% if show_description %}
+    <td class="{{ issue.type }}"><nobr>{{ issue.description|truncatechars:60 }}</nobr></td>
+    {% endif %}
+    {% if show_users %}
+    <td class="{{ issue.type }}" align="right"><nobr>&nbsp;{{ issue.popcon.vote|default:"0" }}&nbsp;</nobr></td>
+    {% endif %}
+    {% if show_installs %}
+    <td class="{{ issue.type }}" align="right"><nobr>&nbsp;{{ issue.popcon.inst|default:"0" }}&nbsp;</nobr></td>
+    {% endif %}
+    {% if show_owner %}
+    <td class="{{ issue.type }}"><nobr>{% contact_link_for issue.charge_person truncatechars=30 %}</nobr></td>
+    {% endif %}
+    {% if show_reporter %}
+    <td class="{{ issue.type }}"><nobr>{% contact_link_for issue.open_person truncatechars=30 %}</nobr></td>
+    {% endif %}
+</tr>
+{% endfor %}
+</table><br>
+    </td>
+</tr>
+<tr>
+    <td align="center">
+        {% include "pagination.html" with page_obj=page_obj page_items=page_items %}
+    </td>
+</tr>
+<tr>
+    <td align="center" style="padding-bottom:10px">
+Written by <a href="https://blog.hartwork.org/">Sebastian Pipping</a>,
+ licensed under
+ <a href="https://www.fsf.org/licensing/licenses/agpl.html">AGPL 3.0 or later</a>.
+&nbsp;&nbsp;
+Please star <a href="https://github.com/hartwork/wnpp.debian.net/">the repository</a> on GitHub if you like this tool.
+ Thanks!
+&nbsp;&nbsp;
+<iframe id="github-star-button" src="https://ghbtns.com/github-btn.html?user=hartwork&amp;repo=wnpp.debian.net&amp;type=star&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" style="margin-bottom: -5px;"/>
+
+    </td>
+</tr>
+</table>
+</body>
+</html>

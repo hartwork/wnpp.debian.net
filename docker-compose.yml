@@ -11,38 +11,65 @@ services:
   wnpp-debian-net:
     depends_on:
       - mysql
-    build: ./
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      # KEEP IN SYNC with container "cron" below
+      WDN_ALLOWED_HOSTS: ${WDN_ALLOWED_HOSTS}
+      WDN_DEBUG: ${WDN_DEBUG}
+      WDN_MYSQL_HOST: mysql
+      WDN_MYSQL_NAME: ${WDN_MYSQL_NAME:?}
+      WDN_MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
+      WDN_MYSQL_PORT: ${WDN_MYSQL_PORT:?}
+      WDN_MYSQL_USER: ${WDN_MYSQL_USER:?}
+      WDN_SECRET_KEY: ${WDN_SECRET_KEY:?}
+      WDN_SENTRY_DSN: ${WDN_SENTRY_DSN}
+      # KEEP IN SYNC with container "cron" below
     ports:
-      - 127.0.0.1:51080:80
+      - 127.0.0.1:51080:51080
     networks:
       - default
       - ssl-reverse-proxy
-    volumes:
-      - .:/var/www/localhost/htdocs/
+    user: 1001:1001
+    cap_drop:
+      - ALL
     restart: unless-stopped
+    tty: true
+
+  cron:
+    depends_on:
+      - mysql
+    image: ${COMPOSE_PROJECT_NAME:-wnppdebiannet}_wnpp-debian-net
+    command: ["sh", "-c", "supercronic -sentry-dsn \"${WDN_SENTRY_DSN}\" ~/crontab"]
+    environment:
+      # KEEP IN SYNC with container "django" above
+      WDN_ALLOWED_HOSTS: ${WDN_ALLOWED_HOSTS}
+      WDN_DEBUG: ${WDN_DEBUG}
+      WDN_MYSQL_HOST: mysql
+      WDN_MYSQL_NAME: ${WDN_MYSQL_NAME:?}
+      WDN_MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
+      WDN_MYSQL_PORT: ${WDN_MYSQL_PORT:?}
+      WDN_MYSQL_USER: ${WDN_MYSQL_USER:?}
+      WDN_SECRET_KEY: ${WDN_SECRET_KEY:?}
+      WDN_SENTRY_DSN: ${WDN_SENTRY_DSN}
+      # KEEP IN SYNC with container "django" above
+    networks:
+      - default
+    user: 1001:1001
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+    tty: true
 
   mysql:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_DATABASE: database
+      MYSQL_ROOT_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
+      MYSQL_USER: ${WDN_MYSQL_USER:?}
+      MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
+      MYSQL_DATABASE: ${WDN_MYSQL_NAME:?}
     volumes:
       - ./tables/table_structures.sql:/docker-entrypoint-initdb.d/schema.sql
       - ~/wnpp-debian-net/var-lib-mysql:/var/lib/mysql
-    restart: unless-stopped
-
-  cron_sync_list:
-    depends_on:
-      - wnpp-debian-net
-    image: inutano/wget
-    command: ["sh", "-c", "sleep 3 ; while :; do wget -O- http://wnpp-debian-net/cron_sync_list.php5 ; sleep 55 ; done"]
-    restart: unless-stopped
-
-  cron_sync_popcon:
-    depends_on:
-      - wnpp-debian-net
-    image: inutano/wget
-    command: ["sh", "-c", "sleep 2m ; while :; do wget -O- http://wnpp-debian-net/cron_sync_popcon.php5 ; sleep 12h ; done"]
     restart: unless-stopped
