@@ -11,19 +11,6 @@ services:
   wnpp-debian-net:
     depends_on:
       - mysql
-    build: ./
-    ports:
-      - 127.0.0.1:51080:80
-    networks:
-      - default
-      - ssl-reverse-proxy
-    volumes:
-      - .:/var/www/localhost/htdocs/
-    restart: unless-stopped
-
-  django:
-    depends_on:
-      - mysql
     build:
       context: .
       dockerfile: docker/Dockerfile
@@ -40,7 +27,7 @@ services:
       WDN_SENTRY_DSN: ${WDN_SENTRY_DSN}
       # KEEP IN SYNC with container "cron" below
     ports:
-      - 127.0.0.1:52080:52080
+      - 127.0.0.1:51080:51080
     networks:
       - default
       - ssl-reverse-proxy
@@ -53,7 +40,7 @@ services:
   cron:
     depends_on:
       - mysql
-    image: ${COMPOSE_PROJECT_NAME:-wnppdebiannet}_django
+    image: ${COMPOSE_PROJECT_NAME:-wnppdebiannet}_wnpp-debian-net
     command: ["sh", "-c", "supercronic -sentry-dsn \"${WDN_SENTRY_DSN}\" ~/crontab"]
     environment:
       # KEEP IN SYNC with container "django" above
@@ -85,18 +72,4 @@ services:
     volumes:
       - ./tables/table_structures.sql:/docker-entrypoint-initdb.d/schema.sql
       - ~/wnpp-debian-net/var-lib-mysql:/var/lib/mysql
-    restart: unless-stopped
-
-  cron_sync_list:
-    depends_on:
-      - wnpp-debian-net
-    image: inutano/wget
-    command: ["sh", "-c", "sleep 3 ; while :; do wget -O- http://wnpp-debian-net/cron_sync_list.php5 ; sleep 55 ; done"]
-    restart: unless-stopped
-
-  cron_sync_popcon:
-    depends_on:
-      - wnpp-debian-net
-    image: inutano/wget
-    command: ["sh", "-c", "sleep 2m ; while :; do wget -O- http://wnpp-debian-net/cron_sync_popcon.php5 ; sleep 12h ; done"]
     restart: unless-stopped

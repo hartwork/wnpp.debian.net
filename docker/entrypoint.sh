@@ -22,7 +22,7 @@ fi
 
 gunicorn_args=(
     --name=wnpp-debian-net
-    --bind=0.0.0.0:52080
+    --bind=0.0.0.0:51080
     --workers="$(nproc --ignore=1)"
     --timeout 5
     --access-logfile=-
