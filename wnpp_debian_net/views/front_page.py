@@ -14,7 +14,7 @@ from ..templatetags.sorting_urls import parse_sort_param
 _QUERY_FIELD_FOR_COLUMN_NAME = {
     'dust': 'mod_stamp',
     'age': 'open_stamp',
-    'type': 'type',
+    'type': 'kind',
     'project': 'popcon_id',
     'description': 'description',
     'users': 'popcon__vote',
@@ -35,7 +35,7 @@ _DEFAULT_COLUMNS = [
 
 assert all((column in _COLUMN_NAMES) for column in _DEFAULT_COLUMNS)
 
-_ISSUE_TYPES = [
+_ISSUE_KINDS = [
     'ita',
     'itp',
     'o',
@@ -44,14 +44,14 @@ _ISSUE_TYPES = [
     'rfp',
 ]
 
-_DEFAULT_ISSUE_TYPES = [
+_DEFAULT_ISSUE_KINDS = [
     'o',
     'rfa',
     'rfh',
     'rfp',
 ]
 
-assert all((type_ in _ISSUE_TYPES) for type_ in _DEFAULT_ISSUE_TYPES)
+assert all((kind in _ISSUE_KINDS) for kind in _DEFAULT_ISSUE_KINDS)
 
 
 class FrontPageView(ListView):
@@ -67,7 +67,7 @@ class FrontPageView(ListView):
         self._owners = self.request.GET.getlist('owner[]', ['yes', 'no'])
         self._project_filter = self.request.GET.get('project', '')
         self._sort = self.request.GET.get('sort', 'project')
-        self._types = {t.lower() for t in self.request.GET.getlist('type[]', _DEFAULT_ISSUE_TYPES)}
+        self._kinds = {t.lower() for t in self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS)}
 
     #override
     def get_queryset(self) -> QuerySet:
@@ -96,8 +96,8 @@ class FrontPageView(ListView):
                   .annotate(package_name=F('popcon_id'))
                   .filter(package_name__icontains=self._project_filter))
 
-        if self._types:
-            qs = qs.filter(type__in=self._types)
+        if self._kinds:
+            qs = qs.filter(kind__in=self._kinds)
 
         return qs
 
@@ -121,8 +121,8 @@ class FrontPageView(ListView):
             'without_owner': 'no' in self._owners,
         })
 
-        for issue_type in _ISSUE_TYPES:
-            context[f'show_{issue_type}'] = issue_type in self._types
+        for issue_kind in _ISSUE_KINDS:
+            context[f'show_{issue_kind}'] = issue_kind in self._kinds
 
         for column_name in _COLUMN_NAMES:
             context[f'show_{column_name}'] = column_name in self._col

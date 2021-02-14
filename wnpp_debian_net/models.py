@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 
-class IssueType(TextChoices):
+class IssueKind(TextChoices):
     ITA = 'ITA', _('ITA (Intent to adopt)')
     ITP = 'ITP', _('ITP (Intent to package)')
     O = 'O', _('O (Orphaned)')
@@ -16,7 +16,7 @@ class IssueType(TextChoices):
     RFP = 'RFP', _('RFP (request for packaging)')
 
 
-class EventType(TextChoices):
+class EventKind(TextChoices):
     MODIFIED = 'MOD', _('modified')
     OPENED = 'OPEN', _('opened')
     CLOSED = 'CLOSE', _('closed')
@@ -25,11 +25,11 @@ class EventType(TextChoices):
 class DebianLogIndex(models.Model):
     log_id = models.AutoField(primary_key=True)
     ident = models.IntegerField(blank=True, null=True)
-    type = models.CharField(max_length=3, choices=IssueType.choices, blank=True, null=True)
+    kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='type')
     project = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     log_stamp = models.DateTimeField(blank=True, null=True)
-    event = models.CharField(max_length=5, choices=EventType.choices)
+    event = models.CharField(max_length=5, choices=EventKind.choices)
     event_stamp = models.DateTimeField(blank=True, null=True)
 
     class Meta:
@@ -39,9 +39,9 @@ class DebianLogIndex(models.Model):
 
 class DebianLogMods(models.Model):
     log = OneToOneField(DebianLogIndex, on_delete=CASCADE, primary_key=True,
-                        related_name='type_change', related_query_name='type_change')
-    before_type = models.CharField(max_length=3, choices=IssueType.choices, blank=True, null=True)
-    after_type = models.CharField(max_length=3, choices=IssueType.choices, blank=True, null=True)
+                        related_name='kind_change', related_query_name='kind_change')
+    old_kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='before_type')
+    new_kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='after_type')
 
     class Meta:
         managed = False
@@ -66,7 +66,7 @@ class DebianWnpp(models.Model):
     open_person = models.CharField(max_length=255, blank=True, null=True)
     open_stamp = models.DateTimeField(blank=True, null=True)
     mod_stamp = models.DateTimeField(blank=True, null=True)
-    type = models.CharField(max_length=3, choices=IssueType.choices)
+    kind = models.CharField(max_length=3, choices=IssueKind.choices, db_column='type')
     # Original was: project = models.CharField(max_length=255, blank=True, null=True)
     popcon = ForeignKey(DebianPopcon, on_delete=DO_NOTHING, null=True, db_column='project')
     description = models.CharField(max_length=255, blank=True, null=True)
