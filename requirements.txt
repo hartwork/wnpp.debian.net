@@ -3,6 +3,7 @@ Django==3.1.6
 gunicorn==20.0.4
 gunicorn-color==0.1.0
 mysqlclient==2.0.3
+parameterized==0.8.1
 PySimpleSOAP==1.16.2
 requests==2.25.1
 wait-for-it==2.2.0
