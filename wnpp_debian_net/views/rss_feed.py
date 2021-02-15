@@ -1,6 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
+import sys
 from enum import Enum
 
 from django.contrib.syndication.views import Feed
@@ -56,7 +57,14 @@ class WnppNewsFeedView(Feed):
         self.feed_url = self.__request.build_absolute_uri(self.__request.get_full_path())
         self.link = self.feed_url
 
-        return super().__call__(request, *args, **kwargs)
+        response = super().__call__(request, *args, **kwargs)
+
+        if 'test' in sys.argv:
+            response.context_data = {
+                'object_list': self.items(),
+            }
+
+        return response
 
     def title(self):
         return _DATASETS[_DataSet(self.__data_set)][0]
