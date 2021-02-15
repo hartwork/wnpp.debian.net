@@ -12,6 +12,7 @@ from ..contact_links import contact_link_for
 class ParseContactTest(TestCase):
     @parameterized.expand([
         ('mail@example.org', 'mail@example.org'),
+        ('mail@example.org (First Middle Last)', 'First Middle Last'),
         ('"First Middle Last" <mail@example.org>', 'First Middle Last'),
         ('First Middle Last <mail@example.org>', 'First Middle Last'),
     ])
