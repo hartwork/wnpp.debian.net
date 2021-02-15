@@ -115,6 +115,7 @@ class Command(ReportingMixin, BaseCommand):
 
         while True:
             log_entries_to_create: list[DebianLogIndex] = []
+            kind_change_log_entries_to_create: list[DebianLogMods] = []
             issues_to_update: list[DebianWnpp] = list(
                 stale_issues_qs.order_by('cron_stamp', 'ident')[:_BATCH_SIZE])
             if not issues_to_update:
@@ -127,7 +128,6 @@ class Command(ReportingMixin, BaseCommand):
 
             issue_ids = [issue.ident for issue in issues_to_update]
             issue_fields_to_bulk_update: set[str] = set()  # will be grown as needed
-            kind_change_log_details: list[tuple[int, str, str]] = []
 
             # Fetch remote data
             remote_properties_of_issue = self._fetch_issues(issue_ids)
@@ -143,18 +143,26 @@ class Command(ReportingMixin, BaseCommand):
                     self.stderr.write(self.style.ERROR(str(e)))
                     continue
 
-                if database_field_map['kind'] != issue.kind:
-                    kind_change_log_details.append((i, issue.kind, database_field_map['kind']))
+                fields_about_to_change = self._detect_and_report_diff(issue, database_field_map)
 
-                fields_that_changed = self._detect_and_report_diff(issue, database_field_map)
+                if fields_about_to_change:
+                    issue_fields_to_bulk_update |= fields_about_to_change
 
-                if fields_that_changed:
-                    issue_fields_to_bulk_update |= fields_that_changed
-                    for field_name in fields_that_changed:
+                    old_kind_backup = issue.kind
+                    for field_name in fields_about_to_change:
                         setattr(issue, field_name, database_field_map[field_name])
-                        log_entries_to_create.append(
-                            self._create_log_entry_from(issue, EventKind.MODIFIED,
-                                                        issue.mod_stamp))
+
+                    log_entry = self._create_log_entry_from(issue, EventKind.MODIFIED,
+                                                            issue.mod_stamp)
+                    log_entries_to_create.append(log_entry)
+
+                    if old_kind_backup != issue.kind:
+                        kind_change_log_entries_to_create.append(
+                            DebianLogMods(
+                                log=log_entry,
+                                old_kind=old_kind_backup,
+                                new_kind=issue.kind,
+                            ))
 
             with transaction.atomic():
                 # Persist log entries
@@ -162,18 +170,15 @@ class Command(ReportingMixin, BaseCommand):
                 self._success(f'Logged upcoming updates to {len(log_entries_to_create)} issue(s)')
 
                 # Persist kind change extra log entries
-                if kind_change_log_details:
-                    kind_change_log_entries_to_create: list[DebianLogMods] = []
-                    for issue_index, old_kind, new_kind in kind_change_log_details:
-                        kind_change_log_entries_to_create.append(
-                            DebianLogMods(
-                                log=issues_to_update[issue_index],
-                                old_kind=old_kind,
-                                new_kind=new_kind,
-                            ))
+                if kind_change_log_entries_to_create:
+                    # NOTE: We need to apply the just-written primary keys or we'll get this error:
+                    #       django.db.utils.IntegrityError: null value in column "log_id" of relation "debian_log_mods" violates not-null constraint
+                    for kind_change_log_entry in kind_change_log_entries_to_create:
+                        kind_change_log_entry.log_id = kind_change_log_entry.log.log_id
+
                     DebianLogMods.objects.bulk_create(kind_change_log_entries_to_create)
                     self._success(
-                        f'Logged upcoming changes in kind of {len(kind_change_log_details)} issue(s)'
+                        f'Logged upcoming changes in kind of {len(kind_change_log_entries_to_create)} issue(s)'
                     )
                 else:
                     self._notice('No changes in kind recognized.')
