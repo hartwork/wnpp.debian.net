@@ -8,6 +8,7 @@ from django.db.models import F, Q, QuerySet
 from django.views.generic import ListView
 
 from ..models import DebianWnpp
+from ..override import overrive
 from ..pagination import iterate_page_items
 from ..templatetags.sorting_urls import parse_sort_param
 
@@ -58,7 +59,7 @@ class FrontPageView(ListView):
     model = DebianWnpp
     paginate_by = 50
 
-    #override
+    @overrive
     def setup(self, request, *args, **kwargs):
         """Initialize attributes shared by all view methods."""
         super().setup(request, *args, **kwargs)
@@ -69,7 +70,7 @@ class FrontPageView(ListView):
         self._sort = self.request.GET.get('sort', 'project')
         self._kinds = {t.lower() for t in self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS)}
 
-    #override
+    @overrive
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
 
@@ -100,7 +101,7 @@ class FrontPageView(ListView):
 
         return qs
 
-    #override
+    @overrive
     def get_ordering(self) -> Union[str, tuple[str, ...]]:
         """Return the field or fields to use for ordering the queryset."""
         external_column, internal_direction_prefix = parse_sort_param(self._sort)
@@ -108,7 +109,7 @@ class FrontPageView(ListView):
         return internal_direction_prefix + _QUERY_FIELD_FOR_COLUMN_NAME.get(
             external_column, fallback_field_name)
 
-    #override
+    @overrive
     def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(object_list=object_list, **kwargs)
 
