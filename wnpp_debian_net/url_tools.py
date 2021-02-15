@@ -1,7 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from urllib.parse import urlsplit, parse_qsl, urlencode, urlunsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 
 def url_with_query(url, **data) -> str:
@@ -13,7 +13,7 @@ def url_with_query(url, **data) -> str:
 
     for query_key, query_value in data.items():
         rightmost_index = max((i for i, pair in enumerate(query_pairs) if pair[0] == query_key),
-                                   default=None)
+                              default=None)
         new_pair = (query_key, str(query_value))
         if rightmost_index is None:
             query_pairs.append(new_pair)

@@ -43,21 +43,23 @@ class WnppNewsFeedView(Feed):
                              | Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
                                  kind__in=(IssueKind.ITA.value, IssueKind.ITP.value)))
         _QA_FILTER_FOR_DATASET = {
-            'all': _FILTER_DATASET_ALL,
-            'bad_news': ~_FILTER_GOOD_NEWS,
-            'good_news': _FILTER_GOOD_NEWS,
-            'help_existing': Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
-                               kind__in=(
-                                   IssueKind.O.value, IssueKind.RFA.value, IssueKind.RFH.value)),
-            'new_packages': Q(event=EventKind.CLOSED, kind=IssueKind.ITP),
+            'all':
+            _FILTER_DATASET_ALL,
+            'bad_news':
+            ~_FILTER_GOOD_NEWS,
+            'good_news':
+            _FILTER_GOOD_NEWS,
+            'help_existing':
+            Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
+              kind__in=(IssueKind.O_.value, IssueKind.RFA.value, IssueKind.RFH.value)),
+            'new_packages':
+            Q(event=EventKind.CLOSED, kind=IssueKind.ITP),
         }
         return _QA_FILTER_FOR_DATASET.get(self.__data_set, _FILTER_DATASET_ALL)
 
     def items(self):
-        return (DebianLogIndex.objects
-                    .filter(self._get_querset_filter())
-                    .select_related('kind_change')
-                    .order_by('-event_stamp')[:_MAX_ENTRIES])
+        return (DebianLogIndex.objects.filter(self._get_querset_filter()).select_related(
+            'kind_change').order_by('-event_stamp')[:_MAX_ENTRIES])
 
     def item_author_email(self, item: DebianLogIndex):
         return f'{item.ident}@bugs.debian.org'

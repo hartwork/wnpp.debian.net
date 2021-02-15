@@ -2,7 +2,7 @@
 # Licensed under GNU Affero GPL v3 or later
 
 from django.db import models
-from django.db.models import DO_NOTHING, ForeignKey, CASCADE, OneToOneField, TextChoices
+from django.db.models import CASCADE, DO_NOTHING, ForeignKey, OneToOneField, TextChoices
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 class IssueKind(TextChoices):
     ITA = 'ITA', _('ITA (Intent to adopt)')
     ITP = 'ITP', _('ITP (Intent to package)')
-    O = 'O', _('O (Orphaned)')
+    O_ = 'O', _('O (Orphaned)')
     RFA = 'RFA', _('RFA (Request for adoption)')
     RFH = 'RFH', _('RFH (Request for help)')
     RFP = 'RFP', _('RFP (request for packaging)')
@@ -25,7 +25,11 @@ class EventKind(TextChoices):
 class DebianLogIndex(models.Model):
     log_id = models.AutoField(primary_key=True)
     ident = models.IntegerField(blank=True, null=True)
-    kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='type')
+    kind = models.CharField(max_length=3,
+                            choices=IssueKind.choices,
+                            blank=True,
+                            null=True,
+                            db_column='type')
     project = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     log_stamp = models.DateTimeField(blank=True, null=True)
@@ -37,10 +41,21 @@ class DebianLogIndex(models.Model):
 
 
 class DebianLogMods(models.Model):
-    log = OneToOneField(DebianLogIndex, on_delete=CASCADE, primary_key=True,
-                        related_name='kind_change', related_query_name='kind_change')
-    old_kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='before_type')
-    new_kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='after_type')
+    log = OneToOneField(DebianLogIndex,
+                        on_delete=CASCADE,
+                        primary_key=True,
+                        related_name='kind_change',
+                        related_query_name='kind_change')
+    old_kind = models.CharField(max_length=3,
+                                choices=IssueKind.choices,
+                                blank=True,
+                                null=True,
+                                db_column='before_type')
+    new_kind = models.CharField(max_length=3,
+                                choices=IssueKind.choices,
+                                blank=True,
+                                null=True,
+                                db_column='after_type')
 
     class Meta:
         db_table = 'debian_log_mods'

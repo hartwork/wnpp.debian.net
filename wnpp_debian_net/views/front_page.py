@@ -1,13 +1,14 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from typing import Union, Tuple, Dict, Any
+from typing import Any, Union
 
-from django.core.paginator import Paginator, Page
-from django.db.models import Q, QuerySet, F
+from django.core.paginator import Page, Paginator
+from django.db.models import F, Q, QuerySet
 from django.views.generic import ListView
 
 from ..models import DebianWnpp
+from ..override import overrive
 from ..pagination import iterate_page_items
 from ..templatetags.sorting_urls import parse_sort_param
 
@@ -58,7 +59,7 @@ class FrontPageView(ListView):
     model = DebianWnpp
     paginate_by = 50
 
-    #override
+    @overrive
     def setup(self, request, *args, **kwargs):
         """Initialize attributes shared by all view methods."""
         super().setup(request, *args, **kwargs)
@@ -69,7 +70,7 @@ class FrontPageView(ListView):
         self._sort = self.request.GET.get('sort', 'project')
         self._kinds = {t.lower() for t in self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS)}
 
-    #override
+    @overrive
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
 
@@ -92,25 +93,24 @@ class FrontPageView(ListView):
         if self._project_filter:
             # NOTE: Django doesn't let us do "popcon_id__icontains=[..]"
             #       since it's used as a foreign key
-            qs = (qs
-                  .annotate(package_name=F('popcon_id'))
-                  .filter(package_name__icontains=self._project_filter))
+            qs = (qs.annotate(package_name=F('popcon_id')).filter(
+                package_name__icontains=self._project_filter))
 
         if self._kinds:
             qs = qs.filter(kind__in=self._kinds)
 
         return qs
 
-    #override
-    def get_ordering(self) -> Union[str, Tuple[str, ...]]:
+    @overrive
+    def get_ordering(self) -> Union[str, tuple[str, ...]]:
         """Return the field or fields to use for ordering the queryset."""
         external_column, internal_direction_prefix = parse_sort_param(self._sort)
         fallback_field_name = _QUERY_FIELD_FOR_COLUMN_NAME['project']
-        return internal_direction_prefix + _QUERY_FIELD_FOR_COLUMN_NAME.get(external_column,
-                                                                            fallback_field_name)
+        return internal_direction_prefix + _QUERY_FIELD_FOR_COLUMN_NAME.get(
+            external_column, fallback_field_name)
 
-    #override
-    def get_context_data(self, *, object_list=None, **kwargs) -> Dict[str, Any]:
+    @overrive
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(object_list=object_list, **kwargs)
 
         context.update({
@@ -129,7 +129,8 @@ class FrontPageView(ListView):
 
         paginator: Paginator = context['paginator']
         page_obj: Page = context['page_obj']
-        context['page_items'] = list(iterate_page_items(total_page_count=paginator.num_pages,
-                                                        current_page_number=page_obj.number))
+        context['page_items'] = list(
+            iterate_page_items(total_page_count=paginator.num_pages,
+                               current_page_number=page_obj.number))
 
         return context

@@ -2,6 +2,7 @@
 # Licensed under GNU Affero GPL v3 or later
 
 from typing import Optional
+
 from django import template
 from django.utils import safestring
 from django.utils.html import format_html
@@ -10,6 +11,7 @@ from django.utils.text import Truncator
 
 register = template.Library()
 
+
 def _truncate(value: str, length: int) -> str:
     if length is None:
         return value
@@ -17,7 +19,7 @@ def _truncate(value: str, length: int) -> str:
 
 
 @register.simple_tag
-def contact_link_for(contact: Optional[str], truncatechars:int =None) -> safestring:
+def contact_link_for(contact: Optional[str], truncatechars: int = None) -> safestring:
     if not contact:
         return mark_safe('<i>nobody</i>')
 
@@ -27,8 +29,7 @@ def contact_link_for(contact: Optional[str], truncatechars:int =None) -> safestr
         return format_html('<a href="mailto:{}">{}</a>', contact, display)
     elif len(split_up) == 2:
         display, angled_address = split_up
-        display = _truncate(display.strip('"').replace('<', '').replace('>', ''),
-                            truncatechars)
+        display = _truncate(display.strip('"').replace('<', '').replace('>', ''), truncatechars)
         address = angled_address.replace('<', '').replace('>', '')
         return format_html('<a href="mailto:{}">{}</a>', address, display)
     else:

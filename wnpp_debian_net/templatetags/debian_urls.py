@@ -5,6 +5,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.simple_tag
 def wnpp_issue_url(issue_id):
     return f'https://bugs.debian.org/cgi-bin/bugreport.cgi?bug={issue_id}'

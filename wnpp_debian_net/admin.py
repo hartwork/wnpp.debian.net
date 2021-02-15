@@ -10,17 +10,19 @@ from .models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp
 class DebianLogIndexAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(DebianLogMods)
 class DebianLogModsAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(DebianPopcon)
 class DebianPopconAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(DebianWnpp)
 class DebianWnppAdmin(admin.ModelAdmin):
     readonly_fields = (
         # Quick workaround so that Django doesn't try offering ALL of popcon as a select value
-        'popcon',
-    )
+        'popcon', )

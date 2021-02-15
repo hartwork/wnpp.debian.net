@@ -3,10 +3,11 @@
 
 import base64
 from enum import Enum
-from typing import List, Dict, Optional
+from typing import Optional
 
 from pysimplesoap.client import SoapClient
 from pysimplesoap.simplexml import SimpleXMLElement
+
 
 class IssueProperty(Enum):
     AFFECTS = 'affects'
@@ -44,7 +45,6 @@ class IssueProperty(Enum):
 
 
 class DebbugsWnppClient:
-
     def __init__(self):
         self._client = None
 
@@ -67,17 +67,16 @@ class DebbugsWnppClient:
         except (ValueError, UnicodeEncodeError):
             return candidate
 
-    def fetch_ids_of_open_issues(self) -> List[int]:
+    def fetch_ids_of_open_issues(self) -> list[int]:
         result: SimpleXMLElement = self._client.get_bugs(
             **self._to_soap_kwargs('package', 'wnpp', 'status', 'open'))
         return [
             int(item_element.firstChild.nodeValue)
-            for item_element
-            in result._element.getElementsByTagName('item')
+            for item_element in result._element.getElementsByTagName('item')
         ]
 
-    def fetch_issues(self, issue_ids: List[int]) -> Dict[int, Dict[str, str]]:
-        properties_of_issue: Dict[int, Dict[str, str]] = {}
+    def fetch_issues(self, issue_ids: list[int]) -> dict[int, dict[str, str]]:
+        properties_of_issue: dict[int, dict[str, str]] = {}
 
         soap_result: SimpleXMLElement = self._client.get_status(**self._to_soap_kwargs(*issue_ids))
 
@@ -87,9 +86,10 @@ class DebbugsWnppClient:
             value_element = item_element.childNodes[1]
 
             issue_id = int(key_element.firstChild.nodeValue)
-            issue_properties = {node.tagName: self._decode_base64_as_needed(node.firstChild.nodeValue)
-                                for node in value_element.childNodes
-                                if node.firstChild is not None}
+            issue_properties = {
+                node.tagName: self._decode_base64_as_needed(node.firstChild.nodeValue)
+                for node in value_element.childNodes if node.firstChild is not None
+            }
 
             properties_of_issue[issue_id] = issue_properties
 
