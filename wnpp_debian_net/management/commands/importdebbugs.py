@@ -4,7 +4,7 @@
 import datetime
 import re
 from itertools import islice
-from typing import Any, Optional
+from typing import Any
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -45,40 +45,10 @@ class Command(ReportingMixin, BaseCommand):
         else:
             self._notice('No existing issues deleted.')
 
-    @staticmethod
-    def _is_invalid_in_utf8mb3(codepoint: int) -> bool:
-        # These ranges were retrieved by feeding all 0x10ffff code points to MySQL in isolation
-        return ((0x80 == codepoint) or (0x82 <= codepoint <= 0x8C) or (0x8E == codepoint)
-                or (0x91 <= codepoint <= 0x9C) or (0x9E <= codepoint <= 0x9F)
-                or (0x100 <= codepoint <= 0x151) or (0x154 <= codepoint <= 0x15F)
-                or (0x162 <= codepoint <= 0x177) or (0x179 <= codepoint <= 0x17C)
-                or (0x17F <= codepoint <= 0x191) or (0x193 <= codepoint <= 0x2C5)
-                or (0x2C7 <= codepoint <= 0x2DB) or (0x2DD <= codepoint <= 0x2012) or
-                (0x2015 <= codepoint <= 0x2017) or (0x201B == codepoint) or (0x201F == codepoint)
-                or (0x2023 <= codepoint <= 0x2025) or (0x2027 <= codepoint <= 0x202F)
-                or (0x2031 <= codepoint <= 0x2038) or (0x203B <= codepoint <= 0x20AB)
-                or (0x20AD <= codepoint <= 0x2121) or (0x2123 <= codepoint))
-
-    @classmethod
-    def _fit_utf8mb3(cls, text: Optional[str]) -> Optional[str]:
-        """
-        MySQL needs charset "utf8mb4" to store 4-byte characters.
-        For plain "utf8", we have to pull 4-byte characters characters back into 3-byte range.
-        """
-        if text is None:
-            return None
-        return ''.join(
-            (f'[U+{ord(c):X}]' if cls._is_invalid_in_utf8mb3(ord(c)) else c) for c in text)
-
     def _fetch_issues(self, issue_ids: list[int]) -> dict[int, dict[str, str]]:
         flat_issue_ids = ', '.join(str(i) for i in issue_ids)
         self._notice(f'Fetching {len(issue_ids)} issue(s): {flat_issue_ids}...')
         properties_of_issue = self._client.fetch_issues(issue_ids)
-
-        # Mass-replace characters that are potential trouble to MySQL's utf8mb3
-        for properties in properties_of_issue.values():
-            for k, v in properties.items():
-                properties[k] = self._fit_utf8mb3(v)
 
         return properties_of_issue
 

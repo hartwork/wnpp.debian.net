@@ -6,10 +6,11 @@ FROM python:3.9-alpine
 RUN apk add --update \
         bash \
         diffutils \
+        g++ \
         gcc \
-        mariadb-client \
-        mariadb-connector-c-dev \
         musl-dev \
+        postgresql-client \
+        postgresql-dev \
         shadow
 
 RUN useradd --create-home --uid 1001 --non-unique wnpp-debian-net
