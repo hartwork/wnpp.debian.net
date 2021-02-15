@@ -3,6 +3,7 @@ Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 Licensed under GNU Affero GPL v3 or later
 {% endcomment %}
 {% load static %}
+{% load humanize %}
 {% load debian_urls %}
 {% load sorting_urls %}
 {% load contact_links %}
@@ -245,10 +246,10 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
 <tr>
     <td class="{{ issue.kind }}" align="right">&nbsp;{{ page_obj.start_index|add:forloop.counter0 }}&nbsp;</td>
     {% if show_dust %}
-    <td class="{{ issue.kind }}" align="right">&nbsp;{{ issue.dust_days }}&nbsp;</td>
+    <td class="{{ issue.kind }}" align="right">&nbsp;{{ issue.dust_days|intcomma }}&nbsp;</td>
     {% endif %}
     {% if show_age %}
-    <td class="{{ issue.kind }}" align="right">&nbsp;{{ issue.age_days }}&nbsp;</td>
+    <td class="{{ issue.kind }}" align="right">&nbsp;{{ issue.age_days|intcomma }}&nbsp;</td>
     {% endif %}
     {% if show_type %}
     <td class="{{ issue.kind }}"><nobr>{{ issue.kind }}</nobr></td>
@@ -259,10 +260,10 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
     <td class="{{ issue.kind }}" title="{{ issue.description }}"><nobr>{{ issue.description|truncatechars:60 }}</nobr></td>
     {% endif %}
     {% if show_users %}
-    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.vote|default:"0" }}&nbsp;</nobr></td>
+    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.vote|default:"0"|intcomma }}&nbsp;</nobr></td>
     {% endif %}
     {% if show_installs %}
-    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.inst|default:"0" }}&nbsp;</nobr></td>
+    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.inst|default:"0"|intcomma }}&nbsp;</nobr></td>
     {% endif %}
     {% if show_owner %}
     <td class="{{ issue.kind }}"><nobr>{% contact_link_for issue.charge_person truncatechars=30 %}</nobr></td>
