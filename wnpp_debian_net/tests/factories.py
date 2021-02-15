@@ -12,6 +12,8 @@ class DebianLogIndexFactory(DjangoModelFactory):
     class Meta:
         model = DebianLogIndex
 
+    event_stamp = LazyFunction(now)
+
 
 class DebianLogModsFactory(DjangoModelFactory):
     class Meta:

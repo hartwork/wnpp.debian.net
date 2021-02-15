@@ -1,6 +1,9 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
+import sys
+from enum import Enum
+
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
 from django.http import HttpRequest
@@ -10,6 +13,35 @@ from ..models import DebianLogIndex, EventKind, IssueKind
 from ..templatetags.debian_urls import wnpp_issue_url
 
 _MAX_ENTRIES = 30
+
+
+class _DataSet(Enum):
+    ALL = 'all'
+    BAD_NEWS = 'bad_news'
+    GOOD_NEWS = 'good_news'
+    HELP_EXISTING = 'help_existing'
+    NEW_PACKAGES = 'new_packages'
+
+    @classmethod
+    def _missing_(cls, value):
+        return cls.ALL
+
+
+_FILTER_GOOD_NEWS: Q = (Q(event=EventKind.CLOSED.value)
+                        | Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
+                            kind__in=(IssueKind.ITA.value, IssueKind.ITP.value)))
+
+_DATASETS: dict[_DataSet, tuple[str, Q]] = {
+    _DataSet.ALL: (_('Debian Packaging News'), (Q())),
+    _DataSet.BAD_NEWS: (_('Bad News on Debian Packages'), ~_FILTER_GOOD_NEWS),
+    _DataSet.GOOD_NEWS: (_('Good News on Debian Packages'), _FILTER_GOOD_NEWS),
+    _DataSet.HELP_EXISTING: (_('Existing Debian Packages In Need For Help'),
+                             Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
+                               kind__in=(IssueKind.O_.value, IssueKind.RFA.value,
+                                         IssueKind.RFH.value))),
+    _DataSet.NEW_PACKAGES: (_('New Debian Packages'), Q(event=EventKind.CLOSED,
+                                                        kind=IssueKind.ITP)),
+}
 
 
 class WnppNewsFeedView(Feed):
@@ -25,33 +57,20 @@ class WnppNewsFeedView(Feed):
         self.feed_url = self.__request.build_absolute_uri(self.__request.get_full_path())
         self.link = self.feed_url
 
-        return super().__call__(request, *args, **kwargs)
+        response = super().__call__(request, *args, **kwargs)
+
+        if 'test' in sys.argv:
+            response.context_data = {
+                'object_list': self.items(),
+            }
+
+        return response
 
     def title(self):
-        _TITLE_DATASET_ALL = _('Debian Packaging News')
-        return {
-            'all': _TITLE_DATASET_ALL,
-            'bad_news': _('Bad News on Debian Packages'),
-            'good_news': _('Good News on Debian Packages'),
-            'help_existing': _('Existing Debian Packages In Need For Help'),
-            'new_packages': _('New Debian Packages'),
-        }.get(self.__data_set, _TITLE_DATASET_ALL)
+        return _DATASETS[_DataSet(self.__data_set)][0]
 
     def _get_querset_filter(self):
-        _FILTER_DATASET_ALL = Q()
-        _FILTER_GOOD_NEWS = (Q(event=EventKind.CLOSED)
-                             | Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
-                                 kind__in=(IssueKind.ITA.value, IssueKind.ITP.value)))
-        _QA_FILTER_FOR_DATASET = {
-            'all': _FILTER_DATASET_ALL,
-            'bad_news': ~_FILTER_GOOD_NEWS,
-            'good_news': _FILTER_GOOD_NEWS,
-            'help_existing': Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
-                               kind__in=(IssueKind.O_.value, IssueKind.RFA.value,
-                                         IssueKind.RFH.value)),
-            'new_packages': Q(event=EventKind.CLOSED, kind=IssueKind.ITP),
-        }
-        return _QA_FILTER_FOR_DATASET.get(self.__data_set, _FILTER_DATASET_ALL)
+        return _DATASETS[_DataSet(self.__data_set)][1]
 
     def items(self):
         return (DebianLogIndex.objects.filter(self._get_querset_filter()).select_related(
