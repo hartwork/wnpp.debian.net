@@ -51,7 +51,7 @@ class WnppNewsFeedView(Feed):
             _FILTER_GOOD_NEWS,
             'help_existing':
             Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
-              kind__in=(IssueKind.O.value, IssueKind.RFA.value, IssueKind.RFH.value)),
+              kind__in=(IssueKind.O_.value, IssueKind.RFA.value, IssueKind.RFH.value)),
             'new_packages':
             Q(event=EventKind.CLOSED, kind=IssueKind.ITP),
         }

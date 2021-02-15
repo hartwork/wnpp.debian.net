@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 class IssueKind(TextChoices):
     ITA = 'ITA', _('ITA (Intent to adopt)')
     ITP = 'ITP', _('ITP (Intent to package)')
-    O = 'O', _('O (Orphaned)')
+    O_ = 'O', _('O (Orphaned)')
     RFA = 'RFA', _('RFA (Request for adoption)')
     RFH = 'RFH', _('RFH (Request for help)')
     RFP = 'RFP', _('RFP (request for packaging)')

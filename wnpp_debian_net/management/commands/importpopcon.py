@@ -38,10 +38,8 @@ class Command(ReportingMixin, BaseCommand):
 
         entries_to_classify: dict[str, dict[str, Any]] = {}
 
-        for l in content.split('\n'):
-            line = l.rstrip()
-
-            match = extractor.search(line)
+        for line in content.split('\n'):
+            match = extractor.search(line.rstrip())
             if match is None:
                 continue
 
