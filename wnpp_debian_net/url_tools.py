@@ -1,7 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from urllib.parse import urlsplit, parse_qsl, urlencode, urlunsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 
 def url_with_query(url, **data) -> str:

@@ -2,7 +2,7 @@
 # Licensed under GNU Affero GPL v3 or later
 
 from django.db import models
-from django.db.models import DO_NOTHING, ForeignKey, CASCADE, OneToOneField, TextChoices
+from django.db.models import CASCADE, DO_NOTHING, ForeignKey, OneToOneField, TextChoices
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 

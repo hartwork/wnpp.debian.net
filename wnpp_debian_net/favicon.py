@@ -3,9 +3,9 @@
 
 import re
 
+import pkg_resources
 from django.urls import re_path
 from django.views.static import serve
-import pkg_resources
 
 FAVICON_FILES = [
     'android-chrome-36x36.png',

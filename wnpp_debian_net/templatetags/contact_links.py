@@ -2,6 +2,7 @@
 # Licensed under GNU Affero GPL v3 or later
 
 from typing import Optional
+
 from django import template
 from django.utils import safestring
 from django.utils.html import format_html

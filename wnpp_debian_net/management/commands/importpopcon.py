@@ -6,10 +6,10 @@ import gzip
 import os
 import re
 from itertools import islice
-from typing import List, Any, Dict, Set
+from typing import Any, Dict, List, Set
 
-from django.core.management.base import BaseCommand
 import requests
+from django.core.management.base import BaseCommand
 
 from wnpp_debian_net.management.commands._common import ReportingMixin
 from wnpp_debian_net.models import DebianPopcon

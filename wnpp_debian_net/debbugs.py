@@ -3,10 +3,11 @@
 
 import base64
 from enum import Enum
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 from pysimplesoap.client import SoapClient
 from pysimplesoap.simplexml import SimpleXMLElement
+
 
 class IssueProperty(Enum):
     AFFECTS = 'affects'

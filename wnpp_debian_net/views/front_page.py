@@ -1,10 +1,10 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from typing import Union, Tuple, Dict, Any
+from typing import Any, Dict, Tuple, Union
 
-from django.core.paginator import Paginator, Page
-from django.db.models import Q, QuerySet, F
+from django.core.paginator import Page, Paginator
+from django.db.models import F, Q, QuerySet
 from django.views.generic import ListView
 
 from ..models import DebianWnpp

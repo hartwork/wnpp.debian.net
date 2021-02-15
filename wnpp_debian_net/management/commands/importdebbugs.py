@@ -4,17 +4,16 @@
 import datetime
 import re
 from itertools import islice
-from typing import List, Dict, Tuple, Any, Set, Optional
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.text import Truncator
 from django.utils.timezone import now
 
-from ._common import ReportingMixin
 from ...debbugs import DebbugsWnppClient, IssueProperty
-
-from ...models import DebianWnpp, DebianLogIndex, DebianLogMods, EventKind
+from ...models import DebianLogIndex, DebianLogMods, DebianWnpp, EventKind
+from ._common import ReportingMixin
 
 _BATCH_SIZE = 100
 _MAXIMUM_STALE_DELTA = datetime.timedelta(hours=2)
