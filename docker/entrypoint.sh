@@ -11,7 +11,8 @@ wait-for-it --service "${WDN_MYSQL_HOST}:${WDN_MYSQL_PORT}"
 
 if [[ $# -gt 0 ]]; then
     if [[ $1 = test ]]; then
-        ./manage.py test "${@:2}"
+        coverage run ./manage.py test "${@:2}"
+        coverage report
         exit 0
     else
         exec "$@"

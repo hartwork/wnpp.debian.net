@@ -1,4 +1,6 @@
 # Direct dependencies
+coverage==5.4
+django-coverage-plugin==1.8.0
 Django==3.1.6
 gunicorn==20.0.4
 gunicorn-color==0.1.0
@@ -27,6 +29,7 @@ prompt-toolkit==3.0.16
 ptyprocess==0.7.0
 Pygments==2.8.0
 pytz==2021.1
+six==1.15.0
 sqlparse==0.4.1
 termcolor==1.1.0
 traitlets==5.0.5
