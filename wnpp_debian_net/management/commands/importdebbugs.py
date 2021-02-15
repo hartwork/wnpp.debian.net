@@ -12,7 +12,7 @@ from django.utils.text import Truncator
 from django.utils.timezone import now
 
 from ...debbugs import DebbugsWnppClient, IssueProperty
-from ...models import DebianLogIndex, DebianLogMods, DebianWnpp, EventKind
+from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, EventKind
 from ._common import ReportingMixin
 
 _BATCH_SIZE = 100
@@ -52,6 +52,14 @@ class Command(ReportingMixin, BaseCommand):
 
         return properties_of_issue
 
+    @staticmethod
+    def _create_missing_pocons_for(package_names: list[str]) -> list[DebianPopcon]:
+        existing_packages = set(
+            DebianPopcon.objects.filter(package__in=package_names).values_list('package',
+                                                                               flat=True))
+        missing_packages = package_names - existing_packages
+        return [DebianPopcon(package=package) for package in missing_packages]
+
     def _add_any_new_issues_from(self, ids_of_remote_open_issues):
         ids_of_issues_already_known_locally = set(
             DebianWnpp.objects.values_list('ident', flat=True))
@@ -79,19 +87,37 @@ class Command(ReportingMixin, BaseCommand):
 
             remote_properties_of_issue = self._fetch_issues(issue_ids)
 
+            future_local_properties_of_issue: dict[int, dict[str, Any]] = {}
             for issue_id, properties in remote_properties_of_issue.items():
                 self._notice(f'Processing upcoming issue {issue_id}...')
                 try:
-                    issue = DebianWnpp(**self._to_database_keys(issue_id, properties))
+                    future_local_properties_of_issue[issue_id] = self._to_database_keys(
+                        issue_id, properties)
                 except _MalformedSubject as e:
                     self._error(str(e))
                     continue
+
+            # NOTE: PostgreSQL is not forgiving about absent foreign keys,
+            #       so we'll need to create any missing DebianPopcon instances
+            #       before created the the related DebianWnpp instances.
+            involved_package = {
+                properties['popcon_id']
+                for properties in future_local_properties_of_issue.values()
+            }
+            popcons_to_create = self._create_missing_pocons_for(involved_package)
+
+            for issue_id, properties in future_local_properties_of_issue.items():
+                issue = DebianWnpp(**properties)
                 issues_to_create.append(issue)
                 log_entries_to_create.append(
                     self._create_log_entry_from(issue, EventKind.OPENED, issue.open_stamp))
 
             if issues_to_create:
                 with transaction.atomic():
+                    if popcons_to_create:
+                        DebianPopcon.objects.bulk_create(popcons_to_create)
+                        self._success(f'Created {len(popcons_to_create)} missing popcon entries')
+
                     DebianLogIndex.objects.bulk_create(log_entries_to_create)
                     self._success(
                         f'Logged upcoming creation of {len(log_entries_to_create)} issue(s)')
