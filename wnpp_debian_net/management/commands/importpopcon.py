@@ -97,7 +97,7 @@ class Command(ReportingMixin, BaseCommand):
                 del entries
             del entries_to_update
         else:
-            self._notice(f'No stale entries to update.')
+            self._notice('No stale entries to update.')
 
         # Add missing entries
         new_packages = set(entries_to_classify.keys()) - existing_packages
@@ -124,7 +124,7 @@ class Command(ReportingMixin, BaseCommand):
 
                 DebianPopcon.objects.bulk_create(entries)
         else:
-            self._notice(f'No new entries to add.')
+            self._notice('No new entries to add.')
 
     def _import_popcon_stats(self):
         for url, category in (
