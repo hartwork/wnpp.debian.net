@@ -6,7 +6,6 @@ from typing import Optional
 from django import template
 from django.utils import safestring
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
 
 register = template.Library()
@@ -18,20 +17,32 @@ def _truncate(value: str, length: int) -> str:
     return Truncator(value).chars(length)
 
 
+def _parse_contact(contact: str) -> tuple[Optional[str], str]:
+    split_up = contact.rsplit(' ', maxsplit=1)
+
+    if len(split_up) == 1:
+        mailto = contact
+        display = contact
+    elif len(split_up) == 2:
+        display, angled_address = split_up
+        display = display.strip('"').replace('<', '').replace('>', '')
+        mailto = angled_address.replace('<', '').replace('>', '')
+    else:
+        mailto = None
+        display = contact
+
+    return mailto, display
+
+
 @register.simple_tag
 def contact_link_for(contact: Optional[str], truncatechars: int = None) -> safestring:
     if not contact:
-        return mark_safe('<i>nobody</i>')
-
-    split_up = contact.rsplit(' ', maxsplit=1)
-    if len(split_up) == 1:
-        display = _truncate(contact, truncatechars)
-        return format_html('<a href="mailto:{}">{}</a>', contact, display)
-    elif len(split_up) == 2:
-        display, angled_address = split_up
-        display = _truncate(display.strip('"').replace('<', '').replace('>', ''), truncatechars)
-        address = angled_address.replace('<', '').replace('>', '')
-        return format_html('<a href="mailto:{}">{}</a>', address, display)
+        mailto, display = None, 'nobody'
     else:
-        display = _truncate(contact, truncatechars)
+        mailto, display = _parse_contact(contact)
+        display = _truncate(display, truncatechars)
+
+    if mailto is None:
         return format_html('<i>{}</i>', display)
+    else:
+        return format_html('<a href="mailto:{}">{}</a>', mailto, display)
