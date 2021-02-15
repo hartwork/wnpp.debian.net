@@ -4,10 +4,10 @@
 from django.contrib import admin
 from django.urls import path
 
-from .favicon import favicon_urlpatterns
-from .static_files import staticfiles_urlpatterns
+from .views.favicon import favicon_urlpatterns
 from .views.front_page import FrontPageView
 from .views.rss_feed import WnppNewsFeedView
+from .views.static_files import staticfiles_urlpatterns
 
 urlpatterns = [
     path('', FrontPageView.as_view(), name='front_page'),

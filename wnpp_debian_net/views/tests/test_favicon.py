@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 from parameterized import parameterized
 
-from wnpp_debian_net.favicon import FAVICON_FILES
+from ..favicon import FAVICON_FILES
 
 
 class FaviconTest(TestCase):
