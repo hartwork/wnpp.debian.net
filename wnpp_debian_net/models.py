@@ -97,3 +97,6 @@ class DebianWnpp(models.Model):
         if until is None:
             until = now()
         return (until - self.mod_stamp).days
+
+    def __lt__(self, other):
+        return self.ident < other.ident
