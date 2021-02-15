@@ -23,6 +23,7 @@ _EXTERNAL_SUFFIX_FOR = {
     INTERNAL_DIRECTION_PREFIX_DESCENDING: EXTERNAL_DIRECTION_SUFFIX_DESCENDING,
 }
 
+
 def parse_sort_param(sort_param) -> tuple[str, str]:
     split_sort_param = sort_param.split(';')
     if len(split_sort_param) == 2 and split_sort_param[1] == 'desc':

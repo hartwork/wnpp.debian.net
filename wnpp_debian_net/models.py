@@ -25,7 +25,11 @@ class EventKind(TextChoices):
 class DebianLogIndex(models.Model):
     log_id = models.AutoField(primary_key=True)
     ident = models.IntegerField(blank=True, null=True)
-    kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='type')
+    kind = models.CharField(max_length=3,
+                            choices=IssueKind.choices,
+                            blank=True,
+                            null=True,
+                            db_column='type')
     project = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     log_stamp = models.DateTimeField(blank=True, null=True)
@@ -37,10 +41,21 @@ class DebianLogIndex(models.Model):
 
 
 class DebianLogMods(models.Model):
-    log = OneToOneField(DebianLogIndex, on_delete=CASCADE, primary_key=True,
-                        related_name='kind_change', related_query_name='kind_change')
-    old_kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='before_type')
-    new_kind = models.CharField(max_length=3, choices=IssueKind.choices, blank=True, null=True, db_column='after_type')
+    log = OneToOneField(DebianLogIndex,
+                        on_delete=CASCADE,
+                        primary_key=True,
+                        related_name='kind_change',
+                        related_query_name='kind_change')
+    old_kind = models.CharField(max_length=3,
+                                choices=IssueKind.choices,
+                                blank=True,
+                                null=True,
+                                db_column='before_type')
+    new_kind = models.CharField(max_length=3,
+                                choices=IssueKind.choices,
+                                blank=True,
+                                null=True,
+                                db_column='after_type')
 
     class Meta:
         db_table = 'debian_log_mods'

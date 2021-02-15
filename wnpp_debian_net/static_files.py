@@ -18,7 +18,8 @@ def staticfiles_urlpatterns(prefix=None, name='static'):
         prefix = settings.STATIC_URL
     return [
         re_path('^%s(?P<path>.*)$' % re.escape(prefix.lstrip('/')),
-                serve, kwargs={
+                serve,
+                kwargs={
                     'insecure': not settings.DEBUG,
                     'show_indexes': settings.DEBUG,
                 },

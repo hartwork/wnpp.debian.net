@@ -92,9 +92,8 @@ class FrontPageView(ListView):
         if self._project_filter:
             # NOTE: Django doesn't let us do "popcon_id__icontains=[..]"
             #       since it's used as a foreign key
-            qs = (qs
-                  .annotate(package_name=F('popcon_id'))
-                  .filter(package_name__icontains=self._project_filter))
+            qs = (qs.annotate(package_name=F('popcon_id')).filter(
+                package_name__icontains=self._project_filter))
 
         if self._kinds:
             qs = qs.filter(kind__in=self._kinds)
@@ -106,8 +105,8 @@ class FrontPageView(ListView):
         """Return the field or fields to use for ordering the queryset."""
         external_column, internal_direction_prefix = parse_sort_param(self._sort)
         fallback_field_name = _QUERY_FIELD_FOR_COLUMN_NAME['project']
-        return internal_direction_prefix + _QUERY_FIELD_FOR_COLUMN_NAME.get(external_column,
-                                                                            fallback_field_name)
+        return internal_direction_prefix + _QUERY_FIELD_FOR_COLUMN_NAME.get(
+            external_column, fallback_field_name)
 
     #override
     def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
@@ -129,7 +128,8 @@ class FrontPageView(ListView):
 
         paginator: Paginator = context['paginator']
         page_obj: Page = context['page_obj']
-        context['page_items'] = list(iterate_page_items(total_page_count=paginator.num_pages,
-                                                        current_page_number=page_obj.number))
+        context['page_items'] = list(
+            iterate_page_items(total_page_count=paginator.num_pages,
+                               current_page_number=page_obj.number))
 
         return context

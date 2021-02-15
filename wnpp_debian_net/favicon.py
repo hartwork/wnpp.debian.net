@@ -37,8 +37,10 @@ _FAVICON_FILES_PATTERN = '|'.join(re.escape(filename) for filename in FAVICON_FI
 def favicon_urlpatterns(name='favicon'):
     return [
         re_path('^(?P<path>%s)$' % _FAVICON_FILES_PATTERN,
-                serve, kwargs={
-                    'document_root': pkg_resources.resource_filename('wnpp_debian_net', 'static/favicon'),
+                serve,
+                kwargs={
+                    'document_root':
+                    pkg_resources.resource_filename('wnpp_debian_net', 'static/favicon'),
                 },
                 name=name),
     ]

@@ -1,6 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
+
 class ReportingMixin:
     def _error(self, text: str) -> None:
         self.stderr.write(self.style.ERROR(text))

@@ -45,9 +45,7 @@ def iterate_page_items(total_page_count: int,
         yield from range(1, total_page_count + 1)
         return
 
-    number_of_items_surrounding_current = (max_item_count
-                                           - 2 * (ending_item_count + 1)
-                                           - 1)
+    number_of_items_surrounding_current = (max_item_count - 2 * (ending_item_count + 1) - 1)
     assert number_of_items_surrounding_current >= 0
     items_before_current = number_of_items_surrounding_current // 2
     items_after_current = number_of_items_surrounding_current - items_before_current
