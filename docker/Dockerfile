@@ -32,8 +32,8 @@ COPY docker/entrypoint.sh ./
 ENTRYPOINT ["./entrypoint.sh"]
 CMD []
 
-COPY --chown=wnpp-debian-net:wnpp-debian-net crontab manage.py  ./
-COPY --chown=wnpp-debian-net:wnpp-debian-net wnpp_debian_net/   ./wnpp_debian_net/
+COPY --chown=wnpp-debian-net:wnpp-debian-net .coveragerc crontab manage.py  ./
+COPY --chown=wnpp-debian-net:wnpp-debian-net wnpp_debian_net/               ./wnpp_debian_net/
 
 USER root
 RUN apk upgrade --update

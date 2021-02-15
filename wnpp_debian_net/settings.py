@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'debug': 'test' in sys.argv,  # for django_coverage_plugin
         },
     },
 ]
