@@ -15,6 +15,7 @@ Required CSS classes (a la https://getbootstrap.com/docs/4.0/components/paginati
 
 {% endcomment %}
 {% load i18n %}
+{% load humanize %}
 {% load pagination_urls %}
 
 <nav>
@@ -56,6 +57,6 @@ Required CSS classes (a la https://getbootstrap.com/docs/4.0/components/paginati
         {% endif %}
     </ul>
     <p>
-        ({{ page_obj.start_index }} {% trans 'to' %} {{ page_obj.end_index }}, {{ page_obj.paginator.count }} {% trans 'total' %})
+        ({{ page_obj.start_index|intcomma }} {% trans 'to' %} {{ page_obj.end_index|intcomma }}; {{ page_obj.paginator.count|intcomma }} {% trans 'total' %})
     </p>
 </nav>
