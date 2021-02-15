@@ -7,7 +7,7 @@ from django.core.paginator import Page, Paginator
 from django.db.models import F, Q, QuerySet
 from django.views.generic import ListView
 
-from ..models import DebianWnpp
+from ..models import DebianWnpp, IssueKind
 from ..override import overrive
 from ..pagination import iterate_page_items
 from ..templatetags.sorting_urls import parse_sort_param
@@ -36,23 +36,16 @@ _DEFAULT_COLUMNS = [
 
 assert all((column in _COLUMN_NAMES) for column in _DEFAULT_COLUMNS)
 
-_ISSUE_KINDS = [
-    'ita',
-    'itp',
-    'o',
-    'rfa',
-    'rfh',
-    'rfp',
-]
-
 _DEFAULT_ISSUE_KINDS = [
-    'o',
-    'rfa',
-    'rfh',
-    'rfp',
+    kind.value for kind in (
+        IssueKind.O_,
+        IssueKind.RFA,
+        IssueKind.RFH,
+        IssueKind.RFP,
+    )
 ]
 
-assert all((kind in _ISSUE_KINDS) for kind in _DEFAULT_ISSUE_KINDS)
+assert all((kind in IssueKind.values) for kind in _DEFAULT_ISSUE_KINDS)
 
 
 class FrontPageView(ListView):
@@ -68,7 +61,7 @@ class FrontPageView(ListView):
         self._owners = self.request.GET.getlist('owner[]', ['yes', 'no'])
         self._project_filter = self.request.GET.get('project', '')
         self._sort = self.request.GET.get('sort', 'project')
-        self._kinds = {t.lower() for t in self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS)}
+        self._kinds = set(self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS))
 
     @overrive
     def get_queryset(self) -> QuerySet:
@@ -121,8 +114,8 @@ class FrontPageView(ListView):
             'without_owner': 'no' in self._owners,
         })
 
-        for issue_kind in _ISSUE_KINDS:
-            context[f'show_{issue_kind}'] = issue_kind in self._kinds
+        for issue_kind in IssueKind.values:
+            context[f'show_{issue_kind.lower()}'] = issue_kind in self._kinds
 
         for column_name in _COLUMN_NAMES:
             context[f'show_{column_name}'] = column_name in self._col
