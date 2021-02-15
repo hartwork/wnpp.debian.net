@@ -1,7 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Union
 
 from django.core.paginator import Page, Paginator
 from django.db.models import F, Q, QuerySet
@@ -102,7 +102,7 @@ class FrontPageView(ListView):
         return qs
 
     #override
-    def get_ordering(self) -> Union[str, Tuple[str, ...]]:
+    def get_ordering(self) -> Union[str, tuple[str, ...]]:
         """Return the field or fields to use for ordering the queryset."""
         external_column, internal_direction_prefix = parse_sort_param(self._sort)
         fallback_field_name = _QUERY_FIELD_FOR_COLUMN_NAME['project']
@@ -110,7 +110,7 @@ class FrontPageView(ListView):
                                                                             fallback_field_name)
 
     #override
-    def get_context_data(self, *, object_list=None, **kwargs) -> Dict[str, Any]:
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(object_list=object_list, **kwargs)
 
         context.update({

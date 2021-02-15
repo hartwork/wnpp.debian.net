@@ -4,7 +4,7 @@
 import datetime
 import re
 from itertools import islice
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Optional
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -28,7 +28,7 @@ class Command(ReportingMixin, BaseCommand):
 
     def _close_all_issues_but(self, ids_of_open_wnpp_issues):
         self._notice('[1/3] Closing issues locally that have been closed remotely...')
-        log_entries_to_create: List[DebianLogIndex] = []
+        log_entries_to_create: list[DebianLogIndex] = []
 
         for issue in DebianWnpp.objects.exclude(ident__in=ids_of_open_wnpp_issues).iterator():
             self._notice(f'Detected that issue #{issue.ident} has been as closed, remotely')
@@ -80,7 +80,7 @@ class Command(ReportingMixin, BaseCommand):
             return None
         return ''.join((f'[U+{ord(c):X}]' if cls._is_invalid_in_utf8mb3(ord(c)) else c) for c in text)
 
-    def _fetch_issues(self, issue_ids: List[int]) -> Dict[int, Dict[str, str]]:
+    def _fetch_issues(self, issue_ids: list[int]) -> dict[int, dict[str, str]]:
         flat_issue_ids = ', '.join(str(i) for i in issue_ids)
         self._notice(f'Fetching {len(issue_ids)} issue(s): {flat_issue_ids}...')
         properties_of_issue = self._client.fetch_issues(issue_ids)
@@ -107,8 +107,8 @@ class Command(ReportingMixin, BaseCommand):
             self._notice(f'Importing next {min(_BATCH_SIZE, count_issues_left_to_import)} issue(s) of {count_issues_left_to_import} left to import...')
             count_issues_left_to_import -= _BATCH_SIZE
 
-            log_entries_to_create: List[DebianLogIndex] = []
-            issues_to_create: List[DebianWnpp] = []
+            log_entries_to_create: list[DebianLogIndex] = []
+            issues_to_create: list[DebianWnpp] = []
 
             remote_properties_of_issue = self._fetch_issues(issue_ids)
 
@@ -143,8 +143,8 @@ class Command(ReportingMixin, BaseCommand):
             return
 
         while True:
-            log_entries_to_create: List[DebianLogIndex] = []
-            issues_to_update: List[DebianWnpp] = list(stale_issues_qs.order_by('cron_stamp', 'ident')[:_BATCH_SIZE])
+            log_entries_to_create: list[DebianLogIndex] = []
+            issues_to_update: list[DebianWnpp] = list(stale_issues_qs.order_by('cron_stamp', 'ident')[:_BATCH_SIZE])
             if not issues_to_update:
                 break
 
@@ -152,8 +152,8 @@ class Command(ReportingMixin, BaseCommand):
             count_issues_left_to_update -= _BATCH_SIZE
 
             issue_ids = [issue.ident for issue in issues_to_update]
-            issue_fields_to_bulk_update: Set[str] = set()  # will be grown as needed
-            kind_change_log_details: List[Tuple[int, str, str]] = []
+            issue_fields_to_bulk_update: set[str] = set()  # will be grown as needed
+            kind_change_log_details: list[tuple[int, str, str]] = []
 
             # Fetch remote data
             remote_properties_of_issue = self._fetch_issues(issue_ids)
@@ -187,7 +187,7 @@ class Command(ReportingMixin, BaseCommand):
 
                 # Persist kind change extra log entries
                 if kind_change_log_details:
-                    kind_change_log_entries_to_create: List[DebianLogMods] = []
+                    kind_change_log_entries_to_create: list[DebianLogMods] = []
                     for issue_index, old_kind, new_kind in kind_change_log_details:
                         kind_change_log_entries_to_create.append(DebianLogMods(
                             log=issues_to_update[issue_index],
@@ -204,7 +204,7 @@ class Command(ReportingMixin, BaseCommand):
                 self._success(f'Updated {len(issues_to_update)} existing issues')
 
     @staticmethod
-    def _parse_wnpp_issue_subject(subject) -> Tuple[str, str, str]:
+    def _parse_wnpp_issue_subject(subject) -> tuple[str, str, str]:
         match = re.match('^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$', subject)
         if match is None:
             raise _MalformedSubject(f'Malformed subject {subject!r}')
@@ -218,7 +218,7 @@ class Command(ReportingMixin, BaseCommand):
         return dt
 
     @classmethod
-    def _to_database_keys(cls, issue_id: int, issue_properties: Dict[str, str]) -> Dict[str, Any]:
+    def _to_database_keys(cls, issue_id: int, issue_properties: dict[str, str]) -> dict[str, Any]:
         _MAX_DESCRIPTION_LENGTH = DebianWnpp._meta.get_field('description').max_length
 
         issue_subject = issue_properties.get(IssueProperty.SUBJECT.value, '')
@@ -243,7 +243,7 @@ class Command(ReportingMixin, BaseCommand):
         else:
             return str(o)
 
-    def _detect_and_report_diff(self, issue: DebianWnpp, future_issue_data: Dict[str, Any]) -> Set[str]:
+    def _detect_and_report_diff(self, issue: DebianWnpp, future_issue_data: dict[str, Any]) -> set[str]:
         # NOTE: We do not want to update the cron_stamp alone, but we do want to update whenever
         #       any field changed.  Should be done using TimeStampedModel instead, later.
         fields_that_changed = set()

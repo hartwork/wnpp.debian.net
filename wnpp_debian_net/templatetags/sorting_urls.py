@@ -1,8 +1,6 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from typing import Tuple
-
 from django import template
 
 from ..url_tools import url_with_query
@@ -25,7 +23,7 @@ _EXTERNAL_SUFFIX_FOR = {
     INTERNAL_DIRECTION_PREFIX_DESCENDING: EXTERNAL_DIRECTION_SUFFIX_DESCENDING,
 }
 
-def parse_sort_param(sort_param) -> Tuple[str, str]:
+def parse_sort_param(sort_param) -> tuple[str, str]:
     split_sort_param = sort_param.split(';')
     if len(split_sort_param) == 2 and split_sort_param[1] == 'desc':
         order = INTERNAL_DIRECTION_PREFIX_DESCENDING

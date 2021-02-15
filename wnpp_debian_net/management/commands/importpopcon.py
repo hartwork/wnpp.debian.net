@@ -6,7 +6,7 @@ import gzip
 import os
 import re
 from itertools import islice
-from typing import Any, Dict, List, Set
+from typing import Any
 
 import requests
 from django.core.management.base import BaseCommand
@@ -34,7 +34,7 @@ class Command(ReportingMixin, BaseCommand):
 
         extractor = re.compile(r'^[0-9]+\s+(?P<name>[^ ]+)\s+(?P<inst>[0-9]+)\s+(?P<vote>[0-9]+)\s+(?P<old>[0-9]+)\s+(?P<recent>[0-9]+)\s+(?P<nofiles>[0-9]+)')
 
-        entries_to_classify: Dict[str, Dict[str, Any]] = {}
+        entries_to_classify: dict[str, dict[str, Any]] = {}
 
         for l in content.split('\n'):
             line = l.rstrip()
@@ -54,12 +54,12 @@ class Command(ReportingMixin, BaseCommand):
 
         self._notice(f'Processing {len(entries_to_classify)} entries...')
 
-        existing_packages: Set[str] = set(DebianPopcon.objects
+        existing_packages: set[str] = set(DebianPopcon.objects
                                           .order_by('package')
                                           .values_list('package', flat=True))
 
         # Update/delete existing entries
-        entries_to_update: List[DebianPopcon] = []
+        entries_to_update: list[DebianPopcon] = []
         for entry in DebianPopcon.objects.iterator(chunk_size=_BATCH_SIZE):
             if entry.package not in entries_to_classify:
                 continue
@@ -100,7 +100,7 @@ class Command(ReportingMixin, BaseCommand):
         if new_packages:
             count_entries_left_to_add = len(new_packages)
             self._notice(f'Adding {count_entries_left_to_add} new entries...')
-            entries_to_create: List[DebianPopcon] = [
+            entries_to_create: list[DebianPopcon] = [
                 DebianPopcon(package=package_name, **entries_to_classify[package_name])
                 for package_name
                 in new_packages
