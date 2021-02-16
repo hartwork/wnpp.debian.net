@@ -23,16 +23,18 @@ class Command(ReportingMixin, BaseCommand):
 
     def _truncate_change_log(self, spare_count):
         starting_at = now()
+
         with transaction.atomic():
             ids_of_log_entries_to_keep = self._get_ids_of_log_entries_used_by_rss_feed(spare_count)
             _, deletion_details = (DebianLogIndex.objects.exclude(
                 log_id__in=ids_of_log_entries_to_keep).filter(event_stamp__lt=starting_at,
                                                               log_stamp__lt=starting_at).delete())
-            count_deleted = deletion_details.get(DebianLogIndex._meta.label, 0)
-            if count_deleted:
-                self._success(f'Deleted {count_deleted} log entries')
-            else:
-                self._notice('No log entries to delete')
+
+        count_deleted = deletion_details.get(DebianLogIndex._meta.label, 0)
+        if count_deleted:
+            self._success(f'Deleted {count_deleted} log entries')
+        else:
+            self._notice('No log entries to delete')
 
     def add_arguments(self, parser):
         parser.add_argument('--spare',
