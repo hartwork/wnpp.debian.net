@@ -14,6 +14,8 @@ import os
 import sys
 from pathlib import Path
 
+from django.core.exceptions import SuspiciousOperation
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -133,6 +135,9 @@ if _SENTRY_DSN:
 
     sentry_sdk.init(
         dsn=_SENTRY_DSN,
+        ignore_errors=[
+            SuspiciousOperation,
+        ],
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
 
