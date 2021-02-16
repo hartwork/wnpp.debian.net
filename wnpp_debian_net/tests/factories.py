@@ -13,6 +13,7 @@ class DebianLogIndexFactory(DjangoModelFactory):
         model = DebianLogIndex
 
     event_stamp = LazyFunction(now)
+    log_stamp = LazyFunction(now)
 
 
 class DebianLogModsFactory(DjangoModelFactory):

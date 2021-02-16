@@ -10,7 +10,7 @@ from parameterized import parameterized
 
 from ...models import DebianLogIndex, EventKind, IssueKind
 from ...tests.factories import DebianLogIndexFactory
-from ..rss_feed import _MAX_ENTRIES, _DataSet
+from ..rss_feed import DEFAULT_MAX_ENTRIES, NewsDataSet
 
 
 class WnppNewsFeedTest(TestCase):
@@ -29,10 +29,10 @@ class WnppNewsFeedTest(TestCase):
 
     @staticmethod
     def _most_recent(entries):
-        return sorted(entries, key=attrgetter('event_stamp'), reverse=True)[:_MAX_ENTRIES]
+        return sorted(entries, key=attrgetter('event_stamp'), reverse=True)[:DEFAULT_MAX_ENTRIES]
 
     @parameterized.expand([
-        ('all', _DataSet.ALL.value),
+        ('all', NewsDataSet.ALL.value),
         ('default', None),
         ('invalid', 'something invalid'),
     ])
@@ -49,7 +49,7 @@ class WnppNewsFeedTest(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__bad_news(self):
-        data = {'data': _DataSet.BAD_NEWS.value}
+        data = {'data': NewsDataSet.BAD_NEWS.value}
         good_news = (
             (EventKind.CLOSED.value, IssueKind.ITA.value),
             (EventKind.CLOSED.value, IssueKind.ITP.value),
@@ -72,7 +72,7 @@ class WnppNewsFeedTest(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__good_news(self):
-        data = {'data': _DataSet.GOOD_NEWS.value}
+        data = {'data': NewsDataSet.GOOD_NEWS.value}
         good_news = (
             (EventKind.CLOSED, IssueKind.ITA),
             (EventKind.CLOSED, IssueKind.ITP),
@@ -96,7 +96,7 @@ class WnppNewsFeedTest(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__help_existing(self):
-        data = {'data': _DataSet.HELP_EXISTING.value}
+        data = {'data': NewsDataSet.HELP_EXISTING.value}
         help_existing = (
             (EventKind.MODIFIED, IssueKind.O_),
             (EventKind.MODIFIED, IssueKind.RFA),
@@ -116,7 +116,7 @@ class WnppNewsFeedTest(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__new_packages(self):
-        data = {'data': _DataSet.NEW_PACKAGES.value}
+        data = {'data': NewsDataSet.NEW_PACKAGES.value}
         expected_object_list = [
             self.entry_for_event_kind_for_issue_kind[IssueKind.ITP.value][EventKind.CLOSED.value]
         ]
