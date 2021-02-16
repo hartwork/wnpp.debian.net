@@ -10,7 +10,7 @@ parameterized==0.8.1
 psycopg2==2.8.6
 PySimpleSOAP==1.16.2
 requests==2.25.1
-sentry-sdk==0.20.1
+sentry-sdk==0.20.2
 wait-for-it==2.2.0
 
 # Indirect dependencies
