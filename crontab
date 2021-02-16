@@ -1,4 +1,5 @@
 # Fox syntax see https://github.com/aptible/supercronic/tree/master/cronexpr#implementation
 # The frequency here is set to twice as often as the checks inside the management commands
+@daily       ./manage.py truncatechangelog
 @hourly      ./manage.py importdebbugs
 0 */6 * * *  ./manage.py importpopcon
