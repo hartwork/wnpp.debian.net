@@ -133,10 +133,13 @@ if _SENTRY_DSN:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
+    def _full_class_name_of(c):
+        return f'{c.__module__}.{c.__name__}'
+
     sentry_sdk.init(
         dsn=_SENTRY_DSN,
         ignore_errors=[
-            SuspiciousOperation,
+            _full_class_name_of(SuspiciousOperation),
         ],
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
