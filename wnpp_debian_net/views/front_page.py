@@ -3,6 +3,7 @@
 
 from typing import Any, Union
 
+from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Page, Paginator
 from django.db.models import F, Q, QuerySet
 from django.db.models.functions import Coalesce
@@ -65,6 +66,16 @@ class FrontPageView(ListView):
         self._sort = self.request.GET.get('sort', 'project')
         self._kinds = set(self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS))
 
+        # Validation
+        if any((col not in _INTERNAL_FIELDS_FOR_COLUMN_NAME) for col in self._col):
+            raise SuspiciousOperation
+        self._sort_external_column, self._sort_internal_direction_prefix = parse_sort_param(
+            self._sort)
+        if self._sort_external_column not in _COLUMN_NAMES:
+            raise SuspiciousOperation
+        if any((kind not in IssueKind.values) for kind in self._kinds):
+            raise SuspiciousOperation
+
     @overrive
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
@@ -103,10 +114,9 @@ class FrontPageView(ListView):
     @overrive
     def get_ordering(self) -> Union[str, tuple[str, ...]]:
         """Return the field or fields to use for ordering the queryset."""
-        external_column, internal_direction_prefix = parse_sort_param(self._sort)
         fallback_field_name = _INTERNAL_FIELDS_FOR_COLUMN_NAME['project']
-        return internal_direction_prefix + _INTERNAL_FIELDS_FOR_COLUMN_NAME.get(
-            external_column, fallback_field_name)[0]
+        return self._sort_internal_direction_prefix + _INTERNAL_FIELDS_FOR_COLUMN_NAME.get(
+            self._sort_external_column, fallback_field_name)[0]
 
     @overrive
     def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
