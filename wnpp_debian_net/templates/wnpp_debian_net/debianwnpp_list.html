@@ -260,10 +260,10 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
     <td class="{{ issue.kind }}" title="{{ issue.description }}"><nobr>{{ issue.description|truncatechars:60 }}</nobr></td>
     {% endif %}
     {% if show_users %}
-    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.vote|default:"0"|intcomma }}&nbsp;</nobr></td>
+    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon__vote_nonnull|intcomma }}&nbsp;</nobr></td>
     {% endif %}
     {% if show_installs %}
-    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon.inst|default:"0"|intcomma }}&nbsp;</nobr></td>
+    <td class="{{ issue.kind }}" align="right"><nobr>&nbsp;{{ issue.popcon__inst_nonnull|intcomma }}&nbsp;</nobr></td>
     {% endif %}
     {% if show_owner %}
     <td class="{{ issue.kind }}"><nobr>{% contact_link_for issue.charge_person truncatechars=30 %}</nobr></td>
