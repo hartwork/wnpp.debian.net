@@ -66,7 +66,7 @@ class Command(ReportingMixin, BaseCommand):
             changed = False
             for field_name, new_value in entries_to_classify[entry.package].items():
                 old_value = getattr(entry, field_name)
-                new_value = max(int(new_value), old_value)
+                new_value = max(int(new_value), old_value or 0)
                 if new_value != old_value:
                     changed = True
                     setattr(entry, field_name, new_value)
