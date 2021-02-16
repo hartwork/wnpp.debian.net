@@ -1,8 +1,10 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
+from http import HTTPStatus
 
 from django.test import TestCase
 from django.urls import reverse_lazy
+from parameterized import parameterized
 
 from ...models import DebianPopcon, IssueKind
 from ...tests.factories import DebianWnppFactory
@@ -11,6 +13,18 @@ from ..front_page import _COLUMN_NAMES, _DEFAULT_COLUMNS, _DEFAULT_ISSUE_KINDS
 
 class _FrontPageTestCase(TestCase):
     url = reverse_lazy('front_page')
+
+
+class RequestValidationTest(TestCase):  # doesn't need _FrontPageTestCase
+    @parameterized.expand([
+        ('/?col%5B%5D=description%27&desc=%27&sort=project%27&type%5B%5D=RFP%27', ),  # seen live
+        ('/?col%5B%5D=description%27', ),
+        ('/?sort=project%27', ),
+        ('/?type%5B%5D=RFP%27', ),
+    ])
+    def test_bad_request_for_column(self, url):
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
 
 class ColumnVisibilityTest(_FrontPageTestCase):
