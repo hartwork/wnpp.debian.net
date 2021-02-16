@@ -1,6 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
+from http import HTTPStatus
 from operator import attrgetter
 
 from django.test import TestCase
@@ -45,6 +46,7 @@ class WnppNewsFeedTest(TestCase):
 
         actual_object_list = list(response.context_data['object_list'])
         self.assertEqual(actual_object_list, expected_object_list)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__bad_news(self):
         data = {'data': _DataSet.BAD_NEWS.value}
@@ -67,6 +69,7 @@ class WnppNewsFeedTest(TestCase):
 
         actual_object_list = list(response.context_data['object_list'])
         self.assertEqual(actual_object_list, expected_object_list)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__good_news(self):
         data = {'data': _DataSet.GOOD_NEWS.value}
@@ -90,6 +93,7 @@ class WnppNewsFeedTest(TestCase):
 
         actual_object_list = list(response.context_data['object_list'])
         self.assertEqual(actual_object_list, expected_object_list)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__help_existing(self):
         data = {'data': _DataSet.HELP_EXISTING.value}
@@ -109,6 +113,7 @@ class WnppNewsFeedTest(TestCase):
 
         actual_object_list = list(response.context_data['object_list'])
         self.assertEqual(actual_object_list, expected_object_list)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_entries__new_packages(self):
         data = {'data': _DataSet.NEW_PACKAGES.value}
@@ -120,3 +125,4 @@ class WnppNewsFeedTest(TestCase):
 
         actual_object_list = list(response.context_data['object_list'])
         self.assertEqual(actual_object_list, expected_object_list)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
