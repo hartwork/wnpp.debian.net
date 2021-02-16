@@ -5,6 +5,7 @@ from typing import Any, Union
 
 from django.core.paginator import Page, Paginator
 from django.db.models import F, Q, QuerySet
+from django.db.models.functions import Coalesce
 from django.views.generic import ListView
 
 from ..models import DebianWnpp, IssueKind
@@ -12,19 +13,20 @@ from ..override import overrive
 from ..pagination import iterate_page_items
 from ..templatetags.sorting_urls import parse_sort_param
 
-_QUERY_FIELD_FOR_COLUMN_NAME = {
-    'dust': 'mod_stamp',
-    'age': 'open_stamp',
-    'type': 'kind',
-    'project': 'popcon_id',
-    'description': 'description',
-    'users': 'popcon__vote',
-    'installs': 'popcon__inst',
-    'owner': 'charge_person',
-    'reporter': 'open_person',
+_INTERNAL_FIELDS_FOR_COLUMN_NAME = {
+    # NOTE: First item is for data access and ordering, second item is for .only(..)
+    'dust': ('mod_stamp', 'mod_stamp'),
+    'age': ('open_stamp', 'open_stamp'),
+    'type': ('kind', 'kind'),
+    'project': ('popcon_id', 'popcon_id'),
+    'description': ('description', 'description'),
+    'users': ('popcon__vote_nonnull', 'popcon__vote'),
+    'installs': ('popcon__inst_nonnull', 'popcon__inst'),
+    'owner': ('charge_person', 'charge_person'),
+    'reporter': ('open_person', 'open_person'),
 }
 
-_COLUMN_NAMES = _QUERY_FIELD_FOR_COLUMN_NAME.keys()
+_COLUMN_NAMES = _INTERNAL_FIELDS_FOR_COLUMN_NAME.keys()
 
 _DEFAULT_COLUMNS = [
     'dust',
@@ -69,8 +71,12 @@ class FrontPageView(ListView):
 
         if 'installs' in self._col or 'users' in self._col:
             qs = qs.select_related('popcon')
+            if 'installs' in self._col:
+                qs = qs.annotate(popcon__inst_nonnull=Coalesce('popcon__inst', 0))
+            if 'users' in self._col:
+                qs = qs.annotate(popcon__vote_nonnull=Coalesce('popcon__vote', 0))
 
-        fields = [_QUERY_FIELD_FOR_COLUMN_NAME[col] for col in sorted(set(self._col))]
+        fields = [_INTERNAL_FIELDS_FOR_COLUMN_NAME[col][1] for col in sorted(set(self._col))]
         qs = qs.only(*fields)
 
         if self._description_filter:
@@ -98,9 +104,9 @@ class FrontPageView(ListView):
     def get_ordering(self) -> Union[str, tuple[str, ...]]:
         """Return the field or fields to use for ordering the queryset."""
         external_column, internal_direction_prefix = parse_sort_param(self._sort)
-        fallback_field_name = _QUERY_FIELD_FOR_COLUMN_NAME['project']
-        return internal_direction_prefix + _QUERY_FIELD_FOR_COLUMN_NAME.get(
-            external_column, fallback_field_name)
+        fallback_field_name = _INTERNAL_FIELDS_FOR_COLUMN_NAME['project']
+        return internal_direction_prefix + _INTERNAL_FIELDS_FOR_COLUMN_NAME.get(
+            external_column, fallback_field_name)[0]
 
     @overrive
     def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
