@@ -81,22 +81,14 @@ WSGI_APPLICATION = 'wnpp_debian_net.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': os.environ.get('WDN_MYSQL_HOST'),
-        'PORT': os.environ.get('WDN_MYSQL_PORT'),
-        'NAME': os.environ.get('WDN_MYSQL_NAME'),
-        'USER': os.environ.get('WDN_MYSQL_USER'),
-        'PASSWORD': os.environ.get('WDN_MYSQL_PASSWORD'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ['WDN_POSTGRES_HOST'],
+        'NAME': os.environ['WDN_POSTGRES_NAME'],
+        'PASSWORD': os.environ['WDN_POSTGRES_PASSWORD'],
+        'PORT': os.environ['WDN_POSTGRES_PORT'],
+        'USER': os.environ['WDN_POSTGRES_USER'],
     }
 }
-
-if 'test' in sys.argv:
-    # NOTE: The assert makes sure we get rid of this workaround once we migrate to PostgreSQL
-    assert DATABASES['default']['ENGINE'] == 'django.db.backends.mysql'
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

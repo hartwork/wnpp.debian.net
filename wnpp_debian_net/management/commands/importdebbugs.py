@@ -4,7 +4,7 @@
 import datetime
 import re
 from itertools import islice
-from typing import Any, Optional
+from typing import Any
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -12,7 +12,7 @@ from django.utils.text import Truncator
 from django.utils.timezone import now
 
 from ...debbugs import DebbugsWnppClient, IssueProperty
-from ...models import DebianLogIndex, DebianLogMods, DebianWnpp, EventKind
+from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, EventKind
 from ._common import ReportingMixin
 
 _BATCH_SIZE = 100
@@ -45,42 +45,20 @@ class Command(ReportingMixin, BaseCommand):
         else:
             self._notice('No existing issues deleted.')
 
-    @staticmethod
-    def _is_invalid_in_utf8mb3(codepoint: int) -> bool:
-        # These ranges were retrieved by feeding all 0x10ffff code points to MySQL in isolation
-        return ((0x80 == codepoint) or (0x82 <= codepoint <= 0x8C) or (0x8E == codepoint)
-                or (0x91 <= codepoint <= 0x9C) or (0x9E <= codepoint <= 0x9F)
-                or (0x100 <= codepoint <= 0x151) or (0x154 <= codepoint <= 0x15F)
-                or (0x162 <= codepoint <= 0x177) or (0x179 <= codepoint <= 0x17C)
-                or (0x17F <= codepoint <= 0x191) or (0x193 <= codepoint <= 0x2C5)
-                or (0x2C7 <= codepoint <= 0x2DB) or (0x2DD <= codepoint <= 0x2012) or
-                (0x2015 <= codepoint <= 0x2017) or (0x201B == codepoint) or (0x201F == codepoint)
-                or (0x2023 <= codepoint <= 0x2025) or (0x2027 <= codepoint <= 0x202F)
-                or (0x2031 <= codepoint <= 0x2038) or (0x203B <= codepoint <= 0x20AB)
-                or (0x20AD <= codepoint <= 0x2121) or (0x2123 <= codepoint))
-
-    @classmethod
-    def _fit_utf8mb3(cls, text: Optional[str]) -> Optional[str]:
-        """
-        MySQL needs charset "utf8mb4" to store 4-byte characters.
-        For plain "utf8", we have to pull 4-byte characters characters back into 3-byte range.
-        """
-        if text is None:
-            return None
-        return ''.join(
-            (f'[U+{ord(c):X}]' if cls._is_invalid_in_utf8mb3(ord(c)) else c) for c in text)
-
     def _fetch_issues(self, issue_ids: list[int]) -> dict[int, dict[str, str]]:
         flat_issue_ids = ', '.join(str(i) for i in issue_ids)
         self._notice(f'Fetching {len(issue_ids)} issue(s): {flat_issue_ids}...')
         properties_of_issue = self._client.fetch_issues(issue_ids)
 
-        # Mass-replace characters that are potential trouble to MySQL's utf8mb3
-        for properties in properties_of_issue.values():
-            for k, v in properties.items():
-                properties[k] = self._fit_utf8mb3(v)
-
         return properties_of_issue
+
+    @staticmethod
+    def _create_missing_pocons_for(package_names: list[str]) -> list[DebianPopcon]:
+        existing_packages = set(
+            DebianPopcon.objects.filter(package__in=package_names).values_list('package',
+                                                                               flat=True))
+        missing_packages = package_names - existing_packages
+        return [DebianPopcon(package=package) for package in missing_packages]
 
     def _add_any_new_issues_from(self, ids_of_remote_open_issues):
         ids_of_issues_already_known_locally = set(
@@ -109,19 +87,37 @@ class Command(ReportingMixin, BaseCommand):
 
             remote_properties_of_issue = self._fetch_issues(issue_ids)
 
+            future_local_properties_of_issue: dict[int, dict[str, Any]] = {}
             for issue_id, properties in remote_properties_of_issue.items():
                 self._notice(f'Processing upcoming issue {issue_id}...')
                 try:
-                    issue = DebianWnpp(**self._to_database_keys(issue_id, properties))
+                    future_local_properties_of_issue[issue_id] = self._to_database_keys(
+                        issue_id, properties)
                 except _MalformedSubject as e:
                     self._error(str(e))
                     continue
+
+            # NOTE: PostgreSQL is not forgiving about absent foreign keys,
+            #       so we'll need to create any missing DebianPopcon instances
+            #       before created the the related DebianWnpp instances.
+            involved_package = {
+                properties['popcon_id']
+                for properties in future_local_properties_of_issue.values()
+            }
+            popcons_to_create = self._create_missing_pocons_for(involved_package)
+
+            for issue_id, properties in future_local_properties_of_issue.items():
+                issue = DebianWnpp(**properties)
                 issues_to_create.append(issue)
                 log_entries_to_create.append(
                     self._create_log_entry_from(issue, EventKind.OPENED, issue.open_stamp))
 
             if issues_to_create:
                 with transaction.atomic():
+                    if popcons_to_create:
+                        DebianPopcon.objects.bulk_create(popcons_to_create)
+                        self._success(f'Created {len(popcons_to_create)} missing popcon entries')
+
                     DebianLogIndex.objects.bulk_create(log_entries_to_create)
                     self._success(
                         f'Logged upcoming creation of {len(log_entries_to_create)} issue(s)')
@@ -145,6 +141,7 @@ class Command(ReportingMixin, BaseCommand):
 
         while True:
             log_entries_to_create: list[DebianLogIndex] = []
+            kind_change_log_entries_to_create: list[DebianLogMods] = []
             issues_to_update: list[DebianWnpp] = list(
                 stale_issues_qs.order_by('cron_stamp', 'ident')[:_BATCH_SIZE])
             if not issues_to_update:
@@ -157,7 +154,6 @@ class Command(ReportingMixin, BaseCommand):
 
             issue_ids = [issue.ident for issue in issues_to_update]
             issue_fields_to_bulk_update: set[str] = set()  # will be grown as needed
-            kind_change_log_details: list[tuple[int, str, str]] = []
 
             # Fetch remote data
             remote_properties_of_issue = self._fetch_issues(issue_ids)
@@ -173,18 +169,26 @@ class Command(ReportingMixin, BaseCommand):
                     self.stderr.write(self.style.ERROR(str(e)))
                     continue
 
-                if database_field_map['kind'] != issue.kind:
-                    kind_change_log_details.append((i, issue.kind, database_field_map['kind']))
+                fields_about_to_change = self._detect_and_report_diff(issue, database_field_map)
 
-                fields_that_changed = self._detect_and_report_diff(issue, database_field_map)
+                if fields_about_to_change:
+                    issue_fields_to_bulk_update |= fields_about_to_change
 
-                if fields_that_changed:
-                    issue_fields_to_bulk_update |= fields_that_changed
-                    for field_name in fields_that_changed:
+                    old_kind_backup = issue.kind
+                    for field_name in fields_about_to_change:
                         setattr(issue, field_name, database_field_map[field_name])
-                        log_entries_to_create.append(
-                            self._create_log_entry_from(issue, EventKind.MODIFIED,
-                                                        issue.mod_stamp))
+
+                    log_entry = self._create_log_entry_from(issue, EventKind.MODIFIED,
+                                                            issue.mod_stamp)
+                    log_entries_to_create.append(log_entry)
+
+                    if old_kind_backup != issue.kind:
+                        kind_change_log_entries_to_create.append(
+                            DebianLogMods(
+                                log=log_entry,
+                                old_kind=old_kind_backup,
+                                new_kind=issue.kind,
+                            ))
 
             with transaction.atomic():
                 # Persist log entries
@@ -192,18 +196,15 @@ class Command(ReportingMixin, BaseCommand):
                 self._success(f'Logged upcoming updates to {len(log_entries_to_create)} issue(s)')
 
                 # Persist kind change extra log entries
-                if kind_change_log_details:
-                    kind_change_log_entries_to_create: list[DebianLogMods] = []
-                    for issue_index, old_kind, new_kind in kind_change_log_details:
-                        kind_change_log_entries_to_create.append(
-                            DebianLogMods(
-                                log=issues_to_update[issue_index],
-                                old_kind=old_kind,
-                                new_kind=new_kind,
-                            ))
+                if kind_change_log_entries_to_create:
+                    # NOTE: We need to apply the just-written primary keys or we'll get this error:
+                    #       django.db.utils.IntegrityError: null value in column "log_id" of relation "debian_log_mods" violates not-null constraint
+                    for kind_change_log_entry in kind_change_log_entries_to_create:
+                        kind_change_log_entry.log_id = kind_change_log_entry.log.log_id
+
                     DebianLogMods.objects.bulk_create(kind_change_log_entries_to_create)
                     self._success(
-                        f'Logged upcoming changes in kind of {len(kind_change_log_details)} issue(s)'
+                        f'Logged upcoming changes in kind of {len(kind_change_log_entries_to_create)} issue(s)'
                     )
                 else:
                     self._notice('No changes in kind recognized.')

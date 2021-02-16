@@ -7,7 +7,7 @@ set -e
 set -u
 set -x
 
-wait-for-it --service "${WDN_MYSQL_HOST}:${WDN_MYSQL_PORT}"
+wait-for-it --service "${WDN_POSTGRES_HOST}:${WDN_POSTGRES_PORT}"
 
 if [[ $# -gt 0 ]]; then
     if [[ $1 = test ]]; then

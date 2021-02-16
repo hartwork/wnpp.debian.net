@@ -10,7 +10,7 @@ networks:
 services:
   wnpp-debian-net:
     depends_on:
-      - mysql
+      - postgres
     build:
       context: .
       dockerfile: docker/Dockerfile
@@ -18,11 +18,11 @@ services:
       # KEEP IN SYNC with container "cron" below
       WDN_ALLOWED_HOSTS: ${WDN_ALLOWED_HOSTS}
       WDN_DEBUG: ${WDN_DEBUG}
-      WDN_MYSQL_HOST: mysql
-      WDN_MYSQL_NAME: ${WDN_MYSQL_NAME:?}
-      WDN_MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
-      WDN_MYSQL_PORT: ${WDN_MYSQL_PORT:?}
-      WDN_MYSQL_USER: ${WDN_MYSQL_USER:?}
+      WDN_POSTGRES_HOST: postgres
+      WDN_POSTGRES_NAME: ${WDN_POSTGRES_NAME:?}
+      WDN_POSTGRES_PASSWORD: ${WDN_POSTGRES_PASSWORD:?}
+      WDN_POSTGRES_PORT: 5432
+      WDN_POSTGRES_USER: ${WDN_POSTGRES_USER:?}
       WDN_SECRET_KEY: ${WDN_SECRET_KEY:?}
       WDN_SENTRY_DSN: ${WDN_SENTRY_DSN}
       # KEEP IN SYNC with container "cron" below
@@ -39,18 +39,18 @@ services:
 
   cron:
     depends_on:
-      - mysql
+      - postgres
     image: ${COMPOSE_PROJECT_NAME:-wnppdebiannet}_wnpp-debian-net
     command: ["sh", "-c", "supercronic -sentry-dsn \"${WDN_SENTRY_DSN}\" ~/crontab"]
     environment:
       # KEEP IN SYNC with container "django" above
       WDN_ALLOWED_HOSTS: ${WDN_ALLOWED_HOSTS}
       WDN_DEBUG: ${WDN_DEBUG}
-      WDN_MYSQL_HOST: mysql
-      WDN_MYSQL_NAME: ${WDN_MYSQL_NAME:?}
-      WDN_MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
-      WDN_MYSQL_PORT: ${WDN_MYSQL_PORT:?}
-      WDN_MYSQL_USER: ${WDN_MYSQL_USER:?}
+      WDN_POSTGRES_HOST: postgres
+      WDN_POSTGRES_NAME: ${WDN_POSTGRES_NAME:?}
+      WDN_POSTGRES_PASSWORD: ${WDN_POSTGRES_PASSWORD:?}
+      WDN_POSTGRES_PORT: 5432
+      WDN_POSTGRES_USER: ${WDN_POSTGRES_USER:?}
       WDN_SECRET_KEY: ${WDN_SECRET_KEY:?}
       WDN_SENTRY_DSN: ${WDN_SENTRY_DSN}
       # KEEP IN SYNC with container "django" above
@@ -62,13 +62,22 @@ services:
     restart: unless-stopped
     tty: true
 
-  mysql:
-    image: mysql:5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
-      MYSQL_USER: ${WDN_MYSQL_USER:?}
-      MYSQL_PASSWORD: ${WDN_MYSQL_PASSWORD:?}
-      MYSQL_DATABASE: ${WDN_MYSQL_NAME:?}
+  postgres:
+    image: postgres:13.1  # due to postgresql-client version 13.1 in Alpine 3.13
     volumes:
-      - ~/wnpp-debian-net/var-lib-mysql:/var/lib/mysql
+      - ~/wnpp-debian-net/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${WDN_POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${WDN_POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${WDN_POSTGRES_NAME:?}
+    logging:
+      driver: 'none'
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_READ_SEARCH
+      - FOWNER
+      - SETGID
+      - SETUID
     restart: unless-stopped

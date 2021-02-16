@@ -32,10 +32,9 @@ jobs:
         run: |-
           docker network create --internal ssl-reverse-proxy
           tee .env <<-EOF
-            WDN_MYSQL_PORT=3306
-            WDN_MYSQL_NAME=wdn111
-            WDN_MYSQL_USER=wdn222
-            WDN_MYSQL_PASSWORD=wdn333
+            WDN_POSTGRES_NAME=wdn111
+            WDN_POSTGRES_USER=wdn222
+            WDN_POSTGRES_PASSWORD=wdn333
             WDN_SECRET_KEY=wdn444
           EOF
 
