@@ -1,6 +1,8 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
+import re
+
 from django import template
 
 from ..url_tools import url_with_query
@@ -10,8 +12,8 @@ register = template.Library()
 INTERNAL_DIRECTION_PREFIX_ASCENDING = ''
 INTERNAL_DIRECTION_PREFIX_DESCENDING = '-'
 
-EXTERNAL_DIRECTION_SUFFIX_ASCENDING = ';asc'
-EXTERNAL_DIRECTION_SUFFIX_DESCENDING = ';desc'
+EXTERNAL_DIRECTION_SUFFIX_ASCENDING = '/asc'
+EXTERNAL_DIRECTION_SUFFIX_DESCENDING = '/desc'
 
 _OPPOSITE_INTERNAL_PREFIX = {
     INTERNAL_DIRECTION_PREFIX_ASCENDING: INTERNAL_DIRECTION_PREFIX_DESCENDING,
@@ -25,7 +27,11 @@ _EXTERNAL_SUFFIX_FOR = {
 
 
 def parse_sort_param(sort_param) -> tuple[str, str]:
-    split_sort_param = sort_param.split(';')
+    # NOTE: Semicolon (";") is only supported here to keep existing links working.
+    #       Some browsers interpret it as a separator of query parameters because of
+    #       https://www.w3.org/TR/1999/REC-html401-19991224/appendix/notes.html#h-B.2.2
+    #       and some don't; so at least we no longer _produce_ links like that any more.
+    split_sort_param = re.split('[;/]', sort_param)
     if len(split_sort_param) == 2 and split_sort_param[1] == 'desc':
         order = INTERNAL_DIRECTION_PREFIX_DESCENDING
     else:
