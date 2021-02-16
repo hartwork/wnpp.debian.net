@@ -3,6 +3,7 @@
 
 import sys
 from enum import Enum
+from typing import Optional
 
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
@@ -12,10 +13,10 @@ from django.utils.translation import gettext_lazy as _
 from ..models import DebianLogIndex, EventKind, IssueKind
 from ..templatetags.debian_urls import wnpp_issue_url
 
-_MAX_ENTRIES = 30
+DEFAULT_MAX_ENTRIES = 30
 
 
-class _DataSet(Enum):
+class NewsDataSet(Enum):
     ALL = 'all'
     BAD_NEWS = 'bad_news'
     GOOD_NEWS = 'good_news'
@@ -31,16 +32,16 @@ _FILTER_GOOD_NEWS: Q = (Q(event=EventKind.CLOSED.value)
                         | Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
                             kind__in=(IssueKind.ITA.value, IssueKind.ITP.value)))
 
-_DATASETS: dict[_DataSet, tuple[str, Q]] = {
-    _DataSet.ALL: (_('Debian Packaging News'), (Q())),
-    _DataSet.BAD_NEWS: (_('Bad News on Debian Packages'), ~_FILTER_GOOD_NEWS),
-    _DataSet.GOOD_NEWS: (_('Good News on Debian Packages'), _FILTER_GOOD_NEWS),
-    _DataSet.HELP_EXISTING: (_('Existing Debian Packages In Need For Help'),
-                             Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
-                               kind__in=(IssueKind.O_.value, IssueKind.RFA.value,
-                                         IssueKind.RFH.value))),
-    _DataSet.NEW_PACKAGES: (_('New Debian Packages'), Q(event=EventKind.CLOSED,
-                                                        kind=IssueKind.ITP)),
+_DATASETS: dict[NewsDataSet, tuple[str, Q]] = {
+    NewsDataSet.ALL: (_('Debian Packaging News'), (Q())),
+    NewsDataSet.BAD_NEWS: (_('Bad News on Debian Packages'), ~_FILTER_GOOD_NEWS),
+    NewsDataSet.GOOD_NEWS: (_('Good News on Debian Packages'), _FILTER_GOOD_NEWS),
+    NewsDataSet.HELP_EXISTING: (_('Existing Debian Packages In Need For Help'),
+                                Q(event__in=(EventKind.MODIFIED.value, EventKind.OPENED.value),
+                                  kind__in=(IssueKind.O_.value, IssueKind.RFA.value,
+                                            IssueKind.RFH.value))),
+    NewsDataSet.NEW_PACKAGES: (_('New Debian Packages'),
+                               Q(event=EventKind.CLOSED, kind=IssueKind.ITP)),
 }
 
 
@@ -48,6 +49,10 @@ class WnppNewsFeedView(Feed):
     title = _('Debian Packaging News')
     description = _('Debian news feed on packaging bugs')
     ttl = 15  # seconds
+
+    def __init__(self, data_set: Optional[str] = None, max_entries: Optional[int] = None):
+        self.__max_entries = max_entries or DEFAULT_MAX_ENTRIES
+        self.__data_set = data_set  # overwritten in __call__ below
 
     def __call__(self, request, *args, **kwargs):
         self.__request: HttpRequest = request
@@ -67,14 +72,14 @@ class WnppNewsFeedView(Feed):
         return response
 
     def title(self):
-        return _DATASETS[_DataSet(self.__data_set)][0]
+        return _DATASETS[NewsDataSet(self.__data_set)][0]
 
     def _get_querset_filter(self):
-        return _DATASETS[_DataSet(self.__data_set)][1]
+        return _DATASETS[NewsDataSet(self.__data_set)][1]
 
     def items(self):
         return (DebianLogIndex.objects.filter(self._get_querset_filter()).select_related(
-            'kind_change').order_by('-event_stamp')[:_MAX_ENTRIES])
+            'kind_change').order_by('-event_stamp')[:self.__max_entries])
 
     def item_author_email(self, item: DebianLogIndex):
         return f'{item.ident}@bugs.debian.org'
