@@ -53,4 +53,4 @@ def self_url_with_sorting_for(context, future_column):
 
     future_sort = combine_sort_param(future_column, internal_direction_prefix)
 
-    return url_with_query(url, sort=future_sort)
+    return url_with_query(url, sort=future_sort, page=1)
