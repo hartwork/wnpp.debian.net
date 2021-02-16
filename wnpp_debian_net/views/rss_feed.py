@@ -7,7 +7,8 @@ from typing import Optional
 
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 
 from ..models import DebianLogIndex, EventKind, IssueKind
@@ -54,6 +55,14 @@ class WnppNewsFeedView(Feed):
         self.__max_entries = max_entries or DEFAULT_MAX_ENTRIES
         self.__data_set = data_set  # overwritten in __call__ below
 
+    @staticmethod
+    def _insert_reference_to_xslt_stylesheet_to(response: HttpResponse) -> None:
+        rss_xsl_url = static('xsl/rss.xsl')
+        stylesheet_line = f'<?xml-stylesheet type="text/xsl" href="{rss_xsl_url}" media="all"?>'
+        bytes_lines: bytes = response.content.split(b'\n')
+        response.content = b''.join([bytes_lines[0] + stylesheet_line.encode('ascii')]
+                                    + bytes_lines[1:])
+
     def __call__(self, request, *args, **kwargs):
         self.__request: HttpRequest = request
         self.__title_format_kind = self.__request.GET.get('title_format', '0')
@@ -68,6 +77,12 @@ class WnppNewsFeedView(Feed):
             response.context_data = {
                 'object_list': self.items(),
             }
+
+        self._insert_reference_to_xslt_stylesheet_to(response)
+
+        # This will make Chromium and Firefox apply the XML stylesheet
+        # Without it, Django serves "application/rss+xml".
+        response['Content-Type'] = 'application/xml'
 
         return response
 
