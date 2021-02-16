@@ -60,8 +60,8 @@ class WnppNewsFeedView(Feed):
         rss_xsl_url = static('xsl/rss.xsl')
         stylesheet_line = f'<?xml-stylesheet type="text/xsl" href="{rss_xsl_url}" media="all"?>'
         bytes_lines: bytes = response.content.split(b'\n')
-        response.content = b''.join([bytes_lines[0] + stylesheet_line.encode('ascii')]
-                                    + bytes_lines[1:])
+        response.content = b'\n'.join([bytes_lines[0] + stylesheet_line.encode('ascii')]
+                                      + bytes_lines[1:])
 
     def __call__(self, request, *args, **kwargs):
         self.__request: HttpRequest = request
