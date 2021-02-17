@@ -1,0 +1,110 @@
+interactions:
+- request:
+    body: "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\
+      \ xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"\
+      >\n<soap:Header/>\n<soap:Body>\n    <get_status xmlns=\"None\">\n    <arg0>748374</arg0><arg1>842114</arg1><arg2>947640</arg2></get_status>\n\
+      </soap:Body>\n</soap:Envelope>"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '369'
+      Content-Type:
+      - text/xml; charset="UTF-8"
+      Host:
+      - bugs.debian.org
+      User-Agent:
+      - Python-urllib/3.9
+    method: POST
+    uri: https://bugs.debian.org/cgi-bin/soap.cgi
+  response:
+    body:
+      string: '<?xml version="1.0" encoding="UTF-8"?><soap:Envelope soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+        xmlns:apachens="http://xml.apache.org/xml-soap" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><soap:Body><get_statusResponse
+        xmlns="None"><s-gensym3 xsi:type="apachens:Map"><item><key xsi:type="xsd:int">748374</key><value><summary
+        xsi:type="xsd:string" /><archived xsi:type="xsd:int">0</archived><found /><fixed_date
+        soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array" /><found_date
+        soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array" /><fixed /><tags
+        xsi:type="xsd:string" /><date xsi:type="xsd:int">1400257622</date><last_modified
+        xsi:type="xsd:int">1477645744</last_modified><package xsi:type="xsd:string">wnpp</package><done
+        xsi:type="xsd:string" /><outlook xsi:type="xsd:string" /><unarchived xsi:type="xsd:string"
+        /><bug_num xsi:type="xsd:int">748374</bug_num><forwarded xsi:type="xsd:string"
+        /><location xsi:type="xsd:string">db-h</location><severity xsi:type="xsd:string">wishlist</severity><blocks
+        xsi:type="xsd:string" /><msgid xsi:type="xsd:string">&lt;6bd7b587bba3ee12d38e668d828c6749.squirrel@fulvetta.riseup.net&gt;</msgid><owner
+        xsi:type="xsd:string" /><affects xsi:type="xsd:string" /><id xsi:type="xsd:int">748374</id><subject
+        xsi:type="xsd:string">RFP: 0bin -- A client-side encrypted pastebin.</subject><found_versions
+        soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array" /><log_modified
+        xsi:type="xsd:int">1477645744</log_modified><mergedwith xsi:type="xsd:string"
+        /><keywords xsi:type="xsd:string" /><originator xsi:type="xsd:string">xxxxxx@riseup.net</originator><source
+        xsi:type="xsd:string" /><pending xsi:type="xsd:string">pending</pending><blockedby
+        xsi:type="xsd:string" /><fixed_versions soapenc:arrayType="xsd:anyType[0]"
+        xsi:type="soapenc:Array" /></value></item><item><key xsi:type="xsd:int">842114</key><value><unarchived
+        xsi:type="xsd:string" /><outlook xsi:type="xsd:string" /><bug_num xsi:type="xsd:int">842114</bug_num><location
+        xsi:type="xsd:string">db-h</location><forwarded xsi:type="xsd:string" /><severity
+        xsi:type="xsd:string">wishlist</severity><last_modified xsi:type="xsd:int">1533341524</last_modified><package
+        xsi:type="xsd:string">wnpp</package><done xsi:type="xsd:string" /><found_date
+        soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array" /><fixed /><tags
+        xsi:type="xsd:string" /><date xsi:type="xsd:int">1477435322</date><summary
+        xsi:type="xsd:string" /><archived xsi:type="xsd:int">0</archived><found /><fixed_date
+        soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array" /><originator
+        xsi:type="xsd:string">XXXXXXX XXXXXXX &lt;xxxxxxxxxxxxxxxxx@gmail.com&gt;</originator><pending
+        xsi:type="xsd:string">pending</pending><source xsi:type="xsd:string" /><blockedby
+        xsi:type="xsd:string" /><fixed_versions soapenc:arrayType="xsd:anyType[0]"
+        xsi:type="soapenc:Array" /><found_versions soapenc:arrayType="xsd:anyType[0]"
+        xsi:type="soapenc:Array" /><log_modified xsi:type="xsd:int">1533341524</log_modified><mergedwith
+        xsi:type="xsd:string" /><keywords xsi:type="xsd:string" /><id xsi:type="xsd:int">842114</id><affects
+        xsi:type="xsd:string" /><subject xsi:type="xsd:base64Binary">UkZQOiBhcmJsaWIgLS0gQXJiIGlzIGEgQyBsaWJyYXJ5IGZvciBhcmJpdHJhcnktcHJlY2lzaW9uIGludGVydmFsIGFyaXRobWV0aWMsIHVzaW5nIGEgbWlkcG9pbnQtcmFkaXVzIHJlcHJlc2VudGF0aW9uICjigJxiYWxsIGFyaXRobWV0aWPigJ0pLiBJdCBzdXBwb3J0cyByZWFsIGFuZCBjb21wbGV4IG51bWJlcnMsIHBvbHlub21pYWxzLCBwb3dlciBzZXJpZXMsIG1hdHJpY2VzLCBhbmQgZXZhbHVhdGlvbiBvZiBtYW55IHRyYW5zY2VuZGVudGFsIGZ1bmN0aW9ucy4gQWxsIG9wZXJhdGlvbnMgYXJlIGRvbmUgd2l0aCBhdXRvbWF0aWMsIHJpZ29yb3VzIGVycm9yIGJvdW5kcy4gVGhlIGNvZGUgaXMgdGhyZWFkLXNhZmUsIHBvcnRhYmxlLCBhbmQgZXh0ZW5zaXZlbHkgdGVzdGVkLg==</subject><blocks
+        xsi:type="xsd:string" /><owner xsi:type="xsd:string" /><msgid xsi:type="xsd:string">&lt;147743510730.22072.1439888664069428556.reportbug@localhost&gt;</msgid></value></item><item><key
+        xsi:type="xsd:int">947640</key><value><subject xsi:type="xsd:string">O: fgetty
+        -- very small, efficient, console-only getty and login</subject><id xsi:type="xsd:int">947640</id><affects
+        xsi:type="xsd:string" /><owner xsi:type="xsd:string" /><msgid xsi:type="xsd:string">&lt;20191228184026.EA1822E757@disroot.org&gt;</msgid><blocks
+        xsi:type="xsd:string" /><fixed_versions soapenc:arrayType="xsd:anyType[0]"
+        xsi:type="soapenc:Array" /><pending xsi:type="xsd:string">pending</pending><source
+        xsi:type="xsd:string" /><originator xsi:type="xsd:string">XXXXXX XXXXXXX &lt;xxxxxxx@disroot.org&gt;</originator><blockedby
+        xsi:type="xsd:string" /><keywords xsi:type="xsd:string" /><found_versions
+        soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array" /><log_modified
+        xsi:type="xsd:int">1586036707</log_modified><mergedwith xsi:type="xsd:string">823061
+        823266</mergedwith><tags xsi:type="xsd:string" /><date xsi:type="xsd:int">1577559091</date><found_date
+        soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array" /><fixed /><found
+        /><fixed_date soapenc:arrayType="xsd:anyType[0]" xsi:type="soapenc:Array"
+        /><summary xsi:type="xsd:string" /><archived xsi:type="xsd:int">0</archived><location
+        xsi:type="xsd:string">db-h</location><forwarded xsi:type="xsd:string" /><severity
+        xsi:type="xsd:string">normal</severity><unarchived xsi:type="xsd:string" /><outlook
+        xsi:type="xsd:string" /><bug_num xsi:type="xsd:int">947640</bug_num><done
+        xsi:type="xsd:string" /><last_modified xsi:type="xsd:int">1586036707</last_modified><package
+        xsi:type="xsd:string">wnpp</package></value></item></s-gensym3></get_statusResponse></soap:Body></soap:Envelope>'
+    headers:
+      Connection:
+      - Upgrade, close
+      Content-Length:
+      - '5697'
+      Content-Type:
+      - text/xml; charset=utf-8
+      Date:
+      - Wed, 17 Feb 2021 02:03:06 GMT
+      Referrer-Policy:
+      - no-referrer
+      SOAPServer:
+      - SOAP::Lite/Perl/1.27
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=15552000
+      Upgrade:
+      - h2,h2c
+      Vary:
+      - Accept-Encoding
+      X-Clacks-Overhead:
+      - GNU Terry Pratchett
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - sameorigin
+      X-Xss-Protection:
+      - '1'
+    status:
+      code: 200
+      message: OK
+version: 1
