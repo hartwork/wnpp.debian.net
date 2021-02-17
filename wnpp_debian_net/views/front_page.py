@@ -80,6 +80,9 @@ class FrontPageView(ListView):
     def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
 
+        # Out of a group of merged issues, only show the one with the smallest ID
+        qs = qs.filter(has_smaller_sibling=False)
+
         if 'installs' in self._col or 'users' in self._col:
             qs = qs.select_related('popcon')
             if 'installs' in self._col:

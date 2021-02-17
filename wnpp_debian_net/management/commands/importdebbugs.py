@@ -244,6 +244,9 @@ class Command(ReportingMixin, BaseCommand):
             int(issue_properties[IssueProperty.LAST_MODIFIED.value]))
         open_person = issue_properties.get(IssueProperty.ORIGINATOR.value)
         open_stamp = cls._from_epoch_seconds(int(issue_properties[IssueProperty.DATE.value]))
+        has_smaller_sibling = any(
+            (int(i) < issue_id)
+            for i in issue_properties.get(IssueProperty.MERGEDWITH.value, '').split())
 
         return {
             'ident': issue_id,
@@ -255,6 +258,7 @@ class Command(ReportingMixin, BaseCommand):
             'description': description,
             'charge_person': charge_person,
             'cron_stamp': now(),
+            'has_smaller_sibling': has_smaller_sibling,
         }
 
     @staticmethod
