@@ -67,7 +67,7 @@ class FrontPageView(ListView):
         self._kinds = set(self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS))
 
         # Validation
-        if any((col not in _INTERNAL_FIELDS_FOR_COLUMN_NAME) for col in self._col):
+        if any((col not in _COLUMN_NAMES) for col in self._col):
             raise SuspiciousOperation
         self._sort_external_column, self._sort_internal_direction_prefix = parse_sort_param(
             self._sort)
