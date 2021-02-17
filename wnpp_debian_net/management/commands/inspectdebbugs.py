@@ -2,7 +2,6 @@
 # Licensed under GNU Affero GPL v3 or later
 
 import json
-import sys
 
 from django.core.management.base import BaseCommand
 
@@ -21,5 +20,5 @@ class Command(BaseCommand):
 
         properties_of_issue = client.fetch_issues(options['issue_ids'])
 
-        json.dump(properties_of_issue, sys.stdout, indent='  ', sort_keys=True)
-        print()  # for trailing newline
+        json.dump(properties_of_issue, self.stdout, indent='  ', sort_keys=True)
+        print(file=self.stdout)  # for trailing newline
