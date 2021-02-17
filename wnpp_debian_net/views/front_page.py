@@ -71,7 +71,7 @@ class FrontPageView(ListView):
             raise SuspiciousOperation
         self._sort_external_column, self._sort_internal_direction_prefix = parse_sort_param(
             self._sort)
-        if self._sort_external_column not in _COLUMN_NAMES:
+        if self._sort_external_column not in self._col:
             raise SuspiciousOperation
         if any((kind not in IssueKind.values) for kind in self._kinds):
             raise SuspiciousOperation
