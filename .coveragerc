@@ -5,3 +5,6 @@ disable_warnings = already-imported
 plugins =
     django_coverage_plugin
 source = ./wnpp_debian_net/
+omit =
+    wnpp_debian_net/asgi.py
+    wnpp_debian_net/wsgi.py
