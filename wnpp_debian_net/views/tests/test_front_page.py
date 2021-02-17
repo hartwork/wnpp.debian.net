@@ -1,5 +1,6 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
+
 from http import HTTPStatus
 
 from django.test import TestCase
