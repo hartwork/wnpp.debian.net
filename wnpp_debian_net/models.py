@@ -84,6 +84,7 @@ class DebianWnpp(models.Model):
     description = models.CharField(max_length=255, blank=True, null=True)
     charge_person = models.CharField(max_length=255, blank=True, null=True)
     cron_stamp = models.DateTimeField()
+    has_smaller_sibling = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'debian_wnpp'

@@ -28,7 +28,6 @@ class ChangeLogTruncationTest(TestCase):
         # Self-test: All feeds should be over(!)-satisfied
         for dataset in NewsDataSet:
             feed_view = WnppNewsFeedView(data_set=dataset.value, max_entries=cls.FEED_MAX_ENTRIES)
-            print(dataset, feed_view.items().count(), cls.FEED_MAX_ENTRIES)
             assert feed_view.items().count() >= cls.FEED_MAX_ENTRIES
 
     def test_truncate(self):
