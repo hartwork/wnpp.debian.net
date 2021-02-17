@@ -13,8 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 import sys
 from pathlib import Path
-
-from django.core.exceptions import SuspiciousOperation
+from typing import Any, Optional
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -133,14 +132,15 @@ if _SENTRY_DSN:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
-    def _full_class_name_of(c):
-        return f'{c.__module__}.{c.__name__}'
+    def _before_send(event: dict[str, Any], hint: dict[str, Any]) -> Optional[dict[str, Any]]:
+        # Prevent bad requests from showing up in Sentry
+        if event.get('logger') == 'django.security.SuspiciousOperation':
+            return None
+        return event
 
     sentry_sdk.init(
         dsn=_SENTRY_DSN,
-        ignore_errors=[
-            _full_class_name_of(SuspiciousOperation),
-        ],
+        before_send=_before_send,
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
 
