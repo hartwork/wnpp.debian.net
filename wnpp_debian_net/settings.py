@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',  # for template tag "intcomma"
+    'django_extensions',  # for management command "validate_templates",
     'wnpp_debian_net',
 ]
 
@@ -58,6 +59,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'wnpp_debian_net.urls'
 
+_TEMPLATE_DEBUG = any((command in sys.argv) for command in (
+    'test',
+    'validate_templates',
+))  # for django_coverage_plugin
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -70,7 +76,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'debug': 'test' in sys.argv,  # for django_coverage_plugin
+            'debug': _TEMPLATE_DEBUG,
         },
     },
 ]
