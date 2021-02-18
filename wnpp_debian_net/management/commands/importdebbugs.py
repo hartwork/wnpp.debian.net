@@ -164,17 +164,12 @@ class Command(ReportingMixin, BaseCommand):
             # Fetch remote data
             remote_properties_of_issue = self._fetch_issues(issue_ids)
 
+            future_local_properties_of_issue, popcons_to_create = self._analyze_remote_properties(
+                remote_properties_of_issue)
+
             # Turn remote data into database instances (to persist later)
             for i, issue in enumerate(issues_to_update):
-                self._notice(f'Processing existing issue {issue.ident}...')
-                properties = remote_properties_of_issue[issue.ident]
-
-                try:
-                    database_field_map = self._to_database_keys(issue.ident, properties)
-                except _MalformedSubject as e:
-                    self.stderr.write(self.style.ERROR(str(e)))
-                    continue
-
+                database_field_map = future_local_properties_of_issue[issue.ident]
                 fields_about_to_change = self._detect_and_report_diff(issue, database_field_map)
 
                 if fields_about_to_change:
@@ -200,6 +195,10 @@ class Command(ReportingMixin, BaseCommand):
                 # Persist log entries
                 DebianLogIndex.objects.bulk_create(log_entries_to_create)
                 self._success(f'Logged upcoming updates to {len(log_entries_to_create)} issue(s)')
+
+                if popcons_to_create:
+                    DebianPopcon.objects.bulk_create(popcons_to_create)
+                    self._success(f'Created {len(popcons_to_create)} missing popcon entries')
 
                 # Persist kind change extra log entries
                 if kind_change_log_entries_to_create:
