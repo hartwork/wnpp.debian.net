@@ -57,7 +57,7 @@ class Command(ReportingMixin, BaseCommand):
         existing_packages: set[str] = set(
             DebianPopcon.objects.order_by('package').values_list('package', flat=True))
 
-        # Update/delete existing entries
+        # Collecting existing entries to update
         entries_to_update: list[DebianPopcon] = []
         for entry in DebianPopcon.objects.iterator(chunk_size=_BATCH_SIZE):
             if entry.package not in entries_to_classify:
