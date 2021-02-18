@@ -16,6 +16,7 @@ repos:
       - id: check-merge-conflict
       - id: end-of-file-fixer
       - id: trailing-whitespace
+        exclude: '/popcon_test_data/'
 
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.8.4

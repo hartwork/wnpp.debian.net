@@ -14,8 +14,11 @@ from django.core.management.base import BaseCommand
 from wnpp_debian_net.management.commands._common import ReportingMixin
 from wnpp_debian_net.models import DebianPopcon
 
+_BINARY_PACKAGES_POPCON_URL = 'https://popcon.debian.org/by_inst.gz'
+_SOURCE_PACKAGES_POPCON_URL = 'https://popcon.debian.org/source/by_inst.gz'
+
 _BATCH_SIZE = 500
-_MAXIMUM_STALE_DELTA = datetime.timedelta(hours=12)
+_DEFAULT_MAXIMUM_STALE_DELTA = datetime.timedelta(hours=12)
 
 
 class Command(ReportingMixin, BaseCommand):
@@ -57,7 +60,7 @@ class Command(ReportingMixin, BaseCommand):
         existing_packages: set[str] = set(
             DebianPopcon.objects.order_by('package').values_list('package', flat=True))
 
-        # Update/delete existing entries
+        # Collecting existing entries to update
         entries_to_update: list[DebianPopcon] = []
         for entry in DebianPopcon.objects.iterator(chunk_size=_BATCH_SIZE):
             if entry.package not in entries_to_classify:
@@ -124,18 +127,18 @@ class Command(ReportingMixin, BaseCommand):
         else:
             self._notice('No new entries to add.')
 
-    def _import_popcon_stats(self):
+    def _import_popcon_stats(self, maximum_stale_delta, download_cache_dir):
         for url, category in (
-            ('http://popcon.debian.org/source/by_inst.gz', 'source'),
-            ('http://popcon.debian.org/by_inst.gz', 'binary'),
+            (_SOURCE_PACKAGES_POPCON_URL, 'source'),
+            (_BINARY_PACKAGES_POPCON_URL, 'binary'),
         ):
-            filename = os.path.expanduser(f'~/.local/cache/popcon_{category}_by_inst.gz')
+            filename = os.path.join(download_cache_dir, f'popcon_{category}_by_inst.gz')
             if os.path.exists(filename):
                 stats = os.stat(filename)
                 last_modified_delta = datetime.datetime.now() - datetime.datetime.fromtimestamp(
                     stats.st_mtime)
-                if last_modified_delta < _MAXIMUM_STALE_DELTA:
-                    come_back_in = _MAXIMUM_STALE_DELTA - last_modified_delta
+                if last_modified_delta < maximum_stale_delta:
+                    come_back_in = maximum_stale_delta - last_modified_delta
                     come_back_at = datetime.datetime.now() + come_back_in
                     self._notice(
                         f'Nothing to do for {come_back_in} (hh:mm:ss) more (until {come_back_at}).'
@@ -149,4 +152,7 @@ class Command(ReportingMixin, BaseCommand):
             self._import_from_file_into_database(filename)
 
     def handle(self, *args, **options):
-        self._import_popcon_stats()
+        maximum_stale_delta = options.get('maximum_stale_delta', _DEFAULT_MAXIMUM_STALE_DELTA)
+        download_cache_dir = options.get('download_cache_dir',
+                                         os.path.expanduser('~/.local/cache'))
+        self._import_popcon_stats(maximum_stale_delta, download_cache_dir)
