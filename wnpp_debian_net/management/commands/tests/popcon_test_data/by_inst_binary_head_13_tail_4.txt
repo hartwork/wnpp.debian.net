@@ -1,0 +1,17 @@
+#Format
+#
+#<name> is the package name;
+#<inst> is the number of people who installed this package;
+#<vote> is the number of people who use this package regularly;
+#<old> is the number of people who installed, but don't use this package
+#      regularly;
+#<recent> is the number of people who upgraded this package recently;
+#<no-files> is the number of people whose entry didn't contain enough
+#           information (atime and ctime were 0).
+#rank name                            inst  vote   old recent no-files (maintainer)
+1     dpkg                           204964 188471  1590 14877    26 (Dpkg Developers)               
+2     tar                            204964 184527  4859 15549    29 (Janos Lenart)                  
+180195 zxing-cpp                          1     0     1     0     0 (Not in sid)                    
+180196 zynaddsubfx-dbg                    1     0     1     0     0 (Not in sid)                    
+------------------------------------------------------------------
+180196 Total                          288833535 73508742 96587139 23963797 94773857 0                               
