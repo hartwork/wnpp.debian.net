@@ -87,24 +87,8 @@ class Command(ReportingMixin, BaseCommand):
 
             remote_properties_of_issue = self._fetch_issues(issue_ids)
 
-            future_local_properties_of_issue: dict[int, dict[str, Any]] = {}
-            for issue_id, properties in remote_properties_of_issue.items():
-                self._notice(f'Processing upcoming issue {issue_id}...')
-                try:
-                    future_local_properties_of_issue[issue_id] = self._to_database_keys(
-                        issue_id, properties)
-                except _MalformedSubject as e:
-                    self._error(str(e))
-                    continue
-
-            # NOTE: PostgreSQL is not forgiving about absent foreign keys,
-            #       so we'll need to create any missing DebianPopcon instances
-            #       before created the the related DebianWnpp instances.
-            involved_package = {
-                properties['popcon_id']
-                for properties in future_local_properties_of_issue.values()
-            }
-            popcons_to_create = self._create_missing_pocons_for(involved_package)
+            future_local_properties_of_issue, popcons_to_create = self._analyze_remote_properties(
+                remote_properties_of_issue)
 
             for issue_id, properties in future_local_properties_of_issue.items():
                 issue = DebianWnpp(**properties)
@@ -126,6 +110,28 @@ class Command(ReportingMixin, BaseCommand):
                     self._success(f'Created {len(issues_to_create)} new issues')
             else:
                 self._notice('No new issues created.')
+
+    def _analyze_remote_properties(self, remote_properties_of_issue):
+        future_local_properties_of_issue: dict[int, dict[str, Any]] = {}
+        for issue_id, properties in remote_properties_of_issue.items():
+            self._notice(f'Processing upcoming issue {issue_id}...')
+            try:
+                future_local_properties_of_issue[issue_id] = self._to_database_keys(
+                    issue_id, properties)
+            except _MalformedSubject as e:
+                self._error(str(e))
+                continue
+
+        # NOTE: PostgreSQL is not forgiving about absent foreign keys,
+        #       so we'll need to create any missing DebianPopcon instances
+        #       before creating the related DebianWnpp instances.
+        involved_package = {
+            properties['popcon_id']
+            for properties in future_local_properties_of_issue.values()
+        }
+        popcons_to_create = self._create_missing_pocons_for(involved_package)
+
+        return future_local_properties_of_issue, popcons_to_create
 
     def _update_stale_existing_issues(self, ids_of_remote_open_issues):
         stale_issues_qs = DebianWnpp.objects.filter(ident__in=ids_of_remote_open_issues,
@@ -158,17 +164,12 @@ class Command(ReportingMixin, BaseCommand):
             # Fetch remote data
             remote_properties_of_issue = self._fetch_issues(issue_ids)
 
+            future_local_properties_of_issue, popcons_to_create = self._analyze_remote_properties(
+                remote_properties_of_issue)
+
             # Turn remote data into database instances (to persist later)
             for i, issue in enumerate(issues_to_update):
-                self._notice(f'Processing existing issue {issue.ident}...')
-                properties = remote_properties_of_issue[issue.ident]
-
-                try:
-                    database_field_map = self._to_database_keys(issue.ident, properties)
-                except _MalformedSubject as e:
-                    self.stderr.write(self.style.ERROR(str(e)))
-                    continue
-
+                database_field_map = future_local_properties_of_issue[issue.ident]
                 fields_about_to_change = self._detect_and_report_diff(issue, database_field_map)
 
                 if fields_about_to_change:
@@ -194,6 +195,10 @@ class Command(ReportingMixin, BaseCommand):
                 # Persist log entries
                 DebianLogIndex.objects.bulk_create(log_entries_to_create)
                 self._success(f'Logged upcoming updates to {len(log_entries_to_create)} issue(s)')
+
+                if popcons_to_create:
+                    DebianPopcon.objects.bulk_create(popcons_to_create)
+                    self._success(f'Created {len(popcons_to_create)} missing popcon entries')
 
                 # Persist kind change extra log entries
                 if kind_change_log_entries_to_create:
@@ -296,7 +301,7 @@ class Command(ReportingMixin, BaseCommand):
         )
 
     def handle(self, *args, **options):
-        self._client = DebbugsWnppClient()
+        self._client = options.get('client') or DebbugsWnppClient()
         self._client.connect()
 
         ids_of_remote_open_issues = self._client.fetch_ids_of_open_issues()
