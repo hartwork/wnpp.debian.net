@@ -301,7 +301,7 @@ class Command(ReportingMixin, BaseCommand):
         )
 
     def handle(self, *args, **options):
-        self._client = DebbugsWnppClient()
+        self._client = options.get('client') or DebbugsWnppClient()
         self._client.connect()
 
         ids_of_remote_open_issues = self._client.fetch_ids_of_open_issues()
