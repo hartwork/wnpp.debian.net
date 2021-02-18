@@ -11,7 +11,8 @@ wait-for-it --service "${WDN_POSTGRES_HOST}:${WDN_POSTGRES_PORT}"
 
 if [[ $# -gt 0 ]]; then
     if [[ $1 = test ]]; then
-        coverage run ./manage.py test "${@:2}"
+        coverage run -a ./manage.py test "${@:2}"
+        coverage run -a ./manage.py validate_templates
         coverage report
         exit 0
     else
