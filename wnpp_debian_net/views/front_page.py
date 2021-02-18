@@ -59,7 +59,7 @@ class FrontPageView(ListView):
     def setup(self, request, *args, **kwargs):
         """Initialize attributes shared by all view methods."""
         super().setup(request, *args, **kwargs)
-        self._col = self.request.GET.getlist('col[]', _DEFAULT_COLUMNS)
+        self._col = set(self.request.GET.getlist('col[]', _DEFAULT_COLUMNS))
         self._description_filter = self.request.GET.get('description', '')
         self._owners = self.request.GET.getlist('owner[]', ['yes', 'no'])
         self._project_filter = self.request.GET.get('project', '')
@@ -90,7 +90,7 @@ class FrontPageView(ListView):
             if 'users' in self._col:
                 qs = qs.annotate(popcon__vote_nonnull=Coalesce('popcon__vote', 0))
 
-        fields = [_INTERNAL_FIELDS_FOR_COLUMN_NAME[col][1] for col in sorted(set(self._col))]
+        fields = [_INTERNAL_FIELDS_FOR_COLUMN_NAME[col][1] for col in sorted(self._col)]
         qs = qs.only(*fields)
 
         if self._description_filter:
