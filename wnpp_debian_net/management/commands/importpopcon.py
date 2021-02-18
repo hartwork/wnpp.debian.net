@@ -126,8 +126,8 @@ class Command(ReportingMixin, BaseCommand):
 
     def _import_popcon_stats(self):
         for url, category in (
-            ('http://popcon.debian.org/source/by_inst.gz', 'source'),
-            ('http://popcon.debian.org/by_inst.gz', 'binary'),
+            ('https://popcon.debian.org/source/by_inst.gz', 'source'),
+            ('https://popcon.debian.org/by_inst.gz', 'binary'),
         ):
             filename = os.path.expanduser(f'~/.local/cache/popcon_{category}_by_inst.gz')
             if os.path.exists(filename):
