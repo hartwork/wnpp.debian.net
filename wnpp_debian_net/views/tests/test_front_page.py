@@ -17,7 +17,7 @@ class _FrontPageTestCase(TestCase):
     url = reverse_lazy('front_page')
 
 
-class QueryCountTest(_FrontPageTestCase, TestCase):
+class QueryCountTest(_FrontPageTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -180,7 +180,7 @@ class OwnerFilterTest(_FrontPageTestCase):
         self.assertIn(self.without_owner, object_list)
 
 
-class SortingEffectTest(_FrontPageTestCase, TestCase):
+class SortingEffectTest(_FrontPageTestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
