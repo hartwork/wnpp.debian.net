@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from parameterized import parameterized
 
 from ...models import DebianPopcon, IssueKind
-from ...tests.factories import DebianWnppFactory
+from ...tests.factories import DebianPopconFactory, DebianWnppFactory
 from ..front_page import (_COLUMN_NAMES, _DEFAULT_COLUMNS, _DEFAULT_ISSUE_KINDS,
                           _INSTANCES_PER_PAGE, _INTERNAL_FIELDS_FOR_COLUMN_NAME, FrontPageView)
 
@@ -52,6 +52,35 @@ class RequestValidationTest(TestCase):  # doesn't need _FrontPageTestCase
 
 
 class ColumnVisibilityTest(_FrontPageTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.magic_issue = DebianWnppFactory(
+            open_person='22222@example.org',
+            popcon=DebianPopconFactory(package='33333'),
+            description='44444',
+            charge_person='55555@example.org',
+        )
+
+    @parameterized.expand([
+        ('reporter', 'open_person'),
+        ('description', 'description'),
+        ('owner', 'charge_person'),
+    ])
+    def test_column_visibility(self, external_column_name, model_field):
+        for column_name, expected_visible in (
+            (external_column_name, True),
+            ('project', False),
+        ):
+            data = {
+                'col[]': [column_name],
+            }
+
+            response = self.client.get(self.url, data)
+
+            assertion = self.assertContains if expected_visible else self.assertNotContains
+            assertion(response, getattr(self.magic_issue, model_field))
+
     def test_context_data__default(self):
         expected = {
             f'show_{column_name}': column_name in _DEFAULT_COLUMNS
