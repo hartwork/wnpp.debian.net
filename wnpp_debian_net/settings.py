@@ -133,6 +133,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+if 'test' in sys.argv:
+    INSTALLED_APPS.append('nplusone.ext.django')
+    MIDDLEWARE.insert(0, 'nplusone.ext.django.NPlusOneMiddleware')
+    NPLUSONE_RAISE = True
+    NPLUSONE_WHITELIST = [
+        {
+            'label': 'unused_eager_load',
+        },
+    ]
+
 _SENTRY_DSN = os.environ.get('WDN_SENTRY_DSN')
 if _SENTRY_DSN:
     import sentry_sdk
