@@ -33,4 +33,5 @@ class DebianWnppFactory(DjangoModelFactory):
     ident = Sequence(int)
     cron_stamp = LazyFunction(now)
     mod_stamp = LazyFunction(now)
+    open_stamp = LazyFunction(now)
     kind = IssueKind.RFA.value  # anything that matches the default filters

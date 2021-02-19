@@ -20,6 +20,7 @@ _INTERNAL_FIELDS_FOR_COLUMN_NAME = {
     'age': ('open_stamp', 'open_stamp'),
     'type': ('kind', 'kind'),
     'project': ('popcon_id', 'popcon_id'),
+    'ident': ('ident', 'ident'),
     'description': ('description', 'description'),
     'users': ('popcon__vote_nonnull', 'popcon__vote'),
     'installs': ('popcon__inst_nonnull', 'popcon__inst'),
@@ -32,7 +33,6 @@ _COLUMN_NAMES = _INTERNAL_FIELDS_FOR_COLUMN_NAME.keys()
 _DEFAULT_COLUMNS = [
     'dust',
     'type',
-    'project',
     'description',
     'installs',
 ]
@@ -59,7 +59,7 @@ class FrontPageView(ListView):
     def setup(self, request, *args, **kwargs):
         """Initialize attributes shared by all view methods."""
         super().setup(request, *args, **kwargs)
-        self._col = self.request.GET.getlist('col[]', _DEFAULT_COLUMNS)
+        self._col = set(self.request.GET.getlist('col[]', _DEFAULT_COLUMNS))
         self._description_filter = self.request.GET.get('description', '')
         self._owners = self.request.GET.getlist('owner[]', ['yes', 'no'])
         self._project_filter = self.request.GET.get('project', '')
@@ -71,7 +71,9 @@ class FrontPageView(ListView):
             raise SuspiciousOperation
         self._sort_external_column, self._sort_internal_direction_prefix = parse_sort_param(
             self._sort)
-        if self._sort_external_column not in self._col:
+        if self._sort_external_column not in (self._col | {
+                'project',
+        }):
             raise SuspiciousOperation
         if any((kind not in IssueKind.values) for kind in self._kinds):
             raise SuspiciousOperation
@@ -90,7 +92,11 @@ class FrontPageView(ListView):
             if 'users' in self._col:
                 qs = qs.annotate(popcon__vote_nonnull=Coalesce('popcon__vote', 0))
 
-        fields = [_INTERNAL_FIELDS_FOR_COLUMN_NAME[col][1] for col in sorted(set(self._col))]
+        evential_columns = self._col | {
+            'project',  # always needed because the column is unconditional in the template
+            'type',  # always needed because the table row is colored by issue type
+        }
+        fields = [_INTERNAL_FIELDS_FOR_COLUMN_NAME[col][1] for col in evential_columns]
         qs = qs.only(*fields)
 
         if self._description_filter:

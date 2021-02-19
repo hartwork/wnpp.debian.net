@@ -16,6 +16,26 @@ class _FrontPageTestCase(TestCase):
     url = reverse_lazy('front_page')
 
 
+class QueryCountTest(_FrontPageTestCase, TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        for _ in range(2):
+            DebianWnppFactory()
+
+    @parameterized.expand([(col, ) for col in _COLUMN_NAMES])
+    def test(self, column_name):
+        data = {
+            'col[]': [column_name],
+        }
+
+        # NOTE: The first query is to retrieve the number of objects for pagination,
+        #       the second is retrieving the actual instances.
+        with self.assertNumQueries(2):
+            response = self.client.get(self.url, data)
+            self.assertEqual(response.status_code, HTTPStatus.OK)
+
+
 class RequestValidationTest(TestCase):  # doesn't need _FrontPageTestCase
     @parameterized.expand([
         ('/?col%5B%5D=description%27&desc=%27&sort=project%27&type%5B%5D=RFP%27', ),  # seen live
