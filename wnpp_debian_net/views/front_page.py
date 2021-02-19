@@ -14,6 +14,8 @@ from ..override import overrive
 from ..pagination import iterate_page_items
 from ..templatetags.sorting_urls import parse_sort_param
 
+_INSTANCES_PER_PAGE = 50
+
 _INTERNAL_FIELDS_FOR_COLUMN_NAME = {
     # NOTE: First item is for data access and ordering, second item is for .only(..)
     'dust': ('mod_stamp', 'mod_stamp'),
@@ -53,7 +55,7 @@ assert all((kind in IssueKind.values) for kind in _DEFAULT_ISSUE_KINDS)
 
 class FrontPageView(ListView):
     model = DebianWnpp
-    paginate_by = 50
+    paginate_by = _INSTANCES_PER_PAGE
 
     @overrive
     def setup(self, request, *args, **kwargs):
