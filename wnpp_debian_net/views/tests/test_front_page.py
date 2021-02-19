@@ -52,7 +52,7 @@ class RequestValidationTest(TestCase):  # doesn't need _FrontPageTestCase
 
 
 class ColumnVisibilityTest(_FrontPageTestCase):
-    def test_default(self):
+    def test_context_data__default(self):
         expected = {
             f'show_{column_name}': column_name in _DEFAULT_COLUMNS
             for column_name in _COLUMN_NAMES
@@ -63,7 +63,7 @@ class ColumnVisibilityTest(_FrontPageTestCase):
         for k, v in expected.items():
             self.assertEqual(response.context_data[k], v)
 
-    def test_all(self):
+    def test_context_data__all(self):
         expected = {f'show_{column_name}': True for column_name in _COLUMN_NAMES}
         data = {'col[]': _COLUMN_NAMES}
 
