@@ -8,7 +8,7 @@ from parameterized import parameterized
 from ..pagination import ELLIPSIS, iterate_page_items
 
 
-class CalculatePageItemsTest(TestCase):
+class PageItemsTest(TestCase):
     @parameterized.expand([
         ('head start', 100, 1, [1, 2, 3, 4, 5, 6, 7, ELLIPSIS, 99, 100]),
         ('edge of head', 100, 2, [1, 2, 3, 4, 5, 6, 7, ELLIPSIS, 99, 100]),
