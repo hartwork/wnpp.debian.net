@@ -20,6 +20,7 @@ _INTERNAL_FIELDS_FOR_COLUMN_NAME = {
     'age': ('open_stamp', 'open_stamp'),
     'type': ('kind', 'kind'),
     'project': ('popcon_id', 'popcon_id'),
+    'ident': ('ident', 'ident'),
     'description': ('description', 'description'),
     'users': ('popcon__vote_nonnull', 'popcon__vote'),
     'installs': ('popcon__inst_nonnull', 'popcon__inst'),
@@ -32,7 +33,6 @@ _COLUMN_NAMES = _INTERNAL_FIELDS_FOR_COLUMN_NAME.keys()
 _DEFAULT_COLUMNS = [
     'dust',
     'type',
-    'project',
     'description',
     'installs',
 ]
@@ -92,7 +92,11 @@ class FrontPageView(ListView):
             if 'users' in self._col:
                 qs = qs.annotate(popcon__vote_nonnull=Coalesce('popcon__vote', 0))
 
-        fields = [_INTERNAL_FIELDS_FOR_COLUMN_NAME[col][1] for col in sorted(self._col)]
+        evential_columns = self._col | {
+            'project',  # always needed because the column is unconditional in the template
+            'type',  # always needed because the table row is colored by issue type
+        }
+        fields = [_INTERNAL_FIELDS_FOR_COLUMN_NAME[col][1] for col in evential_columns]
         qs = qs.only(*fields)
 
         if self._description_filter:
