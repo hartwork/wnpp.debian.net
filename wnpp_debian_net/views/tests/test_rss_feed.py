@@ -3,6 +3,7 @@
 
 from http import HTTPStatus
 from operator import attrgetter
+from xml.etree import ElementTree
 
 from django.test import TestCase
 from django.urls import reverse
@@ -126,3 +127,12 @@ class WnppNewsFeedTest(TestCase):
         actual_object_list = list(response.context_data['object_list'])
         self.assertEqual(actual_object_list, expected_object_list)
         self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_wellformed_xml(self):
+        response = self.client.get(self.url)
+        ElementTree.fromstring(response.content)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_contains_stylesheet(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, b'<?xml-stylesheet')
