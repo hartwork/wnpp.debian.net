@@ -37,6 +37,7 @@ _DEFAULT_COLUMNS = [
     'type',
     'description',
     'installs',
+    'owner',
 ]
 
 assert all((column in _COLUMN_NAMES) for column in _DEFAULT_COLUMNS)
