@@ -12,7 +12,8 @@ from django.views.generic import ListView
 from ..models import DebianWnpp, IssueKind
 from ..override import overrive
 from ..pagination import iterate_page_items
-from ..templatetags.sorting_urls import parse_sort_param
+from ..templatetags.sorting_urls import (INTERNAL_DIRECTION_PREFIX_DESCENDING, combine_sort_param,
+                                         parse_sort_param)
 
 _INSTANCES_PER_PAGE = 50
 
@@ -66,17 +67,15 @@ class FrontPageView(ListView):
         self._description_filter = self.request.GET.get('description', '')
         self._owners = self.request.GET.getlist('owner[]', ['yes', 'no'])
         self._project_filter = self.request.GET.get('project', '')
-        self._sort = self.request.GET.get('sort', 'project')
+        self._sort = self.request.GET.get(
+            'sort', combine_sort_param('installs', INTERNAL_DIRECTION_PREFIX_DESCENDING))
         self._kinds = set(self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS))
 
         # Validation
-        if any((col not in _COLUMN_NAMES) for col in self._col):
-            raise SuspiciousOperation
         self._sort_external_column, self._sort_internal_direction_prefix = parse_sort_param(
             self._sort)
-        if self._sort_external_column not in (self._col | {
-                'project',
-        }):
+        self._col.add(self._sort_external_column)
+        if any((col not in _COLUMN_NAMES) for col in self._col):
             raise SuspiciousOperation
         if any((kind not in IssueKind.values) for kind in self._kinds):
             raise SuspiciousOperation

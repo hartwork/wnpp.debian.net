@@ -43,8 +43,6 @@ class RequestValidationTest(TestCase):  # doesn't need _FrontPageTestCase
         ('/?col%5B%5D=description%27', ),
         ('/?sort=project%27', ),
         ('/?type%5B%5D=RFP%27', ),
-        ('/?sort=installs&col%5B%5D=description', ),  # misses "&col[]=installs"
-        ('/?sort=users', ),  # misses "&col[]=users"
     ])
     def test_bad_request_for_column(self, url):
         response = self.client.get(url)
