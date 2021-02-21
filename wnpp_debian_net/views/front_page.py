@@ -12,7 +12,8 @@ from django.views.generic import ListView
 from ..models import DebianWnpp, IssueKind
 from ..override import overrive
 from ..pagination import iterate_page_items
-from ..templatetags.sorting_urls import parse_sort_param
+from ..templatetags.sorting_urls import (INTERNAL_DIRECTION_PREFIX_DESCENDING, combine_sort_param,
+                                         parse_sort_param)
 
 _INSTANCES_PER_PAGE = 50
 
@@ -66,7 +67,8 @@ class FrontPageView(ListView):
         self._description_filter = self.request.GET.get('description', '')
         self._owners = self.request.GET.getlist('owner[]', ['yes', 'no'])
         self._project_filter = self.request.GET.get('project', '')
-        self._sort = self.request.GET.get('sort', 'project')
+        self._sort = self.request.GET.get(
+            'sort', combine_sort_param('installs', INTERNAL_DIRECTION_PREFIX_DESCENDING))
         self._kinds = set(self.request.GET.getlist('type[]', _DEFAULT_ISSUE_KINDS))
 
         # Validation
