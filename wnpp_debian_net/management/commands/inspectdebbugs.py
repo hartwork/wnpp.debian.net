@@ -20,5 +20,8 @@ class Command(BaseCommand):
 
         properties_of_issue = client.fetch_issues(options['issue_ids'])
 
-        json.dump(properties_of_issue, self.stdout, indent='  ', sort_keys=True)
-        print(file=self.stdout)  # for trailing newline
+        # NOTE: We're avoiding ``json.dump(.., self.stdout, ..)`` because
+        #       ``BaseCommand.stdout`` is duplicating newlines in
+        #       ``django.core.management.base.OutputWrapper.write``
+        #       and that would not make pretty JSON output
+        print(json.dumps(properties_of_issue, indent='  ', sort_keys=True), file=self.stdout)
