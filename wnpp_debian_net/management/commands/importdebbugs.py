@@ -169,7 +169,11 @@ class Command(ReportingMixin, BaseCommand):
 
             # Turn remote data into database instances (to persist later)
             for i, issue in enumerate(issues_to_update):
-                database_field_map = future_local_properties_of_issue[issue.ident]
+                try:
+                    database_field_map = future_local_properties_of_issue[issue.ident]
+                except KeyError:  # when self._analyze_remote_properties had to drop the issue
+                    continue
+
                 fields_about_to_change = self._detect_and_report_diff(issue, database_field_map)
 
                 if fields_about_to_change:
