@@ -224,7 +224,7 @@ class Command(ReportingMixin, BaseCommand):
                 # Persist actual issues
                 DebianWnpp.objects.bulk_update(issues_to_update,
                                                fields=issue_fields_to_bulk_update)
-                self._success(f'Updated {len(issues_to_update)} existing issues')
+                self._success(f'Updated {len(issues_to_update)} existing issue(s)')
 
     @staticmethod
     def _parse_wnpp_issue_subject(subject) -> tuple[str, str, str]:
