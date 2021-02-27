@@ -159,7 +159,9 @@ class Command(ReportingMixin, BaseCommand):
             count_issues_left_to_update -= _BATCH_SIZE
 
             issue_ids = [issue.ident for issue in issues_to_update]
-            issue_fields_to_bulk_update: set[str] = set()  # will be grown as needed
+            issue_fields_to_bulk_update: set[str] = {
+                'cron_stamp',
+            }  # will be grown as needed
 
             # Fetch remote data
             remote_properties_of_issue = self._fetch_issues(issue_ids)
@@ -172,6 +174,7 @@ class Command(ReportingMixin, BaseCommand):
                 try:
                     database_field_map = future_local_properties_of_issue[issue.ident]
                 except KeyError:  # when self._analyze_remote_properties had to drop the issue
+                    issue.cron_stamp = now()
                     continue
 
                 fields_about_to_change = self._detect_and_report_diff(issue, database_field_map)
