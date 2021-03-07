@@ -3,7 +3,9 @@
 
 import datetime
 import re
+import sys
 from itertools import islice
+from signal import SIGINT
 from typing import Any
 
 from django.core.management import CommandError
@@ -324,3 +326,5 @@ class Command(ReportingMixin, BaseCommand):
             self._success('Successfully synced with Debbugs.')
         except DebbugsRequestError as e:
             raise CommandError(f'Import remote WNPP issues from Debbugs: {e}')
+        except KeyboardInterrupt:
+            sys.exit(128 + SIGINT)
