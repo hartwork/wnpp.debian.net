@@ -3,7 +3,9 @@
 
 import base64
 from enum import Enum
+from functools import wraps
 from typing import Optional
+from urllib.error import URLError
 
 from pysimplesoap.client import SoapClient
 from pysimplesoap.simplexml import SimpleXMLElement
@@ -44,6 +46,24 @@ class IssueProperty(Enum):
     UNARCHIVED = 'unarchived'
 
 
+class DebbugsRequestError(Exception):
+    pass
+
+
+def _wrap_exceptions(f):
+    """
+    Turn low-level/internal exceptions to something that is part of the public interface.
+    """
+    @wraps(f)
+    def wrapped(*args, **wargs):
+        try:
+            return f(*args, **wargs)
+        except URLError as e:
+            raise DebbugsRequestError(e)
+
+    return wrapped
+
+
 class DebbugsWnppClient:
     def __init__(self):
         self._client = None
@@ -67,6 +87,7 @@ class DebbugsWnppClient:
         except (ValueError, UnicodeEncodeError):
             return candidate
 
+    @_wrap_exceptions
     def fetch_ids_of_open_issues(self) -> list[int]:
         result: SimpleXMLElement = self._client.get_bugs(
             **self._to_soap_kwargs('package', 'wnpp', 'status', 'open'))
@@ -75,6 +96,7 @@ class DebbugsWnppClient:
             for item_element in result._element.getElementsByTagName('item')
         ]
 
+    @_wrap_exceptions
     def fetch_issues(self, issue_ids: list[int]) -> dict[int, dict[str, str]]:
         properties_of_issue: dict[int, dict[str, str]] = {}
 
