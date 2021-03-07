@@ -2,11 +2,14 @@
 # Licensed under GNU Affero GPL v3 or later
 
 import base64
+import time
+from datetime import timedelta
 from enum import Enum
 from functools import wraps
-from typing import Optional
+from typing import Callable, Optional
 from urllib.error import URLError
 
+from django.utils.timezone import now
 from pysimplesoap.client import SoapClient
 from pysimplesoap.simplexml import SimpleXMLElement
 
@@ -62,6 +65,51 @@ def _wrap_exceptions(f):
             raise DebbugsRequestError(e)
 
     return wrapped
+
+
+def _retry(func: Callable, times: int, exception_classes: tuple[Exception],
+           notify: Callable[[str], None]) -> Callable:
+    """
+    Decorates ``func`` with retry for up to ``times`` times with exponential back-off
+    while ignoring all exception classes in ``exception_classes``.
+    Calls out to ``notify`` for notification targetting humans.
+    """
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        started_at = now()
+        for i in range(times):
+            try:
+                res = func(*args, **kwargs)
+            except exception_classes:
+                message_prefix = f'Attempt {i + 1} failed, been trying for {now() - started_at}'
+                giving_up = (i == times - 1)
+                if giving_up:
+                    notify(f'{message_prefix} — giving up')
+                    raise
+                sleep_duration_seconds = 2**i
+                sleep_until = now() + timedelta(seconds=sleep_duration_seconds)
+                notify(f'{message_prefix} — sleeping for {sleep_duration_seconds} second(s)'
+                       f' until {sleep_until} to try up to {times - i - 1} time(s) more')
+                time.sleep(sleep_duration_seconds)
+            else:
+                if i > 0:
+                    notify(f'Attempt {i + 1} succeeded (after trying for {now() - started_at})')
+                return res
+
+    return wrapped
+
+
+class DebbugsRetry:
+    def __init__(self, func: Callable, notify: Callable[[str], None]):
+        self.__func = func
+        self.__notify = notify
+
+    def __call__(self, *args, **kwargs):
+        func_with_retry = _retry(self.__func,
+                                 times=8,
+                                 exception_classes=(DebbugsRequestError, ),
+                                 notify=self.__notify)
+        return func_with_retry(*args, **kwargs)
 
 
 class DebbugsWnppClient:
