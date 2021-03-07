@@ -3,15 +3,18 @@
 
 import datetime
 import re
+import sys
 from itertools import islice
+from signal import SIGINT
 from typing import Any
 
+from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.text import Truncator
 from django.utils.timezone import now
 
-from ...debbugs import DebbugsWnppClient, IssueProperty
+from ...debbugs import DebbugsRequestError, DebbugsRetry, DebbugsWnppClient, IssueProperty
 from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, EventKind
 from ._common import ReportingMixin
 
@@ -48,7 +51,8 @@ class Command(ReportingMixin, BaseCommand):
     def _fetch_issues(self, issue_ids: list[int]) -> dict[int, dict[str, str]]:
         flat_issue_ids = ', '.join(str(i) for i in issue_ids)
         self._notice(f'Fetching {len(issue_ids)} issue(s): {flat_issue_ids}...')
-        properties_of_issue = self._client.fetch_issues(issue_ids)
+        properties_of_issue = DebbugsRetry(self._client.fetch_issues,
+                                           notify=self._notice)(issue_ids)
 
         return properties_of_issue
 
@@ -311,10 +315,16 @@ class Command(ReportingMixin, BaseCommand):
         self._client = options.get('client') or DebbugsWnppClient()
         self._client.connect()
 
-        ids_of_remote_open_issues = self._client.fetch_ids_of_open_issues()
+        try:
+            ids_of_remote_open_issues = DebbugsRetry(self._client.fetch_ids_of_open_issues,
+                                                     notify=self._notice)()
 
-        self._close_all_issues_but(ids_of_remote_open_issues)
-        self._add_any_new_issues_from(ids_of_remote_open_issues)
-        self._update_stale_existing_issues(ids_of_remote_open_issues)
+            self._close_all_issues_but(ids_of_remote_open_issues)
+            self._add_any_new_issues_from(ids_of_remote_open_issues)
+            self._update_stale_existing_issues(ids_of_remote_open_issues)
 
-        self._success('Successfully synced with Debbugs.')
+            self._success('Successfully synced with Debbugs.')
+        except DebbugsRequestError as e:
+            raise CommandError(f'Import remote WNPP issues from Debbugs: {e}')
+        except KeyboardInterrupt:
+            sys.exit(128 + SIGINT)
