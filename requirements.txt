@@ -27,7 +27,7 @@ chardet==4.0.0
 click==7.1.2
 decorator==4.4.2
 idna==2.10
-Faker==6.5.2
+Faker==6.6.0
 ipython-genutils==0.2.0
 jedi==0.18.0
 multidict==5.1.0
