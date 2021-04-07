@@ -19,7 +19,7 @@ vcrpy-unittest==0.1.7
 wait-for-it==2.2.0
 
 # Indirect dependencies
-asgiref==3.3.2
+asgiref==3.3.4
 backcall==0.2.0
 blinker==1.4
 certifi==2020.12.5
