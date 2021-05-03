@@ -30,6 +30,7 @@ idna==2.10
 Faker==8.1.2
 ipython-genutils==0.2.0
 jedi==0.18.0
+matplotlib-inline==0.1.2
 multidict==5.1.0
 parso==0.8.2
 pexpect==4.8.0
