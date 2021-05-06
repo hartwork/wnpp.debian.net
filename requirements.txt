@@ -7,7 +7,7 @@ Django==3.2.1
 factory-boy==3.2.0
 gunicorn==20.1.0
 gunicorn-color==0.1.0
-ipython==7.22.0
+ipython==7.23.0
 nplusone==1.0.0
 parameterized==0.8.1
 psycopg2==2.8.6
@@ -30,6 +30,7 @@ idna==2.10
 Faker==8.1.2
 ipython-genutils==0.2.0
 jedi==0.18.0
+matplotlib-inline==0.1.2
 multidict==5.1.0
 parso==0.8.2
 pexpect==4.8.0
