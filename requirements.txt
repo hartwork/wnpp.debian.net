@@ -10,7 +10,7 @@ gunicorn-color==0.1.0
 ipython==7.24.1
 nplusone==1.0.0
 parameterized==0.8.1
-psycopg2==2.8.6
+psycopg2==2.9.1
 PySimpleSOAP==1.16.2
 requests==2.25.1
 responses==0.13.3
