@@ -33,7 +33,9 @@ class Command(ReportingMixin, BaseCommand):
     def _import_from_file_into_database(self, filename):
         self._notice(f'Importing popcon stats from file {filename}...')
         with gzip.open(filename, 'r') as f:
-            content = f.read().decode('UTF-8')
+            # NOTE: Corrupted data like b'texl\xb1\xdbv\xd2\xc7atex-extra' has been observed
+            #       in practice
+            content = f.read().decode('utf-8', errors='backslashreplace')
 
         extractor = re.compile(
             r'^[0-9]+\s+(?P<name>[^ ]+)\s+(?P<inst>[0-9]+)\s+(?P<vote>[0-9]+)\s+(?P<old>[0-9]+)\s+(?P<recent>[0-9]+)\s+(?P<nofiles>[0-9]+)'
