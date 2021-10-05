@@ -51,5 +51,5 @@ traitlets==5.1.0
 urllib3==1.26.7
 vcrpy==4.1.1
 wcwidth==0.2.5
-wrapt==1.12.1
+wrapt==1.13.1
 yarl==1.6.3
