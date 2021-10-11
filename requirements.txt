@@ -22,7 +22,7 @@ wait-for-it==2.2.1
 asgiref==3.4.1
 backcall==0.2.0
 blinker==1.4
-certifi==2021.5.30
+certifi==2021.10.8
 chardet==4.0.0
 charset-normalizer==2.0.6
 click==8.0.1
