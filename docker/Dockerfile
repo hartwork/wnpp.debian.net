@@ -3,7 +3,9 @@
 
 FROM python:3.9-alpine
 
-RUN apk add --update \
+RUN echo '@edge-community https://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
+        && \
+    apk add --update \
         bash \
         diffutils \
         g++ \
@@ -11,7 +13,8 @@ RUN apk add --update \
         musl-dev \
         postgresql-client \
         postgresql-dev \
-        shadow
+        shadow \
+        supercronic@edge-community
 
 RUN useradd --create-home --uid 1001 --non-unique wnpp-debian-net
 USER wnpp-debian-net
@@ -38,9 +41,4 @@ COPY --chown=wnpp-debian-net:wnpp-debian-net wnpp_debian_net/               ./wn
 
 USER root
 RUN apk upgrade --update
-# Enable testing repository for nothing but package "supercronic".
-# It's done down here so that we get as little as possible from testing.
-RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories \
-        && \
-    apk add --update supercronic
 USER wnpp-debian-net
