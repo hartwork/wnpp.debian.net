@@ -28,7 +28,7 @@ charset-normalizer==2.0.8
 click==8.0.3
 decorator==5.1.0
 idna==3.3
-Faker==9.8.3
+Faker==9.9.0
 ipython-genutils==0.2.0
 jedi==0.18.1
 matplotlib-inline==0.1.3
