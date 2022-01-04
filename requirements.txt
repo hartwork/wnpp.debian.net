@@ -12,7 +12,7 @@ nplusone==1.0.0
 parameterized==0.8.1
 psycopg2==2.9.3
 PySimpleSOAP==1.16.2
-requests==2.26.0
+requests==2.27.0
 responses==0.16.0
 sentry-sdk==1.5.1
 vcrpy-unittest==0.1.7
