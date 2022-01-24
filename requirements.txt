@@ -19,7 +19,7 @@ vcrpy-unittest==0.1.7
 wait-for-it==2.2.1
 
 # Indirect dependencies
-asgiref==3.4.1
+asgiref==3.5.0
 asttokens==2.0.5
 backcall==0.2.0
 black==21.12b0
