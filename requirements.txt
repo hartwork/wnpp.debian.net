@@ -22,7 +22,7 @@ wait-for-it==2.2.1
 asgiref==3.5.0
 asttokens==2.0.5
 backcall==0.2.0
-black==21.12b0
+black==22.1.0
 blinker==1.4
 certifi==2021.10.8
 chardet==4.0.0
