@@ -14,7 +14,7 @@ psycopg2==2.9.3
 PySimpleSOAP==1.16.2
 requests==2.27.1
 responses==0.18.0
-sentry-sdk==1.5.4
+sentry-sdk==1.5.5
 vcrpy-unittest==0.1.7
 wait-for-it==2.2.1
 
