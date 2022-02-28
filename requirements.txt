@@ -29,7 +29,7 @@ chardet==4.0.0
 charset-normalizer==2.0.12
 click==8.0.4
 decorator==5.1.1
-executing==0.8.2
+executing==0.8.3
 idna==3.3
 Faker==13.2.0
 ipython-genutils==0.2.0
