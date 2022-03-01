@@ -3,7 +3,7 @@ beautifulsoup4==4.10.0
 coverage==6.3.2
 django-coverage-plugin==2.0.2
 django-extensions==3.1.5
-Django==4.0.2
+Django==4.0.3
 factory-boy==3.2.1
 gunicorn==20.1.0
 gunicorn-color==0.1.0
