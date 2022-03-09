@@ -20,6 +20,7 @@ from ..importpopcon import _BINARY_PACKAGES_POPCON_URL, _SOURCE_PACKAGES_POPCON_
 
 
 class ImportPopconCommandTest(TestCase):
+
     def _setup(self):  # not using .setUp because of using @responses.activate below
         self._add_response(_BINARY_PACKAGES_POPCON_URL, 'by_inst_binary_head_13_tail_4.txt')
         self._add_response(_SOURCE_PACKAGES_POPCON_URL, 'by_inst_source_head_15_tail_4.txt')

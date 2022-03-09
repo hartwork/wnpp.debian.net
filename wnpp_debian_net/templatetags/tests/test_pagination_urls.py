@@ -10,6 +10,7 @@ from ..pagination_urls import url_for_page
 
 
 class UrlForPageTest(TestCase):
+
     @parameterized.expand([
         ('/hello', '/hello?page=3'),
         ('/hello?other=1', '/hello?other=1&page=3'),

@@ -24,6 +24,7 @@ def _create_wnpp_issue_subject(issue_kind: IssueKind, package_name: str, descrip
 
 
 class InspectDebbugsCommandTest(TestCase):
+
     def setUp(self):
         self.command = Command(stdout=StringIO())
         self.magic_description = '61a1fd27a085e090ed6a13309b319ab130eec98d'  # arbitary

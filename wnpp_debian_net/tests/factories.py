@@ -9,6 +9,7 @@ from ..models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, Is
 
 
 class DebianLogIndexFactory(DjangoModelFactory):
+
     class Meta:
         model = DebianLogIndex
 
@@ -17,16 +18,19 @@ class DebianLogIndexFactory(DjangoModelFactory):
 
 
 class DebianLogModsFactory(DjangoModelFactory):
+
     class Meta:
         model = DebianLogMods
 
 
 class DebianPopconFactory(DjangoModelFactory):
+
     class Meta:
         model = DebianPopcon
 
 
 class DebianWnppFactory(DjangoModelFactory):
+
     class Meta:
         model = DebianWnpp
 

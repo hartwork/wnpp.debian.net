@@ -18,6 +18,7 @@ class _FrontPageTestCase(TestCase):
 
 
 class QueryCountTest(_FrontPageTestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -38,6 +39,7 @@ class QueryCountTest(_FrontPageTestCase):
 
 
 class RequestValidationTest(TestCase):  # doesn't need _FrontPageTestCase
+
     @parameterized.expand([
         ('/?col%5B%5D=description%27&desc=%27&sort=project%27&type%5B%5D=RFP%27', ),  # seen live
         ('/?col%5B%5D=description%27', ),
@@ -50,6 +52,7 @@ class RequestValidationTest(TestCase):  # doesn't need _FrontPageTestCase
 
 
 class ColumnVisibilityTest(_FrontPageTestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -101,6 +104,7 @@ class ColumnVisibilityTest(_FrontPageTestCase):
 
 
 class TextBasedFilterTest(_FrontPageTestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -142,6 +146,7 @@ class TextBasedFilterTest(_FrontPageTestCase):
 
 
 class KindFilterTest(_FrontPageTestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -166,6 +171,7 @@ class KindFilterTest(_FrontPageTestCase):
 
 
 class OwnerFilterTest(_FrontPageTestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -208,6 +214,7 @@ class OwnerFilterTest(_FrontPageTestCase):
 
 
 class SortingEffectTest(_FrontPageTestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

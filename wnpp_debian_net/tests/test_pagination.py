@@ -13,6 +13,7 @@ from ..pagination import ELLIPSIS, iterate_page_items
 
 
 class PageItemsTest(TestCase):
+
     @parameterized.expand([
         ('head start', 100, 1, [1, 2, 3, 4, 5, 6, 7, ELLIPSIS, 99, 100]),
         ('edge of head', 100, 2, [1, 2, 3, 4, 5, 6, 7, ELLIPSIS, 99, 100]),
@@ -73,6 +74,7 @@ class PaginationTemplateTest(TestCase):
 
     @staticmethod
     def _extract_page_page_item_classes(soup):
+
         def without_class_page_item(it):
             return [clazz for clazz in it if clazz != 'page-item']
 
