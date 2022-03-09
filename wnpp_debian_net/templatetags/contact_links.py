@@ -2,7 +2,6 @@
 # Licensed under GNU Affero GPL v3 or later
 import re
 from re import Match
-from typing import Optional
 
 from django import template
 from django.utils import safestring
@@ -28,7 +27,7 @@ def _truncate(value: str, length: int) -> str:
     return Truncator(value).chars(length)
 
 
-def _parse_contact(contact: str) -> tuple[Optional[str], str]:
+def _parse_contact(contact: str) -> tuple[str | None, str]:
     for matcher in _CONTACT_MATCHERS:
         match: Match = matcher.match(contact)
         if match is None:
@@ -38,7 +37,7 @@ def _parse_contact(contact: str) -> tuple[Optional[str], str]:
 
 
 @register.simple_tag
-def contact_link_for(contact: Optional[str], truncatechars: int = None) -> safestring:
+def contact_link_for(contact: str | None, truncatechars: int = None) -> safestring:
     mailto = None
     if not contact:
         display = 'nobody'

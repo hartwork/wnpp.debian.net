@@ -1,7 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from typing import Any, Union
+from typing import Any
 
 from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Page, Paginator
@@ -123,7 +123,7 @@ class FrontPageView(ListView):
         return qs
 
     @overrive
-    def get_ordering(self) -> Union[str, tuple[str, ...]]:
+    def get_ordering(self) -> str | tuple[str, ...]:
         """Return the field or fields to use for ordering the queryset."""
         fallback_field_name = _INTERNAL_FIELDS_FOR_COLUMN_NAME['project']
         return self._sort_internal_direction_prefix + _INTERNAL_FIELDS_FOR_COLUMN_NAME.get(
