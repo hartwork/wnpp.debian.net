@@ -11,6 +11,7 @@ from ..inspectdebbugs import Command
 
 
 class InspectDebbugsCommandTest(VCRTestCase):
+
     @staticmethod
     def with_issue_ids_decoded_to_int(properties_of_issues):
         # NOTE: Dictionaries can only have string keys in JSON

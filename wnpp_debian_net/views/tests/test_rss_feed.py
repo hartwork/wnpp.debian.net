@@ -15,6 +15,7 @@ from ..rss_feed import DEFAULT_MAX_ENTRIES, NewsDataSet
 
 
 class WnppNewsFeedTest(TestCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

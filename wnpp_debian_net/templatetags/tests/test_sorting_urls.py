@@ -11,6 +11,7 @@ from ...templatetags.sorting_urls import self_url_with_sorting_for
 
 
 class SortingUrlsTest(TestCase):
+
     @parameterized.expand([
         ('/hello', '/hello?sort=col1%2Fasc&page=1'),
         ('/hello?page=3', '/hello?page=1&sort=col1%2Fasc'),

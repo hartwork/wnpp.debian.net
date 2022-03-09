@@ -8,6 +8,7 @@ from parameterized import parameterized
 
 
 class StaticFilesTest(TestCase):
+
     @parameterized.expand([
         ('our own', 'images/feed-icon.png'),
         ('third party', 'admin/css/nav_sidebar.css'),

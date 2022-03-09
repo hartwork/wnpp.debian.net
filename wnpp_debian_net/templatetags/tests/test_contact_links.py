@@ -10,6 +10,7 @@ from ..contact_links import contact_link_for
 
 
 class ParseContactTest(TestCase):
+
     @parameterized.expand([
         ('mail@example.org', 'mail@example.org'),
         ('mail@example.org (First Middle Last)', 'First Middle Last'),
@@ -23,6 +24,7 @@ class ParseContactTest(TestCase):
 
 
 class ContactLinkForTest(TestCase):
+
     @parameterized.expand([
         (None, '<i>nobody</i>'),
         ('', '<i>nobody</i>'),

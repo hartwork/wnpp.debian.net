@@ -62,6 +62,7 @@ EXPECTED_PROPERTIES_OF_ISSUE = {
 
 
 class DebbugsWnppClientTest(VCRTestCase):
+
     def setUp(self):
         super().setUp()
         self.client = DebbugsWnppClient()

@@ -9,6 +9,7 @@ from ..url_tools import url_with_query
 
 
 class UrlForkeyTest(TestCase):
+
     @parameterized.expand([
         ('/hello', '/hello?key=3'),
         ('/hello?other=1', '/hello?other=1&key=3'),

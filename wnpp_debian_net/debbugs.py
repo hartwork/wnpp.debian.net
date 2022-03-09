@@ -57,6 +57,7 @@ def _wrap_exceptions(f):
     """
     Turn low-level/internal exceptions to something that is part of the public interface.
     """
+
     @wraps(f)
     def wrapped(*args, **wargs):
         try:
@@ -74,6 +75,7 @@ def _retry(func: Callable, times: int, exception_classes: tuple[Exception],
     while ignoring all exception classes in ``exception_classes``.
     Calls out to ``notify`` for notification targetting humans.
     """
+
     @wraps(func)
     def wrapped(*args, **kwargs):
         started_at = now()
@@ -100,6 +102,7 @@ def _retry(func: Callable, times: int, exception_classes: tuple[Exception],
 
 
 class DebbugsRetry:
+
     def __init__(self, func: Callable, notify: Callable[[str], None]):
         self.__func = func
         self.__notify = notify
@@ -113,6 +116,7 @@ class DebbugsRetry:
 
 
 class DebbugsWnppClient:
+
     def __init__(self):
         self._client = None
 
