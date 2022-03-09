@@ -3,8 +3,6 @@
 #
 # 7dda3eab17f495d5b972fc8c67e69d47c12aedb4347116d1443778b05e7839c4
 
-from typing import Optional
-
 _DEFAULT_MAX_ITEM_COUNT = 11
 _DEFAULT_ENDING_ITEM_COUNT = 2
 
@@ -13,8 +11,8 @@ ELLIPSIS = None
 
 def iterate_page_items(total_page_count: int,
                        current_page_number: int,
-                       max_item_count: Optional[int] = None,
-                       ending_item_count: Optional[int] = None):
+                       max_item_count: int | None = None,
+                       ending_item_count: int | None = None):
     """
     Calculates where to put ellipses (omission markers) in a
     sequence of page items to keep the number of page items

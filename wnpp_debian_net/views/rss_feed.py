@@ -3,7 +3,6 @@
 
 import sys
 from enum import Enum
-from typing import Optional
 
 from django.contrib.syndication.views import Feed
 from django.db.models import Q
@@ -51,7 +50,7 @@ class WnppNewsFeedView(Feed):
     description = _('Debian news feed on packaging bugs')
     ttl = 15  # seconds
 
-    def __init__(self, data_set: Optional[str] = None, max_entries: Optional[int] = None):
+    def __init__(self, data_set: str | None = None, max_entries: int | None = None):
         self.__max_entries = max_entries or DEFAULT_MAX_ENTRIES
         self.__data_set = data_set  # overwritten in __call__ below
 

@@ -6,7 +6,7 @@ import time
 from datetime import timedelta
 from enum import Enum
 from functools import wraps
-from typing import Callable, Optional
+from typing import Callable
 from urllib.error import URLError
 
 from django.utils.timezone import now
@@ -124,7 +124,7 @@ class DebbugsWnppClient:
         return {f'arg{i}': v for i, v in enumerate(iter)}
 
     @staticmethod
-    def _decode_base64_as_needed(candidate: Optional[str]) -> Optional[str]:
+    def _decode_base64_as_needed(candidate: str | None) -> str | None:
         # Some bugs have base64 encoded titles or contact info
         # e.g. 842114 (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=842114)
         if candidate is None:
