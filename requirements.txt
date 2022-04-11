@@ -1,5 +1,5 @@
 # Direct dependencies
-beautifulsoup4==4.11.0
+beautifulsoup4==4.11.1
 coverage==6.3.2
 django-coverage-plugin==2.0.2
 django-extensions==3.1.5
