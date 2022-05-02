@@ -61,5 +61,5 @@ typing_extensions==4.2.0
 urllib3==1.26.9
 vcrpy==4.1.1
 wcwidth==0.2.5
-wrapt==1.14.0
+wrapt==1.14.1
 yarl==1.7.2
