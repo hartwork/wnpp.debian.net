@@ -24,7 +24,7 @@ asttokens==2.0.5
 backcall==0.2.0
 black==22.3.0
 blinker==1.4
-certifi==2021.10.8
+certifi==2022.5.18.1
 chardet==4.0.0
 charset-normalizer==2.0.12
 click==8.1.3
