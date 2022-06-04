@@ -16,6 +16,7 @@ RUN echo '@edge-community https://dl-cdn.alpinelinux.org/alpine/edge/community' 
         shadow \
         supercronic@edge-community
 
+SHELL ["/bin/bash", "-c"]
 RUN useradd --create-home --uid 1001 --non-unique wnpp-debian-net
 USER wnpp-debian-net
 ENV PATH=/home/wnpp-debian-net/.local/bin/:${PATH}
@@ -26,11 +27,11 @@ RUN pip3 install --user --ignore-installed --disable-pip-version-check pip setup
         && \
     hash pip3 \
         && \
-    pip3 install --user -r requirements.txt \
+    pip3 install --user --require-hashes -r requirements.txt \
         && \
     pip3 check \
         && \
-    bash -c "diff -u0 <(pip freeze | sort -f) <(sed -e '/^#/d' -e '/^$/d' requirements.txt | sort -f)"
+    diff -u0 <(pip freeze | sort -f) <(sed -e '/--hash=/d' -e 's/ \\$//' -e '/^#/d' -e '/^$/d' requirements.txt | sort -f)
 
 COPY docker/entrypoint.sh ./
 ENTRYPOINT ["./entrypoint.sh"]
