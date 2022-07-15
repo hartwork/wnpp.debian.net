@@ -3,10 +3,10 @@
 
 import base64
 import time
+from collections.abc import Callable
 from datetime import timedelta
 from enum import Enum
 from functools import wraps
-from typing import Callable
 from urllib.error import URLError
 
 from django.utils.timezone import now
