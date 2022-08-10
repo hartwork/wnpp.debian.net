@@ -15,7 +15,7 @@ from ..importdebbugs import Command
 
 
 def _create_mock_debbugs_wnpp_client(issue_ids, properties_of_issues):
-    return Mock(fetch_ids_of_open_issues=Mock(return_value=issue_ids),
+    return Mock(fetch_ids_of_issues_with_status=Mock(return_value=issue_ids),
                 fetch_issues=Mock(return_value=properties_of_issues))
 
 

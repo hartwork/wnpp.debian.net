@@ -4,6 +4,7 @@
 import datetime
 import re
 import sys
+from functools import partial
 from itertools import islice
 from signal import SIGINT
 from typing import Any
@@ -14,7 +15,8 @@ from django.db import transaction
 from django.utils.text import Truncator
 from django.utils.timezone import now
 
-from ...debbugs import DebbugsRequestError, DebbugsRetry, DebbugsWnppClient, IssueProperty
+from ...debbugs import (DebbugsRequestError, DebbugsRetry, DebbugsWnppClient, IssueProperty,
+                        IssueStatus)
 from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, EventKind
 from ._common import ReportingMixin
 
@@ -316,8 +318,11 @@ class Command(ReportingMixin, BaseCommand):
         self._client.connect()
 
         try:
-            ids_of_remote_open_issues = DebbugsRetry(self._client.fetch_ids_of_open_issues,
-                                                     notify=self._notice)()
+            ids_of_remote_open_issues: set[int] = set()
+            for issue_status in (IssueStatus.FORWARDED, IssueStatus.OPEN):
+                fetch_ids = partial(self._client.fetch_ids_of_issues_with_status, issue_status)
+                issue_ids: list[int] = DebbugsRetry(fetch_ids, notify=self._notice)()
+                ids_of_remote_open_issues |= set(issue_ids)
 
             self._close_all_issues_but(ids_of_remote_open_issues)
             self._add_any_new_issues_from(ids_of_remote_open_issues)

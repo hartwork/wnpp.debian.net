@@ -49,6 +49,11 @@ class IssueProperty(Enum):
     UNARCHIVED = 'unarchived'
 
 
+class IssueStatus(Enum):  # known to be incomplete
+    FORWARDED = 'forwarded'
+    OPEN = 'open'
+
+
 class DebbugsRequestError(Exception):
     pass
 
@@ -140,9 +145,9 @@ class DebbugsWnppClient:
             return candidate
 
     @_wrap_exceptions
-    def fetch_ids_of_open_issues(self) -> list[int]:
+    def fetch_ids_of_issues_with_status(self, status: IssueStatus) -> list[int]:
         result: SimpleXMLElement = self._client.get_bugs(
-            **self._to_soap_kwargs('package', 'wnpp', 'status', 'open'))
+            **self._to_soap_kwargs('package', 'wnpp', 'status', status.value))
         return [
             int(item_element.firstChild.nodeValue)
             for item_element in result._element.getElementsByTagName('item')

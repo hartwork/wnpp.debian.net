@@ -3,7 +3,7 @@
 
 from vcr_unittest import VCRTestCase
 
-from ..debbugs import DebbugsWnppClient
+from ..debbugs import DebbugsWnppClient, IssueStatus
 
 ISSUE_IDS_OF_INTEREST = [
     748374,  # solo, not merged with any issues
@@ -73,8 +73,8 @@ class DebbugsWnppClientTest(VCRTestCase):
 
         self.assertEqual(properties_of_issue, EXPECTED_PROPERTIES_OF_ISSUE)
 
-    def test_fetch_ids_of_open_issues(self):
-        ids_of_open_issues = self.client.fetch_ids_of_open_issues()
+    def test_fetch_ids_of_issues_with_status(self):
+        ids_of_open_issues = self.client.fetch_ids_of_issues_with_status(IssueStatus.OPEN)
 
         self.assertEqual(len(ids_of_open_issues), 6256)
         self.assertEqual(ids_of_open_issues[0], 119911)
