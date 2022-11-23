@@ -100,9 +100,9 @@ requests==2.28.1 \
 responses==0.22.0 \
     --hash=sha256:396acb2a13d25297789a5866b4881cf4e46ffd49cc26c43ab1117f40b973102e \
     --hash=sha256:dcf294d204d14c436fddcc74caefdbc5764795a40ff4e6a7740ed8ddbf3294be
-sentry-sdk==1.11.0 \
-    --hash=sha256:e7b78a1ddf97a5f715a50ab8c3f7a93f78b114c67307785ee828ef67a5d6f117 \
-    --hash=sha256:f467e6c7fac23d4d42bc83eb049c400f756cd2d65ab44f0cc1165d0c7c3d40bc
+sentry-sdk==1.11.1 \
+    --hash=sha256:675f6279b6bb1fea09fd61751061f9a90dca3b5929ef631dd50dc8b3aeb245e9 \
+    --hash=sha256:8b4ff696c0bdcceb3f70bbb87a57ba84fd3168b1332d493fcd16c137f709578c
 vcrpy-unittest==0.1.7 \
     --hash=sha256:a508d8848e678243f1c0d4b152a645c18403a8da517b8a44dfcfc35a675ec981 \
     --hash=sha256:b5e2d78bf4c13bc04dca04061dda934abba5f2c9d5201f148747800ff80a762b
