@@ -114,9 +114,9 @@ wait-for-it==2.2.1 \
 asgiref==3.5.2 \
     --hash=sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4 \
     --hash=sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424
-asttokens==2.1.0 \
-    --hash=sha256:1b28ed85e254b724439afc783d4bee767f780b936c3fe8b3275332f42cf5f561 \
-    --hash=sha256:4aa76401a151c8cc572d906aad7aea2a841780834a19d780f4321c0fe1b54635
+asttokens==2.2.0 \
+    --hash=sha256:c56caef774a929923696f09ceea0eadcb95c94b30e8ee4f9fc4f5867096caaeb \
+    --hash=sha256:e27b1f115daebfafd4d1826fc75f9a72f0b74bd3ae4ee4d9380406d74d35e52c
 backcall==0.2.0 \
     --hash=sha256:5cbdbf27be5e7cfadb448baf0aa95508f91f2bbc6c6437cd9cd06e2a4c215e1e \
     --hash=sha256:fbbce6a29f263178a1f7915c1940bde0ec2b2a967566fe1c65c1dfb7422bd255
