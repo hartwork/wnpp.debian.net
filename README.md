@@ -1,3 +1,7 @@
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+[![Build and test using Docker](https://github.com/hartwork/wnpp.debian.net/actions/workflows/build_and_test_using_docker.yml/badge.svg)](https://github.com/hartwork/wnpp.debian.net/actions/workflows/build_and_test_using_docker.yml)
+
+
 # About `wnpp.debian.net`
 
 The [`wnpp.debian.net`](https://wnpp.debian.net/) project started out
