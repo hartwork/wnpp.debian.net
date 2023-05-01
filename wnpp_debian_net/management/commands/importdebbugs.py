@@ -245,7 +245,7 @@ class Command(ReportingMixin, BaseCommand):
     @staticmethod
     def _from_epoch_seconds(epoch_seconds) -> datetime.datetime:
         dt = datetime.datetime.fromtimestamp(epoch_seconds)
-        dt = dt.replace(tzinfo=datetime.timezone.utc)
+        dt = dt.replace(tzinfo=datetime.UTC)
         return dt
 
     @classmethod
