@@ -599,6 +599,6 @@ toml==0.10.2 \
 types-toml==0.10.8.6 \
     --hash=sha256:6d3ac79e36c9ee593c5d4fb33a50cca0e3adceb6ef5cff8b8e5aef67b4c4aaf2 \
     --hash=sha256:de7b2bb1831d6f7a4b554671ffe5875e729753496961b3e9b202745e4955dafa
-types-PyYAML==6.0.12.9 \
-    --hash=sha256:5aed5aa66bd2d2e158f75dda22b059570ede988559f030cf294871d3b647e3e8 \
-    --hash=sha256:c51b1bd6d99ddf0aa2884a7a328810ebf70a4262c292195d3f4f9a0005f9eeb6
+types-PyYAML==6.0.12.10 \
+    --hash=sha256:662fa444963eff9b68120d70cda1af5a5f2aa57900003c2006d7626450eaae5f \
+    --hash=sha256:ebab3d0700b946553724ae6ca636ea932c1b0868701d4af121630e78d695fc97
