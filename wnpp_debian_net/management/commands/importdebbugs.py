@@ -234,13 +234,13 @@ class Command(ReportingMixin, BaseCommand):
 
     @staticmethod
     def _parse_wnpp_issue_subject(subject) -> tuple[str, str, str]:
-        match = re.match(
+        match_ = re.match(
             '^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$',
             subject)
-        if match is None:
+        if match_ is None:
             raise _MalformedSubject(f'Malformed subject {subject!r}')
 
-        return tuple(match.group(g) for g in ('kind', 'package', 'description'))
+        return tuple(match_.group(g) for g in ('kind', 'package', 'description'))
 
     @staticmethod
     def _from_epoch_seconds(epoch_seconds) -> datetime.datetime:
