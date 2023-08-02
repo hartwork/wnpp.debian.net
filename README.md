@@ -12,8 +12,8 @@ than already existing WNPP pages
 [[1]](https://www.debian.org/devel/wnpp/being_packaged)
 and
 [[2]](https://www.debian.org/devel/wnpp/requested)
-combined.  Judging from a e-mail from 2008 I originally intended
-to better show what Debian packages…
+combined.  Judging from an e-mail from 2008, I originally intended
+to better show which Debian packages…
 
 - are potentially easy to package, therefore suitable
   for motivated Debian rookies,
