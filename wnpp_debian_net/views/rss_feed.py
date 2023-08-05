@@ -46,7 +46,6 @@ _DATASETS: dict[NewsDataSet, tuple[str, Q]] = {
 
 
 class WnppNewsFeedView(Feed):
-    title = _('Debian Packaging News')
     description = _('Debian news feed on packaging bugs')
     ttl = 15  # seconds
 
