@@ -4,7 +4,7 @@
 import json
 from io import StringIO
 
-from vcr_unittest import VCRTestCase
+from vcr.unittest import VCRTestCase
 
 from ....tests.test_debbugs import EXPECTED_PROPERTIES_OF_ISSUE, ISSUE_IDS_OF_INTEREST
 from ..inspectdebbugs import Command
