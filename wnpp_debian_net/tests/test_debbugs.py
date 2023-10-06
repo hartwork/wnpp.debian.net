@@ -1,7 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from vcr_unittest import VCRTestCase
+from vcr.unittest import VCRTestCase
 
 from ..debbugs import DebbugsWnppClient, IssueStatus
 
