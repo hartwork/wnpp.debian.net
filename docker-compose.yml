@@ -63,7 +63,7 @@ services:
     tty: true
 
   postgres:
-    image: postgres:13.1  # due to postgresql-client version 13.1 in Alpine 3.13
+    image: postgres:15.2  # due to postgresql-client version 15.2 in Alpine 3.17
     volumes:
       - ~/wnpp-debian-net/postgres-data:/var/lib/postgresql/data
     environment:
