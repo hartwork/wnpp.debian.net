@@ -1,7 +1,7 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
 RUN echo '@edge-community https://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
         && \
@@ -31,7 +31,7 @@ RUN pip3 install --user --ignore-installed --disable-pip-version-check pip setup
         && \
     pip3 check \
         && \
-    diff -u0 <(pip freeze | sort -f) <(sed -e '/--hash=/d' -e 's/ \\$//' -e '/^#/d' -e '/^$/d' requirements.txt | sort -f)
+    diff -u0 <(pip3 freeze | sed -e '/^setuptools==/d' -e '/^wheel==/d' | sort -f) <(sed -e '/--hash=/d' -e 's/ \\$//' -e '/^#/d' -e '/^$/d' requirements.txt | sort -f)
 
 COPY docker/entrypoint.sh ./
 ENTRYPOINT ["./entrypoint.sh"]
