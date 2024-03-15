@@ -78,7 +78,7 @@ def _retry(func: Callable, times: int, exception_classes: tuple[Exception],
     """
     Decorates ``func`` with retry for up to ``times`` times with exponential back-off
     while ignoring all exception classes in ``exception_classes``.
-    Calls out to ``notify`` for notification targetting humans.
+    Calls out to ``notify`` for notification targeting humans.
     """
 
     @wraps(func)
