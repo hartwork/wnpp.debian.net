@@ -284,7 +284,15 @@ ITA/ITP = <i>Intent to <u>p</u>ackage/<u>a</u>dopt</i> ..... O = <i><u>O</u>rpha
     {% if show_type %}
     <td class="{{ issue.kind }}"><nobr>{{ issue.kind }}</nobr></td>
     {% endif %}
-    <td class="{{ issue.kind }}"><nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.popcon_id|truncatechars:38 }}</a></nobr></td>
+    <td class="{{ issue.kind }}"><nobr>
+        {% if issue.has_existing_package %}
+        <a href="{% debian_package_tracker_url issue.popcon_id %}">
+        {% endif %}
+            {{ issue.popcon_id|truncatechars:38 }}
+        {% if issue.has_existing_package %}
+        </a>
+        {% endif %}
+    </nobr></td>
     <td class="{{ issue.kind }}" align="right">&nbsp;<nobr><a href="{% wnpp_issue_url issue.ident %}">{{ issue.ident }}</a></nobr>&nbsp;</td>
     {% if show_description %}
     <td class="{{ issue.kind }}" title="{{ issue.description }}"><nobr>{{ issue.description|truncatechars:60 }}</nobr></td>

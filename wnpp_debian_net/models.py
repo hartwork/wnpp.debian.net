@@ -99,5 +99,8 @@ class DebianWnpp(models.Model):
             until = now()
         return (until - self.mod_stamp).days
 
+    def has_existing_package(self):
+        return IssueKind(self.kind) not in (IssueKind.ITP, IssueKind.RFP)
+
     def __lt__(self, other):
         return self.ident < other.ident
