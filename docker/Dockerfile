@@ -20,7 +20,7 @@ SHELL ["/bin/bash", "-c"]
 RUN useradd --create-home --uid 1001 --non-unique wnpp-debian-net
 USER wnpp-debian-net
 ENV PATH=/home/wnpp-debian-net/.local/bin/:${PATH}
-COPY --chown=wnpp-debian-net:wnpp-debian-net requirements.txt  /home/wnpp-debian-net/
+COPY --chown=wnpp-debian-net:wnpp-debian-net requirements*.txt  /home/wnpp-debian-net/
 
 WORKDIR /home/wnpp-debian-net/
 RUN pip3 install --user --ignore-installed --disable-pip-version-check pip setuptools wheel \
@@ -32,7 +32,7 @@ RUN pip3 install --user --ignore-installed --disable-pip-version-check pip setup
     pip3 check \
         && \
     diff -u0 \
-            <(sed -e '/--hash=/d' -e 's/ \\$//' -e '/^#/d' -e '/^$/d' requirements.txt | sort -f) \
+            <(sed -e '/--hash=/d' -e 's/ \\$//' -e '/^#/d' -e '/^$/d' requirements-*.txt | sort -f) \
             <(pip3 freeze | sed -e '/^setuptools==/d' -e '/^wheel==/d' | sort -f)
 
 COPY docker/entrypoint.sh ./
