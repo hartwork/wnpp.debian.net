@@ -31,7 +31,9 @@ RUN pip3 install --user --ignore-installed --disable-pip-version-check pip setup
         && \
     pip3 check \
         && \
-    diff -u0 <(sed -e '/--hash=/d' -e 's/ \\$//' -e '/^#/d' -e '/^$/d' requirements.txt | sort -f) <(pip3 freeze | sed -e '/^setuptools==/d' -e '/^wheel==/d' | sort -f)
+    diff -u0 \
+            <(sed -e '/--hash=/d' -e 's/ \\$//' -e '/^#/d' -e '/^$/d' requirements.txt | sort -f) \
+            <(pip3 freeze | sed -e '/^setuptools==/d' -e '/^wheel==/d' | sort -f)
 
 COPY docker/entrypoint.sh ./
 ENTRYPOINT ["./entrypoint.sh"]
