@@ -101,9 +101,9 @@ requests==2.31.0 \
 responses==0.25.0 \
     --hash=sha256:01ae6a02b4f34e39bffceb0fc6786b67a25eae919c6368d05eabc8d9576c2a66 \
     --hash=sha256:2f0b9c2b6437db4b528619a77e5d565e4ec2a9532162ac1a131a83529db7be1a
-sentry-sdk==2.0.1 \
-    --hash=sha256:b54c54a2160f509cf2757260d0cf3885b608c6192c2555a3857e3a4d0f84bdb3 \
-    --hash=sha256:c278e0f523f6f0ee69dc43ad26dcdb1202dffe5ac326ae31472e012d941bee21
+sentry-sdk==2.1.0 \
+    --hash=sha256:392f1065d6b46e87bf0a0a8eda2fe271601a62b0daf56eeb74e813f99ca0caec \
+    --hash=sha256:968b599d2ecdb1fae15d529ab03750ff2f34954fd317b4fb1dbc2725bb1702d0
 wait-for-it==2.2.2 \
     --hash=sha256:807d759b4143dbf07f65782734ce7837d6cd4c2f36c154484731f855170920e6 \
     --hash=sha256:ed6ce9bfad11dbfc29ecbef9daac2b9f45d583e5fcd559e1a6106002df0247c1
