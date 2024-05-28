@@ -427,7 +427,7 @@ pickleshare==0.7.5 \
 platformdirs==4.2.2 \
     --hash=sha256:2d7a1657e36a80ea911db832a8a6ece5ee53d8de21edd5cc5879af6530b1bfee \
     --hash=sha256:38b7b51f512eed9e84a22788b4bce1de17c0adb134d6becb09836e37d8654cd3
-prompt-toolkit==3.0.44 \
+prompt_toolkit==3.0.44 \
     --hash=sha256:205a20669633d042d3722a528b8e7cd3f4dbd9e1450935f596c2cc61166762dd \
     --hash=sha256:c1dfd082c4259964bc8bcce1f8460d9dbeb5d4a37bfc25b8082bc02cd41c8af6
 ptyprocess==0.7.0 \
