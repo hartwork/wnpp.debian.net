@@ -19,7 +19,7 @@ repos:
         exclude: '/popcon_test_data/'
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.1.0
+    rev: 7.1.1
     hooks:
       - id: flake8
 
