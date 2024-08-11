@@ -36,7 +36,7 @@ Required CSS classes (a la https://getbootstrap.com/docs/4.0/components/paginati
                     <a class="page-link" href="#">…</a>
                 </li>
             {% else %}
-                {% if page_items|length_is:"1" %}
+                {% if page_items|length == 1 %}
                     <li class="page-item disabled">
                         <a class="page-link" href="#">{{ page_number }}</a>
                     </li>
