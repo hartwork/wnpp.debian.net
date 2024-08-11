@@ -85,7 +85,7 @@ class PaginationTemplateTest(TestCase):
         return [a_tag.string for a_tag in soup.find_all('a')]
 
     @parameterized.expand([
-        (1, [
+        ("first", 1, [
             ('Previous', ['disabled']),
             ('1', ['active']),
             ('2', []),
@@ -98,7 +98,7 @@ class PaginationTemplateTest(TestCase):
             ('11', []),
             ('Next', []),
         ], '(1 to 2; 22 total)'),
-        (6, [
+        ("middle", 6, [
             ('Previous', []),
             ('1', []),
             ('2', []),
@@ -111,7 +111,7 @@ class PaginationTemplateTest(TestCase):
             ('11', []),
             ('Next', []),
         ], '(11 to 12; 22 total)'),
-        (11, [
+        ("last", 11, [
             ('Previous', []),
             ('1', []),
             ('2', []),
@@ -125,7 +125,7 @@ class PaginationTemplateTest(TestCase):
             ('Next', ['disabled']),
         ], '(21 to 22; 22 total)'),
     ])
-    def test(self, current_page, expected_display, expected_summary):
+    def test(self, _label, current_page, expected_display, expected_summary):
         page_items = iterate_page_items(total_page_count=self.page_count,
                                         current_page_number=current_page,
                                         max_item_count=self.max_item_count,
