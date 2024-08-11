@@ -134,7 +134,7 @@ class PaginationTemplateTest(TestCase):
             'page': current_page,
         }
         context = {
-            'page_items': page_items,
+            'page_items': list(page_items),
             'page_obj': self.paginator.get_page(current_page),
             'request': RequestFactory().get(self.url, data),
         }
