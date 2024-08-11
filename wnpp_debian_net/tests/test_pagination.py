@@ -125,7 +125,7 @@ class PaginationTemplateTest(TestCase):
             ('Next', ['disabled']),
         ], '(21 to 22; 22 total)'),
     ])
-    def test(self, _label, current_page, expected_display, expected_summary):
+    def test_multiple_pages(self, _label, current_page, expected_display, expected_summary):
         page_items = iterate_page_items(total_page_count=self.page_count,
                                         current_page_number=current_page,
                                         max_item_count=self.max_item_count,
@@ -140,6 +140,39 @@ class PaginationTemplateTest(TestCase):
         }
 
         actual_content = self.template.render(context)
+
+        soup = BeautifulSoup(markup=actual_content, features='html.parser')
+        actual_display = list(
+            zip(self._extract_link_text(soup), self._extract_page_page_item_classes(soup)))
+        self.assertEqual(actual_display, expected_display)
+        self.assertIn(expected_summary, actual_content)
+
+    def test_single_page(self):
+        expected_display = [
+            ('Previous', ['disabled']),
+            ('1', ['disabled']),
+            ('Next', ['disabled']),
+        ]
+        expected_summary = '(1 to 123; 123 total)'
+
+        total_page_count = 1
+        item_count = 123  # arbitrary
+        paginator = Paginator(object_list=range(item_count), per_page=item_count)
+        template = get_template('pagination.html')
+        page_items = iterate_page_items(total_page_count=total_page_count,
+                                        current_page_number=1,
+                                        max_item_count=(456 + 1) * 2 + 1,
+                                        ending_item_count=456)  # arbitrary
+        data = {
+            'page': 1,
+        }
+        context = {
+            'page_items': list(page_items),
+            'page_obj': paginator.get_page(1),
+            'request': RequestFactory().get(self.url, data),
+        }
+
+        actual_content = template.render(context)
 
         soup = BeautifulSoup(markup=actual_content, features='html.parser')
         actual_display = list(
