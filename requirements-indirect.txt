@@ -558,8 +558,9 @@ typing_extensions==4.12.2 \
 urllib3==2.2.3 \
     --hash=sha256:ca899ca043dcb1bafa3e262d73aa25c465bfb49e0bd9dd5d59f1d0acba2f8fac \
     --hash=sha256:e7d814a81dad81e6caf2ec9fdedb284ecc9c73076b62654547cc64ccdcae26e9
-vcrpy==6.0.1 \
-    --hash=sha256:9e023fee7f892baa0bbda2f7da7c8ac51165c1c6e38ff8688683a12a4bde9278
+vcrpy==6.0.2 \
+    --hash=sha256:40370223861181bc76a5e5d4b743a95058bb1ad516c3c08570316ab592f56cad \
+    --hash=sha256:88e13d9111846745898411dbc74a75ce85870af96dd320d75f1ee33158addc09
 wcwidth==0.2.13 \
     --hash=sha256:3da69048e4540d84af32131829ff948f1e022c1c6bdb8d6102117aac784f6859 \
     --hash=sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5
