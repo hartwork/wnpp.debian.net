@@ -10,16 +10,17 @@ from ..pagination_urls import url_for_page
 
 
 class UrlForPageTest(TestCase):
-
-    @parameterized.expand([
-        ('/hello', '/hello?page=3'),
-        ('/hello?other=1', '/hello?other=1&page=3'),
-        ('/hello?page=5', '/hello?page=3'),
-    ])
+    @parameterized.expand(
+        [
+            ("/hello", "/hello?page=3"),
+            ("/hello?other=1", "/hello?other=1&page=3"),
+            ("/hello?page=5", "/hello?page=3"),
+        ]
+    )
     def test_url_for_page(self, current_url, expected_url):
         page_number = 3  # arbitrary
         context = {
-            'request': RequestFactory().get(current_url),
+            "request": RequestFactory().get(current_url),
         }
 
         actual_url = url_for_page(context, page_number)

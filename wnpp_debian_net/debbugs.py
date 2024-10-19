@@ -15,43 +15,43 @@ from pysimplesoap.simplexml import SimpleXMLElement
 
 
 class IssueProperty(Enum):
-    AFFECTS = 'affects'
-    ARCHIVED = 'archived'
-    BLOCKEDBY = 'blockedby'
-    BLOCKS = 'blocks'
-    BUG_NUM = 'bug_num'
-    DATE = 'date'
-    DONE = 'done'
-    FIXED = 'fixed'
-    FIXED_DATE = 'fixed_date'
-    FIXED_VERSIONS = 'fixed_versions'
-    FORWARDED = 'forwarded'
-    FOUND = 'found'
-    FOUND_DATE = 'found_date'
-    FOUND_VERSIONS = 'found_versions'
-    ID = 'id'
-    KEYWORDS = 'keywords'
-    LAST_MODIFIED = 'last_modified'
-    LOCATION = 'location'
-    LOG_MODIFIED = 'log_modified'
-    MERGEDWITH = 'mergedwith'
-    MSGID = 'msgid'
-    ORIGINATOR = 'originator'
-    OUTLOOK = 'outlook'
-    OWNER = 'owner'
-    PACKAGE = 'package'
-    PENDING = 'pending'
-    SEVERITY = 'severity'
-    SOURCE = 'source'
-    SUBJECT = 'subject'
-    SUMMARY = 'summary'
-    TAGS = 'tags'
-    UNARCHIVED = 'unarchived'
+    AFFECTS = "affects"
+    ARCHIVED = "archived"
+    BLOCKEDBY = "blockedby"
+    BLOCKS = "blocks"
+    BUG_NUM = "bug_num"
+    DATE = "date"
+    DONE = "done"
+    FIXED = "fixed"
+    FIXED_DATE = "fixed_date"
+    FIXED_VERSIONS = "fixed_versions"
+    FORWARDED = "forwarded"
+    FOUND = "found"
+    FOUND_DATE = "found_date"
+    FOUND_VERSIONS = "found_versions"
+    ID = "id"
+    KEYWORDS = "keywords"
+    LAST_MODIFIED = "last_modified"
+    LOCATION = "location"
+    LOG_MODIFIED = "log_modified"
+    MERGEDWITH = "mergedwith"
+    MSGID = "msgid"
+    ORIGINATOR = "originator"
+    OUTLOOK = "outlook"
+    OWNER = "owner"
+    PACKAGE = "package"
+    PENDING = "pending"
+    SEVERITY = "severity"
+    SOURCE = "source"
+    SUBJECT = "subject"
+    SUMMARY = "summary"
+    TAGS = "tags"
+    UNARCHIVED = "unarchived"
 
 
 class IssueStatus(Enum):  # known to be incomplete
-    FORWARDED = 'forwarded'
-    OPEN = 'open'
+    FORWARDED = "forwarded"
+    OPEN = "open"
 
 
 class DebbugsRequestError(Exception):
@@ -73,8 +73,9 @@ def _wrap_exceptions(f):
     return wrapped
 
 
-def _retry(func: Callable, times: int, exception_classes: tuple[Exception],
-           notify: Callable[[str], None]) -> Callable:
+def _retry(
+    func: Callable, times: int, exception_classes: tuple[Exception], notify: Callable[[str], None]
+) -> Callable:
     """
     Decorates ``func`` with retry for up to ``times`` times with exponential back-off
     while ignoring all exception classes in ``exception_classes``.
@@ -88,49 +89,48 @@ def _retry(func: Callable, times: int, exception_classes: tuple[Exception],
             try:
                 res = func(*args, **kwargs)
             except exception_classes:
-                message_prefix = f'Attempt {i + 1} failed, been trying for {now() - started_at}'
-                giving_up = (i == times - 1)
+                message_prefix = f"Attempt {i + 1} failed, been trying for {now() - started_at}"
+                giving_up = i == times - 1
                 if giving_up:
-                    notify(f'{message_prefix} — giving up')
+                    notify(f"{message_prefix} — giving up")
                     raise
                 sleep_duration_seconds = 2**i
                 sleep_until = now() + timedelta(seconds=sleep_duration_seconds)
-                notify(f'{message_prefix} — sleeping for {sleep_duration_seconds} second(s)'
-                       f' until {sleep_until} to try up to {times - i - 1} time(s) more')
+                notify(
+                    f"{message_prefix} — sleeping for {sleep_duration_seconds} second(s)"
+                    f" until {sleep_until} to try up to {times - i - 1} time(s) more"
+                )
                 time.sleep(sleep_duration_seconds)
             else:
                 if i > 0:
-                    notify(f'Attempt {i + 1} succeeded (after trying for {now() - started_at})')
+                    notify(f"Attempt {i + 1} succeeded (after trying for {now() - started_at})")
                 return res
 
     return wrapped
 
 
 class DebbugsRetry:
-
     def __init__(self, func: Callable, notify: Callable[[str], None]):
         self.__func = func
         self.__notify = notify
 
     def __call__(self, *args, **kwargs):
-        func_with_retry = _retry(self.__func,
-                                 times=8,
-                                 exception_classes=(DebbugsRequestError, ),
-                                 notify=self.__notify)
+        func_with_retry = _retry(
+            self.__func, times=8, exception_classes=(DebbugsRequestError,), notify=self.__notify
+        )
         return func_with_retry(*args, **kwargs)
 
 
 class DebbugsWnppClient:
-
     def __init__(self):
         self._client = None
 
     def connect(self):
-        self._client = SoapClient(location='https://bugs.debian.org/cgi-bin/soap.cgi')
+        self._client = SoapClient(location="https://bugs.debian.org/cgi-bin/soap.cgi")
 
     @staticmethod
     def _to_soap_kwargs(*iter):
-        return {f'arg{i}': v for i, v in enumerate(iter)}
+        return {f"arg{i}": v for i, v in enumerate(iter)}
 
     @staticmethod
     def _decode_base64_as_needed(candidate: str | None) -> str | None:
@@ -140,17 +140,18 @@ class DebbugsWnppClient:
             return None
 
         try:
-            return base64.decodebytes(candidate.encode('ascii')).decode()
+            return base64.decodebytes(candidate.encode("ascii")).decode()
         except (ValueError, UnicodeEncodeError):
             return candidate
 
     @_wrap_exceptions
     def fetch_ids_of_issues_with_status(self, status: IssueStatus) -> list[int]:
         result: SimpleXMLElement = self._client.get_bugs(
-            **self._to_soap_kwargs('package', 'wnpp', 'status', status.value))
+            **self._to_soap_kwargs("package", "wnpp", "status", status.value)
+        )
         return [
             int(item_element.firstChild.nodeValue)
-            for item_element in result._element.getElementsByTagName('item')
+            for item_element in result._element.getElementsByTagName("item")
         ]
 
     @_wrap_exceptions
@@ -159,7 +160,7 @@ class DebbugsWnppClient:
 
         soap_result: SimpleXMLElement = self._client.get_status(**self._to_soap_kwargs(*issue_ids))
 
-        map_element = soap_result._element.getElementsByTagName('s-gensym3')[0]
+        map_element = soap_result._element.getElementsByTagName("s-gensym3")[0]
         for item_element in map_element.childNodes:
             key_element = item_element.childNodes[0]
             value_element = item_element.childNodes[1]
@@ -167,7 +168,8 @@ class DebbugsWnppClient:
             issue_id = int(key_element.firstChild.nodeValue)
             issue_properties = {
                 node.tagName: self._decode_base64_as_needed(node.firstChild.nodeValue)
-                for node in value_element.childNodes if node.firstChild is not None
+                for node in value_element.childNodes
+                if node.firstChild is not None
             }
 
             properties_of_issue[issue_id] = issue_properties

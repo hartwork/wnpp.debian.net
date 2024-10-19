@@ -25,4 +25,5 @@ class DebianPopconAdmin(admin.ModelAdmin):
 class DebianWnppAdmin(admin.ModelAdmin):
     readonly_fields = (
         # Quick workaround so that Django doesn't try offering ALL of popcon as a select value
-        'popcon', )
+        "popcon",
+    )

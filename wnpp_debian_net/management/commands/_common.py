@@ -3,7 +3,6 @@
 
 
 class ReportingMixin:
-
     def _error(self, text: str) -> None:
         self.stderr.write(self.style.ERROR(text))
 

@@ -13,5 +13,5 @@ def url_for_page(context, page_number):
     """
     Produces the current request URLs with `[?&]page=<page_number>` applied
     """
-    url = context['request'].get_full_path()
+    url = context["request"].get_full_path()
     return url_with_query(url, page=page_number)

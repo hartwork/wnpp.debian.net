@@ -9,10 +9,12 @@ _DEFAULT_ENDING_ITEM_COUNT = 2
 ELLIPSIS = None
 
 
-def iterate_page_items(total_page_count: int,
-                       current_page_number: int,
-                       max_item_count: int | None = None,
-                       ending_item_count: int | None = None):
+def iterate_page_items(
+    total_page_count: int,
+    current_page_number: int,
+    max_item_count: int | None = None,
+    ending_item_count: int | None = None,
+):
     """
     Calculates where to put ellipses (omission markers) in a
     sequence of page items to keep the number of page items
@@ -22,7 +24,7 @@ def iterate_page_items(total_page_count: int,
     [1, 2, None, 93, 94, 95, 96, None, 99, 100]
     """
     if not 1 <= current_page_number <= total_page_count:
-        raise ValueError(f'Page {current_page_number} is not within range 1 to {total_page_count}')
+        raise ValueError(f"Page {current_page_number} is not within range 1 to {total_page_count}")
 
     if max_item_count is None:
         max_item_count = _DEFAULT_MAX_ITEM_COUNT
@@ -35,15 +37,17 @@ def iterate_page_items(total_page_count: int,
     #                 plus 1 for the item with the current page
     min_expected_max_item_count = (ending_item_count + 1) * 2 + 1
     if max_item_count < min_expected_max_item_count:
-        raise ValueError(f'Max item count {max_item_count} needs to be'
-                         f' at least {min_expected_max_item_count}'
-                         f' (given ending item count {ending_item_count})')
+        raise ValueError(
+            f"Max item count {max_item_count} needs to be"
+            f" at least {min_expected_max_item_count}"
+            f" (given ending item count {ending_item_count})"
+        )
 
     if total_page_count <= max_item_count:
         yield from range(1, total_page_count + 1)
         return
 
-    number_of_items_surrounding_current = (max_item_count - 2 * (ending_item_count + 1) - 1)
+    number_of_items_surrounding_current = max_item_count - 2 * (ending_item_count + 1) - 1
     assert number_of_items_surrounding_current >= 0
     items_before_current = number_of_items_surrounding_current // 2
     items_after_current = number_of_items_surrounding_current - items_before_current
@@ -60,8 +64,9 @@ def iterate_page_items(total_page_count: int,
     elif tail_trouble:
         yield from range(1, ending_item_count + 1)
         yield ELLIPSIS
-        yield from range(total_page_count - max_item_count + ending_item_count + 1 + 1,
-                         total_page_count + 1)
+        yield from range(
+            total_page_count - max_item_count + ending_item_count + 1 + 1, total_page_count + 1
+        )
     else:
         yield from range(1, ending_item_count + 1)
         yield ELLIPSIS

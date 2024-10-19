@@ -10,9 +10,8 @@ from ..favicon import FAVICON_FILES
 
 
 class FaviconTest(TestCase):
-
     @parameterized.expand(FAVICON_FILES)
     def test_file_served_properly(self, path):
-        url = reverse('favicon', kwargs={'path': path})
+        url = reverse("favicon", kwargs={"path": path})
         response = self.client.get(url)
         self.assertIsInstance(response, FileResponse)
