@@ -22,78 +22,86 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['WDN_SECRET_KEY']
+SECRET_KEY = os.environ["WDN_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('WDN_DEBUG') == 'true'
+DEBUG = os.environ.get("WDN_DEBUG") == "true"
 
-ALLOWED_HOSTS = (os.environ.get('WDN_ALLOWED_HOSTS') or ','.join([
-    '0.0.0.0',
-    '127.0.0.1',
-    'localhost',
-])).split(',')
+ALLOWED_HOSTS = (
+    os.environ.get("WDN_ALLOWED_HOSTS")
+    or ",".join(
+        [
+            "0.0.0.0",
+            "127.0.0.1",
+            "localhost",
+        ]
+    )
+).split(",")
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.humanize',  # for template tag "intcomma"
-    'django_extensions',  # for management command "validate_templates",
-    'wnpp_debian_net',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.humanize",  # for template tag "intcomma"
+    "django_extensions",  # for management command "validate_templates",
+    "wnpp_debian_net",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'wnpp_debian_net.urls'
+ROOT_URLCONF = "wnpp_debian_net.urls"
 
-_TEMPLATE_DEBUG = any((command in sys.argv) for command in (
-    'test',
-    'validate_templates',
-))  # for django_coverage_plugin
+_TEMPLATE_DEBUG = any(
+    (command in sys.argv)
+    for command in (
+        "test",
+        "validate_templates",
+    )
+)  # for django_coverage_plugin
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
-            'debug': _TEMPLATE_DEBUG,
+            "debug": _TEMPLATE_DEBUG,
         },
     },
 ]
 
-WSGI_APPLICATION = 'wnpp_debian_net.wsgi.application'
+WSGI_APPLICATION = "wnpp_debian_net.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.environ['WDN_POSTGRES_HOST'],
-        'NAME': os.environ['WDN_POSTGRES_NAME'],
-        'PASSWORD': os.environ['WDN_POSTGRES_PASSWORD'],
-        'PORT': os.environ['WDN_POSTGRES_PORT'],
-        'USER': os.environ['WDN_POSTGRES_USER'],
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": os.environ["WDN_POSTGRES_HOST"],
+        "NAME": os.environ["WDN_POSTGRES_NAME"],
+        "PASSWORD": os.environ["WDN_POSTGRES_PASSWORD"],
+        "PORT": os.environ["WDN_POSTGRES_PORT"],
+        "USER": os.environ["WDN_POSTGRES_USER"],
     }
 }
 
@@ -102,25 +110,25 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -131,26 +139,26 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 
-if 'test' in sys.argv:
-    INSTALLED_APPS.append('nplusone.ext.django')
-    MIDDLEWARE.insert(0, 'nplusone.ext.django.NPlusOneMiddleware')
+if "test" in sys.argv:
+    INSTALLED_APPS.append("nplusone.ext.django")
+    MIDDLEWARE.insert(0, "nplusone.ext.django.NPlusOneMiddleware")
     NPLUSONE_RAISE = True
     NPLUSONE_WHITELIST = [
         {
-            'label': 'unused_eager_load',
+            "label": "unused_eager_load",
         },
     ]
 
-_SENTRY_DSN = os.environ.get('WDN_SENTRY_DSN')
+_SENTRY_DSN = os.environ.get("WDN_SENTRY_DSN")
 if _SENTRY_DSN:
     import sentry_sdk
     from sentry_sdk.integrations.django import DjangoIntegration
 
     def _before_send(event: dict[str, Any], hint: dict[str, Any]) -> dict[str, Any] | None:
         # Prevent bad requests from showing up in Sentry
-        if event.get('logger') == 'django.security.SuspiciousOperation':
+        if event.get("logger") == "django.security.SuspiciousOperation":
             return None
         return event
 
@@ -159,7 +167,7 @@ if _SENTRY_DSN:
         before_send=_before_send,
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
-
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True)
+        send_default_pii=True,
+    )

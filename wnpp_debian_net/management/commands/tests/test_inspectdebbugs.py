@@ -11,7 +11,6 @@ from ..inspectdebbugs import Command
 
 
 class InspectDebbugsCommandTest(VCRTestCase):
-
     @staticmethod
     def with_issue_ids_decoded_to_int(properties_of_issues):
         # NOTE: Dictionaries can only have string keys in JSON
@@ -24,5 +23,6 @@ class InspectDebbugsCommandTest(VCRTestCase):
         command.handle(issue_ids=ISSUE_IDS_OF_INTEREST)
 
         actual_properties_of_issues = self.with_issue_ids_decoded_to_int(
-            json.loads(stdout.getvalue()))
+            json.loads(stdout.getvalue())
+        )
         self.assertEqual(actual_properties_of_issues, EXPECTED_PROPERTIES_OF_ISSUE)

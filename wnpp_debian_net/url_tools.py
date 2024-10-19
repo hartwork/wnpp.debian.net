@@ -12,8 +12,9 @@ def url_with_query(url, **data) -> str:
     query_pairs = parse_qsl(query)
 
     for query_key, query_value in data.items():
-        rightmost_index = max((i for i, pair in enumerate(query_pairs) if pair[0] == query_key),
-                              default=None)
+        rightmost_index = max(
+            (i for i, pair in enumerate(query_pairs) if pair[0] == query_key), default=None
+        )
         new_pair = (query_key, str(query_value))
         if rightmost_index is None:
             query_pairs.append(new_pair)

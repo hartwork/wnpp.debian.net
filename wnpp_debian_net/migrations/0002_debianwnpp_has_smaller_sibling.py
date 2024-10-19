@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wnpp_debian_net', '0001_initial'),
+        ("wnpp_debian_net", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='debianwnpp',
-            name='has_smaller_sibling',
+            model_name="debianwnpp",
+            name="has_smaller_sibling",
             field=models.BooleanField(default=False),
         ),
     ]

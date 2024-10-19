@@ -11,9 +11,9 @@ from django.utils.text import Truncator
 register = template.Library()
 
 _CONTACT_MATCHERS = [
-    re.compile(r'^(?P<mailto>[^ ]+@[^ ]+) \((?P<display>.+)\)$'),
+    re.compile(r"^(?P<mailto>[^ ]+@[^ ]+) \((?P<display>.+)\)$"),
     re.compile(r'^"?(?P<display>.+?)"? <(?P<mailto>[^ ]+@[^ ]+)>$'),
-    re.compile(r'^(?P<display>(?P<mailto>[^ ]+@[^ ]+))$'),
+    re.compile(r"^(?P<display>(?P<mailto>[^ ]+@[^ ]+))$"),
 ]
 
 
@@ -32,7 +32,7 @@ def _parse_contact(contact: str) -> tuple[str | None, str]:
         match: Match = matcher.match(contact)
         if match is None:
             continue
-        return tuple(match.group(group) for group in ('mailto', 'display'))
+        return tuple(match.group(group) for group in ("mailto", "display"))
     raise _UnsupportedContactFormat(contact)
 
 
@@ -40,7 +40,7 @@ def _parse_contact(contact: str) -> tuple[str | None, str]:
 def contact_link_for(contact: str | None, truncatechars: int = None) -> safestring:
     mailto = None
     if not contact:
-        display = 'nobody'
+        display = "nobody"
     else:
         try:
             mailto, display = _parse_contact(contact)
@@ -49,6 +49,6 @@ def contact_link_for(contact: str | None, truncatechars: int = None) -> safestri
         display = _truncate(display, truncatechars)
 
     if mailto is None:
-        return format_html('<i>{}</i>', display)
+        return format_html("<i>{}</i>", display)
     else:
         return format_html('<a href="mailto:{}">{}</a>', mailto, display)

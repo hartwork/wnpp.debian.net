@@ -10,8 +10,13 @@ from .views.rss_feed import WnppNewsFeedView
 from .views.security_txt import security_txt_urlpatterns
 from .views.static_files import staticfiles_urlpatterns
 
-urlpatterns = [
-    path('', FrontPageView.as_view(), name='front_page'),
-    path('admin/', admin.site.urls),
-    path('news.php5', WnppNewsFeedView(), name='news'),
-] + favicon_urlpatterns() + staticfiles_urlpatterns() + security_txt_urlpatterns()
+urlpatterns = (
+    [
+        path("", FrontPageView.as_view(), name="front_page"),
+        path("admin/", admin.site.urls),
+        path("news.php5", WnppNewsFeedView(), name="news"),
+    ]
+    + favicon_urlpatterns()
+    + staticfiles_urlpatterns()
+    + security_txt_urlpatterns()
+)

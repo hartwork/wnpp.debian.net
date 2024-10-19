@@ -8,11 +8,12 @@ from parameterized import parameterized
 
 
 class StaticFilesTest(TestCase):
-
-    @parameterized.expand([
-        ('our own', 'images/feed-icon.png'),
-        ('third party', 'admin/css/nav_sidebar.css'),
-    ])
+    @parameterized.expand(
+        [
+            ("our own", "images/feed-icon.png"),
+            ("third party", "admin/css/nav_sidebar.css"),
+        ]
+    )
     def test_file_served_properly(self, _label, path):
         url = static(path)
         response = self.client.get(url)

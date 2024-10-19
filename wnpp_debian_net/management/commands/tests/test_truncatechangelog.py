@@ -34,7 +34,8 @@ class ChangeLogTruncationTest(TestCase):
         Command(stdout=StringIO()).handle(spare_count=self.FEED_MAX_ENTRIES)
 
         count_original_entries_left = DebianLogIndex.objects.filter(
-            log_id__in=[e.log_id for e in self.entries]).count()
+            log_id__in=[e.log_id for e in self.entries]
+        ).count()
         count_original_entries_deleted = len(self.entries) - count_original_entries_left
 
         self.assertGreaterEqual(count_original_entries_left, self.FEED_MAX_ENTRIES)
