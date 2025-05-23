@@ -38,7 +38,9 @@ services:
   cron:
     depends_on:
       - postgres
-    image: ${COMPOSE_PROJECT_NAME:-wnppdebiannet}_wnpp-debian-net
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     command: ["sh", "-c", "supercronic -sentry-dsn \"${WDN_SENTRY_DSN}\" ~/crontab"]
     environment:
       # KEEP IN SYNC with container "django" above
