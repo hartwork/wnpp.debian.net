@@ -41,7 +41,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    command: ["sh", "-c", "supercronic -sentry-dsn \"${WDN_SENTRY_DSN}\" ~/crontab"]
+    command: ["sh", "-c", "/usr/bin/supercronic -sentry-dsn \"${WDN_SENTRY_DSN}\" ~/crontab"]
     environment:
       # KEEP IN SYNC with container "django" above
       WDN_ALLOWED_HOSTS: ${WDN_ALLOWED_HOSTS}
