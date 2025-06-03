@@ -2,15 +2,14 @@
 # Licensed under GNU Affero GPL v3 or later
 
 import gzip
-import os
 from datetime import timedelta
 from http import HTTPStatus
+from importlib import resources
 from io import StringIO
 from tempfile import TemporaryDirectory
 
 import responses
 from django.test import TestCase
-from pkg_resources import resource_filename
 
 from wnpp_debian_net.models import DebianPopcon
 from wnpp_debian_net.tests.factories import DebianPopconFactory
@@ -58,11 +57,8 @@ class ImportPopconCommandTest(TestCase):
         )
 
     def _add_response(self, url, body_basename):
-        filename = resource_filename(
-            tests.__name__, os.path.join("popcon_test_data", body_basename)
-        )
-        with open(filename, "rb") as f:
-            body = gzip.compress(f.read())
+        path = resources.files(tests.__name__).joinpath("popcon_test_data", body_basename)
+        body = gzip.compress(path.read_bytes())
         responses.add(responses.GET, url, body=body, status=HTTPStatus.OK)
 
     @responses.activate
