@@ -2,8 +2,8 @@
 # Licensed under GNU Affero GPL v3 or later
 
 import re
+from importlib import resources
 
-import pkg_resources
 from django.urls import re_path
 from django.views.static import serve
 
@@ -60,8 +60,8 @@ def favicon_urlpatterns(name="favicon"):
             "^(?P<path>%s)$" % _FAVICON_FILES_PATTERN,
             serve,
             kwargs={
-                "document_root": pkg_resources.resource_filename(
-                    "wnpp_debian_net", "static/favicon"
+                "document_root": str(
+                    resources.files("wnpp_debian_net").joinpath("static", "favicon")
                 ),
             },
             name=name,
