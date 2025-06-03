@@ -57,9 +57,8 @@ class ImportPopconCommandTest(TestCase):
         )
 
     def _add_response(self, url, body_basename):
-        filename = str(resources.files(tests.__name__).joinpath("popcon_test_data", body_basename))
-        with open(filename, "rb") as f:
-            body = gzip.compress(f.read())
+        path = resources.files(tests.__name__).joinpath("popcon_test_data", body_basename)
+        body = gzip.compress(path.read_bytes())
         responses.add(responses.GET, url, body=body, status=HTTPStatus.OK)
 
     @responses.activate
