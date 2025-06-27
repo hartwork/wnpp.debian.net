@@ -13,7 +13,7 @@ repos:
         exclude: '/popcon_test_data/'
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.0
+    rev: v0.12.1
     hooks:
       - id: ruff
         args:
