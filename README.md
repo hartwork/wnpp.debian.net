@@ -1,6 +1,18 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![Build and test using Docker](https://github.com/hartwork/wnpp.debian.net/actions/workflows/build_and_test_using_docker.yml/badge.svg)](https://github.com/hartwork/wnpp.debian.net/actions/workflows/build_and_test_using_docker.yml)
 
+> [!IMPORTANT]
+> This project is in **maintenance mode**. That means that I will:
+>
+> - :white_check_mark: continue to apply dependency updates and bug fixes, but will
+> - :no_entry_sign: not add any new features, and will
+> - :no_entry_sign: not take time to review pull requests adding features
+>   or making bigger changes.
+>
+> Thanks for your understanding! :pray:
+>
+> Sebastian Pipping — Berlin, 2026-01-11
+
 
 # About `wnpp.debian.net`
 
