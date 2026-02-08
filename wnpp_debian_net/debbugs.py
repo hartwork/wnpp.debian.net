@@ -141,7 +141,7 @@ class DebbugsWnppClient:
 
         try:
             return base64.decodebytes(candidate.encode("ascii")).decode()
-        except (ValueError, UnicodeEncodeError):
+        except ValueError, UnicodeEncodeError:
             return candidate
 
     @_wrap_exceptions
