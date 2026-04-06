@@ -111,9 +111,9 @@ coverage==7.13.5 \
 Django==6.0.3 \
     --hash=sha256:2e5974441491ddb34c3f13d5e7a9f97b07ba03bf70234c0a9c68b79bbb235bc3 \
     --hash=sha256:90be765ee756af8a6cbd6693e56452404b5ad15294f4d5e40c0a55a0f4870fe1
-django-coverage-plugin==3.2.0 \
-    --hash=sha256:0e1460294ecd4b192bd09788ab9ad9380d9b8c9b45925b408ce6c620ac352585 \
-    --hash=sha256:a4a9400c784c86f1ba53a73c336508e07316c92345b34a0eb0b22b3b14cdbdd6
+django-coverage-plugin==3.2.2 \
+    --hash=sha256:66c9bdb2756762d6bef3510548bb228e1e8465ff1cd2b372775b82624e85e0b4 \
+    --hash=sha256:fcc507ee02f3a8f7c1d79b6eba1bafebb4a95b5055801987b715f4f88270c441
 django-extensions==4.1 \
     --hash=sha256:0699a7af28f2523bf8db309a80278519362cd4b6e1fd0a8cd4bf063e1e023336 \
     --hash=sha256:7b70a4d28e9b840f44694e3f7feb54f55d495f8b3fa6c5c0e5e12bcb2aa3cdeb
