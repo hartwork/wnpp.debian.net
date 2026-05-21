@@ -12,7 +12,6 @@ from ...tests.factories import DebianPopconFactory, DebianWnppFactory
 from ..front_page import (
     _COLUMN_NAMES,
     _DEFAULT_COLUMNS,
-    _DEFAULT_ISSUE_KINDS,
     _INSTANCES_PER_PAGE,
     _INTERNAL_FIELDS_FOR_COLUMN_NAME,
     FrontPageView,
@@ -171,9 +170,8 @@ class KindFilterTest(_FrontPageTestCase):
 
         object_list = list(response.context_data["object_list"])
         for kind in IssueKind.values:
-            assertion = self.assertIn if (kind in _DEFAULT_ISSUE_KINDS) else self.assertNotIn
             issue_to_test = self.issue_for_kind[kind]
-            assertion(issue_to_test, object_list)
+            self.assertIn(issue_to_test, object_list)
 
 
 class OwnerFilterTest(_FrontPageTestCase):
