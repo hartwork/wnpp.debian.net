@@ -46,18 +46,6 @@ _DEFAULT_COLUMNS = [
 
 assert all((column in _COLUMN_NAMES) for column in _DEFAULT_COLUMNS)
 
-_DEFAULT_ISSUE_KINDS = [
-    kind.value
-    for kind in (
-        IssueKind.O_,
-        IssueKind.RFA,
-        IssueKind.RFH,
-        IssueKind.RFP,
-    )
-]
-
-assert all((kind in IssueKind.values) for kind in _DEFAULT_ISSUE_KINDS)
-
 
 class FrontPageView(ListView):
     model = DebianWnpp
@@ -74,7 +62,7 @@ class FrontPageView(ListView):
         self._sort = self.request.GET.get(
             "sort", combine_sort_param("installs", INTERNAL_DIRECTION_PREFIX_DESCENDING)
         )
-        self._kinds = set(self.request.GET.getlist("type[]", _DEFAULT_ISSUE_KINDS))
+        self._kinds = set(self.request.GET.getlist("type[]", IssueKind.values))
 
         # Validation
         self._sort_external_column, self._sort_internal_direction_prefix = parse_sort_param(
