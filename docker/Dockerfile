@@ -10,6 +10,7 @@ RUN echo '@edge-community https://dl-cdn.alpinelinux.org/alpine/edge/community' 
         diffutils \
         g++ \
         gcc \
+        linux-headers \
         musl-dev \
         postgresql-client \
         postgresql-dev \
@@ -23,11 +24,13 @@ ENV PATH=/home/wnpp-debian-net/.local/bin/:${PATH}
 COPY --chown=wnpp-debian-net:wnpp-debian-net requirements*.txt  /home/wnpp-debian-net/
 
 WORKDIR /home/wnpp-debian-net/
-RUN pip3 install --user --ignore-installed --disable-pip-version-check pip setuptools wheel \
+RUN set -x \
+        && \
+    pip3 install --user --ignore-installed --disable-pip-version-check pip setuptools wheel \
         && \
     hash pip3 \
         && \
-    pip3 install --user --require-hashes -r requirements.txt \
+    pip3 install --user --no-binary :all: --require-hashes -r requirements.txt \
         && \
     pip3 check \
         && \
