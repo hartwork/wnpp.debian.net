@@ -10,6 +10,7 @@ RUN echo '@edge-community https://dl-cdn.alpinelinux.org/alpine/edge/community' 
         diffutils \
         g++ \
         gcc \
+        linux-headers \
         musl-dev \
         postgresql-client \
         postgresql-dev \
