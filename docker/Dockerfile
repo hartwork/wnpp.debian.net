@@ -23,7 +23,9 @@ ENV PATH=/home/wnpp-debian-net/.local/bin/:${PATH}
 COPY --chown=wnpp-debian-net:wnpp-debian-net requirements*.txt  /home/wnpp-debian-net/
 
 WORKDIR /home/wnpp-debian-net/
-RUN pip3 install --user --ignore-installed --disable-pip-version-check pip setuptools wheel \
+RUN set -x \
+        && \
+    pip3 install --user --ignore-installed --disable-pip-version-check pip setuptools wheel \
         && \
     hash pip3 \
         && \
