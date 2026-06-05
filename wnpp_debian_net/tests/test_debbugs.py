@@ -1,9 +1,8 @@
 # Copyright (C) 2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GNU Affero GPL v3 or later
 
-from vcr.unittest import VCRTestCase
-
 from ..debbugs import DebbugsWnppClient, IssueStatus
+from .fake_vcr_unittest import FakeVcrTestCase
 
 ISSUE_IDS_OF_INTEREST = [
     748374,  # solo, not merged with any issues
@@ -61,7 +60,7 @@ EXPECTED_PROPERTIES_OF_ISSUE = {
 }
 
 
-class DebbugsWnppClientTest(VCRTestCase):
+class DebbugsWnppClientTest(FakeVcrTestCase):
     def setUp(self):
         super().setUp()
         self.client = DebbugsWnppClient()

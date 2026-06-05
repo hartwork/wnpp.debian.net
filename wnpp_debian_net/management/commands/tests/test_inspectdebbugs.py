@@ -4,13 +4,12 @@
 import json
 from io import StringIO
 
-from vcr.unittest import VCRTestCase
-
+from ....tests.fake_vcr_unittest import FakeVcrTestCase
 from ....tests.test_debbugs import EXPECTED_PROPERTIES_OF_ISSUE, ISSUE_IDS_OF_INTEREST
 from ..inspectdebbugs import Command
 
 
-class InspectDebbugsCommandTest(VCRTestCase):
+class InspectDebbugsCommandTest(FakeVcrTestCase):
     @staticmethod
     def with_issue_ids_decoded_to_int(properties_of_issues):
         # NOTE: Dictionaries can only have string keys in JSON
