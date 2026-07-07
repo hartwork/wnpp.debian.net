@@ -6,15 +6,16 @@ FROM python:3.14-alpine
 RUN echo '@edge-community https://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
         && \
     apk add --update \
-        bash \
         diffutils \
         g++ \
         gcc \
         linux-headers \
         musl-dev \
-        postgresql-client \
         postgresql-dev \
         shadow \
+        \
+        bash \
+        postgresql-client \
         supercronic@edge-community
 
 SHELL ["/bin/bash", "-c"]
