@@ -8,6 +8,7 @@ from datetime import timedelta
 from enum import Enum
 from functools import wraps
 from urllib.error import URLError
+from xml.parsers.expat import ExpatError
 
 from django.utils.timezone import now
 from pysimplesoap.client import SoapClient
@@ -67,7 +68,7 @@ def _wrap_exceptions(f):
     def wrapped(*args, **wargs):
         try:
             return f(*args, **wargs)
-        except URLError as e:
+        except (ExpatError, URLError) as e:
             raise DebbugsRequestError(e)
 
     return wrapped
