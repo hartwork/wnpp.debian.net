@@ -3,6 +3,7 @@
 
 FROM python:3.14-alpine
 
+# NOTE: Build-only dependencies are uninstalled again further down, so the two lists need to be kept in sync!
 RUN echo '@edge-community https://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
         && \
     apk add --update \
@@ -55,5 +56,15 @@ COPY --chown=wnpp-debian-net:wnpp-debian-net .coveragerc crontab manage.py  ./
 COPY --chown=wnpp-debian-net:wnpp-debian-net wnpp_debian_net/               ./wnpp_debian_net/
 
 USER root
-RUN apk upgrade --update
+# NOTE: Build-only dependencies have been installed explicitely further up, so the two lists need to be kept in sync!
+RUN apk del \
+            diffutils \
+            g++ \
+            gcc \
+            linux-headers \
+            musl-dev \
+            postgresql-dev \
+            shadow \
+        && \
+    apk upgrade --update
 USER wnpp-debian-net
