@@ -26,7 +26,7 @@ from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, E
 from ._common import ReportingMixin
 
 _SUBJECT_PATTERN = "(?:[Ss]ubject: )?"
-_KIND_PREFIX_PATTERN = "(?P<kind>[A-Z]{1,3}): ?"
+_KIND_PREFIX_PATTERN = "(?:(?P<kind_plain>[A-Z]{1,3}):|\\[(?P<kind_square>[A-Z]{1,3})\\]) ?"
 _PACKAGE_NAME_PATTERN = "(?P<package>[^ ]+)"
 _DESCRIPTION_PATTERN = "(?:(?: --| -| —|:) (?P<description>.*))?"
 
@@ -271,7 +271,7 @@ class Command(ReportingMixin, BaseCommand):
         if match_ is None:
             raise _MalformedSubject(f"Malformed subject {subject!r} (issue {issue_id})")
 
-        kind = match_.group("kind")
+        kind = match_.group("kind_plain") or match_.group("kind_square")
         package_name = match_.group("package")
         description = match_.group("description")
 

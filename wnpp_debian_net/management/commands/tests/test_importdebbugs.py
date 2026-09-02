@@ -110,6 +110,11 @@ class ParseWnppIssueSubjectTest(TestCase):
                 "ITA: libzstd",
                 ("ITA", "libzstd", None),
             ),
+            (
+                "square bracket tag",
+                "[ITP] libnginx-mod-http-zstd -- Zstandard compression support for Nginx",
+                ("ITP", "libnginx-mod-http-zstd", "Zstandard compression support for Nginx"),
+            ),
         ]
     )
     def test_wellformed(self, _label, subject, expected):
