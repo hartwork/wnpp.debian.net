@@ -25,6 +25,8 @@ from ...debbugs import (
 from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, EventKind
 from ._common import ReportingMixin
 
+_SUBJECT_LINE_PATTERN = "^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$"
+
 _BATCH_SIZE = 100
 _MAXIMUM_STALE_DELTA = datetime.timedelta(hours=2)
 
@@ -256,7 +258,7 @@ class Command(ReportingMixin, BaseCommand):
     @staticmethod
     def _parse_wnpp_issue_subject(subject: str, issue_id: int) -> tuple[str, str, str]:
         match_ = re.match(
-            "^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$",
+            _SUBJECT_LINE_PATTERN,
             subject,
         )
         if match_ is None:
