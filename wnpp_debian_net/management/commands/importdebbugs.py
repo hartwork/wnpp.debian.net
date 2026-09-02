@@ -271,7 +271,11 @@ class Command(ReportingMixin, BaseCommand):
         if match_ is None:
             raise _MalformedSubject(f"Malformed subject {subject!r} (issue {issue_id})")
 
-        return tuple(match_.group(g) for g in ("kind", "package", "description"))
+        kind = match_.group("kind")
+        package_name = match_.group("package")
+        description = match_.group("description")
+
+        return (kind, package_name, description)
 
     @staticmethod
     def _from_epoch_seconds(epoch_seconds) -> datetime.datetime:
