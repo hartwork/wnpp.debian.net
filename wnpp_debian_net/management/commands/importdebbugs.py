@@ -25,7 +25,14 @@ from ...debbugs import (
 from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, EventKind
 from ._common import ReportingMixin
 
-_SUBJECT_LINE_PATTERN = "^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$"
+_SUBJECT_PATTERN = "(?:[Ss]ubject: )?"
+_KIND_PREFIX_PATTERN = "(?P<kind>[A-Z]{1,3}): ?"
+_PACKAGE_NAME_PATTERN = "(?P<package>[^ ]+)"
+_DESCRIPTION_PATTERN = "(?:(?: --| -| —|:) (?P<description>.*))?"
+
+_SUBJECT_LINE_PATTERN = (
+    f"^{_SUBJECT_PATTERN}{_KIND_PREFIX_PATTERN}{_PACKAGE_NAME_PATTERN}{_DESCRIPTION_PATTERN}$"
+)
 
 _BATCH_SIZE = 100
 _MAXIMUM_STALE_DELTA = datetime.timedelta(hours=2)
