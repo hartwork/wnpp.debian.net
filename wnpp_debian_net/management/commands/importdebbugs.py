@@ -254,13 +254,13 @@ class Command(ReportingMixin, BaseCommand):
                 self._success(f"Updated {len(issues_to_update)} existing issue(s)")
 
     @staticmethod
-    def _parse_wnpp_issue_subject(subject) -> tuple[str, str, str]:
+    def _parse_wnpp_issue_subject(subject: str, issue_id: int) -> tuple[str, str, str]:
         match_ = re.match(
             "^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$",
             subject,
         )
         if match_ is None:
-            raise _MalformedSubject(f"Malformed subject {subject!r}")
+            raise _MalformedSubject(f"Malformed subject {subject!r} (issue {issue_id})")
 
         return tuple(match_.group(g) for g in ("kind", "package", "description"))
 
@@ -276,7 +276,8 @@ class Command(ReportingMixin, BaseCommand):
 
         issue_subject = issue_properties.get(IssueProperty.SUBJECT.value, "")
         issue_kind, package_name, package_description = cls._parse_wnpp_issue_subject(
-            issue_subject
+            issue_subject,
+            issue_id,
         )
 
         charge_person = issue_properties.get(IssueProperty.OWNER.value)

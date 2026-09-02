@@ -113,9 +113,9 @@ class ParseWnppIssueSubjectTest(TestCase):
         ]
     )
     def test_wellformed(self, _label, subject, expected):
-        self.assertEqual(Command._parse_wnpp_issue_subject(subject), expected)
+        self.assertEqual(Command._parse_wnpp_issue_subject(subject, 123), expected)
 
     def test_malformed(self):
         with self.assertRaises(_MalformedSubject) as caught:
-            Command._parse_wnpp_issue_subject("malformed123")
-        self.assertEqual(caught.exception.args, ("Malformed subject 'malformed123'",))
+            Command._parse_wnpp_issue_subject("malformed123", 456)
+        self.assertEqual(caught.exception.args, ("Malformed subject 'malformed123' (issue 456)",))
