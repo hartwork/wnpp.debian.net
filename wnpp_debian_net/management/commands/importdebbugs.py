@@ -25,6 +25,15 @@ from ...debbugs import (
 from ...models import DebianLogIndex, DebianLogMods, DebianPopcon, DebianWnpp, EventKind
 from ._common import ReportingMixin
 
+_SUBJECT_PATTERN = "(?:[Ss]ubject: )?"
+_KIND_PREFIX_PATTERN = "(?:(?P<kind_plain>[A-Z]{1,3}):|\\[(?P<kind_square>[A-Z]{1,3})\\]) ?"
+_PACKAGE_NAME_PATTERN = "(?P<package>[^ ]+)"
+_DESCRIPTION_PATTERN = "(?:(?: --| -| —|:) (?P<description>.*))?"
+
+_SUBJECT_LINE_PATTERN = (
+    f"^{_SUBJECT_PATTERN}{_KIND_PREFIX_PATTERN}{_PACKAGE_NAME_PATTERN}{_DESCRIPTION_PATTERN}$"
+)
+
 _BATCH_SIZE = 100
 _MAXIMUM_STALE_DELTA = datetime.timedelta(hours=2)
 
@@ -254,15 +263,19 @@ class Command(ReportingMixin, BaseCommand):
                 self._success(f"Updated {len(issues_to_update)} existing issue(s)")
 
     @staticmethod
-    def _parse_wnpp_issue_subject(subject) -> tuple[str, str, str]:
+    def _parse_wnpp_issue_subject(subject: str, issue_id: int) -> tuple[str, str, str]:
         match_ = re.match(
-            "^(?:[Ss]ubject: )?(?P<kind>[A-Z]{1,3}): ?(?P<package>[^ ]+)(?:(?: --| -| —|:) (?P<description>.*))?$",
+            _SUBJECT_LINE_PATTERN,
             subject,
         )
         if match_ is None:
-            raise _MalformedSubject(f"Malformed subject {subject!r}")
+            raise _MalformedSubject(f"Malformed subject {subject!r} (issue {issue_id})")
 
-        return tuple(match_.group(g) for g in ("kind", "package", "description"))
+        kind = match_.group("kind_plain") or match_.group("kind_square")
+        package_name = match_.group("package")
+        description = match_.group("description")
+
+        return (kind, package_name, description)
 
     @staticmethod
     def _from_epoch_seconds(epoch_seconds) -> datetime.datetime:
@@ -276,7 +289,8 @@ class Command(ReportingMixin, BaseCommand):
 
         issue_subject = issue_properties.get(IssueProperty.SUBJECT.value, "")
         issue_kind, package_name, package_description = cls._parse_wnpp_issue_subject(
-            issue_subject
+            issue_subject,
+            issue_id,
         )
 
         charge_person = issue_properties.get(IssueProperty.OWNER.value)
