@@ -7,11 +7,12 @@ from unittest.mock import Mock
 
 from django.test import TestCase
 from django.utils.timezone import now
+from parameterized import parameterized
 
 from ....debbugs import IssueProperty
 from ....models import DebianWnpp, IssueKind
 from ....tests.factories import DebianWnppFactory
-from ..importdebbugs import Command
+from ..importdebbugs import Command, _MalformedSubject
 
 
 def _create_mock_debbugs_wnpp_client(issue_ids, properties_of_issues):
@@ -84,3 +85,37 @@ class InspectDebbugsCommandTest(TestCase):
             issue.refresh_from_db()
             self.assertEqual(issue.description, self.magic_description)
             self.assertEqual(issue.kind, self.issue_kind.value)
+
+
+class ParseWnppIssueSubjectTest(TestCase):
+    @parameterized.expand(
+        [
+            (
+                "double dash",
+                "ITA: libzstd -- fast lossless compression algorithm",
+                ("ITA", "libzstd", "fast lossless compression algorithm"),
+            ),
+            (
+                "single dash",
+                "ITA: libzstd - fast lossless compression algorithm",
+                ("ITA", "libzstd", "fast lossless compression algorithm"),
+            ),
+            (
+                "emdash",
+                "ITA: libzstd — fast lossless compression algorithm",
+                ("ITA", "libzstd", "fast lossless compression algorithm"),
+            ),
+            (
+                "without description",
+                "ITA: libzstd",
+                ("ITA", "libzstd", None),
+            ),
+        ]
+    )
+    def test_wellformed(self, _label, subject, expected):
+        self.assertEqual(Command._parse_wnpp_issue_subject(subject), expected)
+
+    def test_malformed(self):
+        with self.assertRaises(_MalformedSubject) as caught:
+            Command._parse_wnpp_issue_subject("malformed123")
+        self.assertEqual(caught.exception.args, ("Malformed subject 'malformed123'",))
